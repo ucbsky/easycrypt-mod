@@ -1,0 +1,425 @@
+#!/usr/bin/env python3
+"""
+Quick helper script to inspect the size of the generated EasyCrypt grammar.
+
+It prints high-level counts for the lexer and parser as well as a few expanded
+productions so we can sanity-check specific non-terminals (e.g. `tactic`).
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+from collections import defaultdict, deque
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Set, Tuple
+
+
+@dataclass
+class Production:
+    head: str
+    body: List[str]
+    raw: str
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Show basic statistics about the generated EasyCrypt grammar."
+    )
+    parser.add_argument(
+        "--grammar-json",
+        type=Path,
+        default=Path(__file__).with_name("grammar_raw.json"),
+        help="Path to the grammar JSON file (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--reduced-json",
+        type=Path,
+        default=Path(__file__).with_name("grammar_reduced.json"),
+        help="Where to write the reduced grammar JSON (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--expr-collapsed-json",
+        type=Path,
+        default=Path(__file__).with_name("grammar_reduced_expr.json"),
+        help="Where to write the expression-collapsed grammar JSON (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--expr-ebnf",
+        type=Path,
+        default=Path(__file__).with_name("grammar_reduced_expr.ebnf"),
+        help="Where to write the expression-collapsed grammar in EBNF form.",
+    )
+    return parser.parse_args()
+
+
+def load_grammar(json_path: Path) -> Dict[str, Any]:
+    with json_path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def save_reduced_grammar(
+    json_path: Path, reduced: Dict[str, List[Production]]
+) -> None:
+    def prod_to_dict(prod: Production) -> Dict[str, Any]:
+        return {"body_symbols": prod.body, "raw_body": prod.raw}
+
+    serializable: Dict[str, Any] = {}
+    for head, prods in reduced.items():
+        serializable[head] = [prod_to_dict(prod) for prod in prods]
+
+    with json_path.open("w", encoding="utf-8") as f:
+        json.dump(serializable, f, indent=2)
+
+
+def write_ebnf(grammar: Dict[str, List[Production]], out_path: Path) -> None:
+    heads = sorted(grammar.keys())
+    lines: List[str] = []
+    for head in heads:
+        alts: List[str] = []
+        for prod in grammar[head]:
+            body = prod.body
+            alts.append(" ".join(body) if body else "ε")
+        rhs = " | ".join(alts)
+        lines.append(f"{head} ::= {rhs}")
+    out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+SYMBOL_PATTERN = re.compile(r"^[A-Za-z0-9_]+$")
+
+WRAPPER_FUNCS = [
+    "loc",
+    "brace",
+    "paren",
+    "bracket",
+    "prefix",
+    "postfix",
+    "seq",
+    "either",
+    "or3",
+    "plist",
+    "plist0",
+    "plist1",
+    "plist2",
+    "plist3",
+    "pseq",
+    "list",
+    "list0",
+    "list1",
+    "rlist",
+    "rlist0",
+    "rlist1",
+    "rseq",
+    "opt",
+    "popt",
+    "option",
+    "poption",
+    "repeat",
+    "prepeat",
+    "maybe",
+    "pmaybe",
+]
+
+
+def strip_wrappers(body: str) -> str:
+    def helper(text: str) -> str:
+        result: List[str] = []
+        i = 0
+        length = len(text)
+        while i < length:
+            if text[i].isalpha() or text[i] == "_":
+                j = i
+                while j < length and (text[j].isalnum() or text[j] == "_"):
+                    j += 1
+                name = text[i:j]
+                k = j
+                while k < length and text[k].isspace():
+                    k += 1
+                if k < length and text[k] == "(" and name in WRAPPER_FUNCS:
+                    depth = 1
+                    k += 1
+                    start = k
+                    while k < length and depth > 0:
+                        if text[k] == "(":
+                            depth += 1
+                        elif text[k] == ")":
+                            depth -= 1
+                        k += 1
+                    inner = helper(text[start : k - 1])
+                    result.append(inner)
+                    i = k
+                    continue
+                result.append(text[i:j])
+                i = j
+                continue
+            result.append(text[i])
+            i += 1
+        return "".join(result)
+
+    return helper(body)
+
+
+def clean_symbol(symbol: str) -> str:
+    cleaned = symbol.strip()
+    cleaned = cleaned.strip(",(){}[]")
+    if "(" in cleaned:
+        cleaned = cleaned.split("(", 1)[0]
+    cleaned = cleaned.strip()
+    while cleaned and cleaned[-1] in "+*?":
+        cleaned = cleaned[:-1]
+    cleaned = cleaned.replace("-", "_")
+    replacements = {"|": "PIPE"}
+    cleaned = replacements.get(cleaned, cleaned)
+    if cleaned and not re.search(r"[A-Za-z0-9_]", cleaned):
+        return ""
+    return cleaned
+
+
+def tokenize_body(body: str) -> List[str]:
+    """
+    Turn a Menhir-style body string (like 'x=ident COLON ty=loc(type_exp)')
+    into a list of grammar symbols: ['ident', 'COLON', 'type_exp'].
+    """
+
+    body_clean = strip_wrappers(body)
+
+    body_clean = re.sub(r"\(P\)", "", body_clean)
+    body_clean = re.sub(r"%prec\s+\S+", "", body_clean)
+    body_clean = re.sub(r"%public", "", body_clean)
+    body_clean = re.sub(r"/\*.*?\*/", " ", body_clean)
+    body_clean = body_clean.replace(",", " ")
+
+    tokens_raw = body_clean.split()
+    symbols: List[str] = []
+    for token in tokens_raw:
+        if "=" in token:
+            rhs = token.split("=")[-1]
+            if rhs:
+                cleaned = clean_symbol(rhs)
+                if cleaned:
+                    symbols.append(cleaned)
+        else:
+            cleaned = clean_symbol(token)
+            if cleaned:
+                symbols.append(cleaned)
+
+    return symbols
+
+
+def summarize_productions(
+    productions: List[Any],
+) -> Tuple[Dict[str, List[Production]], Set[str], List[Production]]:
+    head_to_prods: Dict[str, List[Production]] = defaultdict(list)
+    all_heads: Set[str] = set()
+
+    normalized_order: List[Production] = []
+
+    for prod_data in productions:
+        head = prod_data.get("head")
+        body_str = prod_data.get("body", "")
+        if not head:
+            continue
+        body_syms = tokenize_body(body_str)
+        prod = Production(head=head, body=body_syms, raw=body_str)
+        head_to_prods[head].append(prod)
+        all_heads.add(head)
+        normalized_order.append(prod)
+
+    return head_to_prods, all_heads, normalized_order
+
+
+def reachable_heads(
+    seeds: List[str], head_to_prods: Dict[str, List[Production]], all_heads: Set[str]
+) -> Set[str]:
+    queue = deque([head for head in seeds if head in all_heads])
+    visited: Set[str] = set(queue)
+
+    while queue:
+        head = queue.popleft()
+        for prod in head_to_prods.get(head, []):
+            for symbol in prod.body:
+                if symbol in all_heads and symbol not in visited:
+                    visited.add(symbol)
+                    queue.append(symbol)
+
+    return visited
+
+
+def find_structure_heads(heads: Set[str]) -> List[str]:
+    patterns = ["expr", "form", "sform", "form_r", "form_u", "pterm", "qident", "qoident"]
+    matches = [head for head in heads if any(pattern in head for pattern in patterns)]
+    return sorted(matches)
+
+
+def collapse_expression_heads(
+    head_to_prods: Dict[str, List[Production]], expr_heads: Set[str]
+) -> Dict[str, List[Production]]:
+    collapsed: Dict[str, List[Production]] = {}
+    for head, prods in head_to_prods.items():
+        if head in expr_heads:
+            continue
+        new_prods: List[Production] = []
+        for prod in prods:
+            new_body = ["EXPR" if symbol in expr_heads else symbol for symbol in prod.body]
+            new_prods.append(Production(head=head, body=new_body, raw=prod.raw))
+        collapsed[head] = new_prods
+    return collapsed
+
+
+def add_line_start(grammar: Dict[str, List[Production]]) -> Dict[str, List[Production]]:
+    if "Line" in grammar:
+        raise ValueError("Grammar already defines a 'Line' head.")
+    line_prod = Production(head="Line", body=["tactic", "DOT"], raw="tactic DOT")
+    new_grammar: Dict[str, List[Production]] = {"Line": [line_prod]}
+    new_grammar.update(grammar)
+    return new_grammar
+
+
+def validate_symbols(label: str, grammar: Dict[str, List[Production]]) -> None:
+    invalid: List[Tuple[str, str, str]] = []
+    for head, prods in grammar.items():
+        for prod in prods:
+            for symbol in prod.body:
+                if not SYMBOL_PATTERN.fullmatch(symbol):
+                    invalid.append((head, symbol, prod.raw))
+                    if len(invalid) >= 10:
+                        break
+            if len(invalid) >= 10:
+                break
+        if len(invalid) >= 10:
+            break
+    if invalid:
+        print(f"Found invalid symbols in {label}:")
+        for head, symbol, raw in invalid:
+            print(f"  head={head!r}, symbol={symbol!r}, raw={raw!r}")
+        raise SystemExit(1)
+
+
+def main() -> None:
+    args = parse_args()
+    ec = load_grammar(args.grammar_json)
+
+    lexer: Dict[str, Any] = ec.get("lexer", {})
+    parser_block: Dict[str, Any] = ec.get("parser", {})
+    tokens = set(parser_block.get("tokens") or [])
+    productions: List[Any] = parser_block.get("productions") or []
+
+    print("Num lexer entries:", len(lexer))
+    print("Num parser tokens:", len(tokens))
+    print("Num productions:", len(productions))
+    if productions:
+        print("Sample production:", productions[0])
+    else:
+        print("Sample production: <none available>")
+
+    head_to_prods, all_heads, normalized = summarize_productions(productions)
+    print("Num heads:", len(all_heads))
+    print("Num normalized productions:", len(normalized))
+    sample_normalized = normalized[:5]
+    if sample_normalized:
+        print("Sample normalized productions:")
+        for prod in sample_normalized:
+            print(f"  head={prod.head!r}")
+            print(f"    body_symbols={prod.body}")
+            print(f"    raw_body={prod.raw!r}")
+    else:
+        print("Sample normalized productions: <none available>")
+
+    focused_heads = ["tactic", "tactic_ip", "tactic_core"]
+    for head in focused_heads:
+        prods = head_to_prods.get(head, [])
+        if not prods:
+            print(f"No productions found for '{head}'.")
+            continue
+        print(f"Productions for '{head}' ({len(prods)} total):")
+        for prod in prods:
+            print(f"  body_symbols={prod.body}")
+            print(f"    raw_body={prod.raw!r}")
+
+    seed_heads = [
+        "tactic",
+        "tactic_ip",
+        "tactic_core",
+        "tactic_core_r",
+        "tactic_chain",
+        "logtactic",
+        "phltactic",
+        "tactics",
+        "tactics0",
+        "toptactic",
+    ]
+    reachable = reachable_heads(seed_heads, head_to_prods, all_heads)
+    print(f"Reachable heads from seeds ({len(reachable)} total):")
+    for head in sorted(reachable):
+        print(f"  - {head}")
+
+    reduced_head_to_prods = {head: head_to_prods[head] for head in reachable}
+    reduced_prod_count = sum(len(prods) for prods in reduced_head_to_prods.values())
+    print(f"Reduced grammar production count: {reduced_prod_count}")
+    first_heads = sorted(reduced_head_to_prods.keys())[:20]
+    print("First 20 heads alphabetically in reduced grammar:")
+    for head in first_heads:
+        print(f"  - {head}")
+    reduced_with_line = add_line_start(reduced_head_to_prods)
+    validate_symbols("reduced grammar", reduced_with_line)
+    save_reduced_grammar(args.reduced_json, reduced_with_line)
+    print(f"Reduced grammar written to: {args.reduced_json}")
+
+    struct_heads = find_structure_heads(set(reduced_head_to_prods.keys()))
+    print("Candidate expression/form heads to collapse:")
+    for head in struct_heads:
+        print(f"  - {head}")
+
+    expr_head_set = set(struct_heads)
+    collapsed_head_to_prods = collapse_expression_heads(reduced_head_to_prods, expr_head_set)
+    collapsed_prod_count = sum(len(prods) for prods in collapsed_head_to_prods.values())
+    collapsed_with_line = add_line_start(collapsed_head_to_prods)
+    validate_symbols("expression-collapsed grammar", collapsed_with_line)
+    save_reduced_grammar(args.expr_collapsed_json, collapsed_with_line)
+    print(
+        f"Expression-collapsed grammar written to: {args.expr_collapsed_json} "
+        f"({collapsed_prod_count} productions)"
+    )
+    write_ebnf(collapsed_with_line, args.expr_ebnf)
+    print(f"Expression-collapsed EBNF written to: {args.expr_ebnf}")
+
+    sample_collapsed: List[Production] = []
+    expr_sample: Production | None = None
+    for head in sorted(collapsed_head_to_prods.keys()):
+        prods = collapsed_head_to_prods[head]
+        if not prods:
+            continue
+        sample_collapsed.append(Production(head=head, body=prods[0].body, raw=prods[0].raw))
+        if not expr_sample:
+            for prod in prods:
+                if "EXPR" in prod.body:
+                    expr_sample = Production(head=head, body=prod.body, raw=prod.raw)
+                    break
+        if len(sample_collapsed) >= 5:
+            break
+    if not expr_sample:
+        for head, prods in collapsed_head_to_prods.items():
+            for prod in prods:
+                if "EXPR" in prod.body:
+                    expr_sample = Production(head=head, body=prod.body, raw=prod.raw)
+                    break
+            if expr_sample:
+                break
+    if sample_collapsed:
+        print("Sample productions from expression-collapsed grammar:")
+        for prod in sample_collapsed:
+            print(f"  head={prod.head!r}, body_symbols={prod.body}")
+        if expr_sample:
+            print(
+                f"  (with EXPR) head={expr_sample.head!r}, "
+                f"body_symbols={expr_sample.body}"
+            )
+    else:
+        print("No productions available in expression-collapsed grammar.")
+
+
+if __name__ == "__main__":
+    main()
+
