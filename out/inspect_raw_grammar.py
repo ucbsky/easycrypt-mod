@@ -24,6 +24,12 @@ class Production:
     raw: str
 
 
+@dataclass
+class SymbolChunk:
+    symbol: str
+    quantifier: str | None = None  # None, '?', '*', '+'
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Show basic statistics about the generated EasyCrypt grammar."
@@ -123,6 +129,19 @@ WRAPPER_FUNCS = [
 ]
 
 
+OPTIONAL_WRAPPERS = {
+    "opt",
+    "popt",
+    "option",
+    "poption",
+    "boption",
+    "iboption",
+    "uoption",
+    "maybe",
+    "pmaybe",
+}
+
+
 ALIAS_HEADS: Dict[str, List[str]] = {
     # `outline_kind` holds the low-level program-manipulation tactics (proc, call,
     # inline, sim, ...). The Menhir grammar exposes them via the outline machinery,
@@ -156,7 +175,10 @@ def strip_wrappers(body: str) -> str:
                             depth -= 1
                         k += 1
                     inner = helper(text[start : k - 1])
-                    result.append(inner)
+                    if name in OPTIONAL_WRAPPERS:
+                        result.append(inner + "?")
+                    else:
+                        result.append(inner)
                     i = k
                     continue
                 result.append(text[i:j])
@@ -185,7 +207,17 @@ def clean_symbol(symbol: str) -> str:
     return cleaned
 
 
-def tokenize_body(body: str) -> List[str]:
+def extract_quantifier(token: str) -> Tuple[str, str | None]:
+    if not token:
+        return token, None
+    quant = None
+    if token[-1] in "?*+":
+        quant = token[-1]
+        token = token[:-1]
+    return token, quant
+
+
+def tokenize_body(body: str) -> List[SymbolChunk]:
     """
     Turn a Menhir-style body string (like 'x=ident COLON ty=loc(type_exp)')
     into a list of grammar symbols: ['ident', 'COLON', 'type_exp'].
@@ -200,20 +232,46 @@ def tokenize_body(body: str) -> List[str]:
     body_clean = body_clean.replace(",", " ")
 
     tokens_raw = body_clean.split()
-    symbols: List[str] = []
+    symbols: List[SymbolChunk] = []
     for token in tokens_raw:
         if "=" in token:
             rhs = token.split("=")[-1]
             if rhs:
-                cleaned = clean_symbol(rhs)
+                base, quant = extract_quantifier(rhs)
+                cleaned = clean_symbol(base)
                 if cleaned:
-                    symbols.append(cleaned)
+                    symbols.append(SymbolChunk(symbol=cleaned, quantifier=quant))
         else:
-            cleaned = clean_symbol(token)
+            base, quant = extract_quantifier(token)
+            cleaned = clean_symbol(base)
             if cleaned:
-                symbols.append(cleaned)
+                symbols.append(SymbolChunk(symbol=cleaned, quantifier=quant))
 
     return symbols
+
+
+def expand_symbol_chunks(chunks: List[SymbolChunk]) -> List[List[str]]:
+    sequences: List[List[str]] = [[]]
+    for chunk in chunks:
+        symbol = chunk.symbol
+        quant = chunk.quantifier
+        if not symbol:
+            continue
+        if quant == "?":
+            new_sequences: List[List[str]] = []
+            for seq in sequences:
+                new_sequences.append(seq.copy())
+                new_sequences.append(seq + [symbol])
+            sequences = new_sequences
+        elif quant == "*":
+            new_sequences = []
+            for seq in sequences:
+                new_sequences.append(seq.copy())
+                new_sequences.append(seq + [symbol])
+            sequences = new_sequences
+        else:
+            sequences = [seq + [symbol] for seq in sequences]
+    return sequences
 
 
 def summarize_productions(
@@ -229,11 +287,15 @@ def summarize_productions(
         body_str = prod_data.get("body", "")
         if not head:
             continue
-        body_syms = tokenize_body(body_str)
-        prod = Production(head=head, body=body_syms, raw=body_str)
-        head_to_prods[head].append(prod)
+        symbol_chunks = tokenize_body(body_str)
+        expanded_bodies = expand_symbol_chunks(symbol_chunks)
+        if not expanded_bodies:
+            expanded_bodies = [[]]
+        for body_syms in expanded_bodies:
+            prod = Production(head=head, body=body_syms, raw=body_str)
+            head_to_prods[head].append(prod)
+            normalized_order.append(prod)
         all_heads.add(head)
-        normalized_order.append(prod)
 
     return head_to_prods, all_heads, normalized_order
 
