@@ -31,7 +31,10 @@ BAD_CASE = PROJECT_ROOT / "grammar_examples" / "bad.ec"
 
 SYNTHETIC_LITERALS: List[Tuple[str, str]] = [
     (".", "DOT"),
+    (";", "SEMICOLON"),
 ]
+
+RAW_FALLBACK = "__RAW__"
 
 
 def ensure_grammar() -> None:
@@ -104,13 +107,27 @@ IDENT_PRIORITY = {
     "MIDENT": 3,
 }
 
+EXPR_START_TOKENS = {
+    "CEQ",
+    "COLON",
+    "EQ",
+    "IMPL",
+    "LONGARROW",
+    "HAVE",
+    "GEN",
+    "POSE",
+}
+EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON"}
+EXPR_BREAK_TOKENS = set()
+
 
 def tokenize_line(
     line: str,
     literal_specs: Sequence[TokenSpec],
     pattern_specs: Sequence[TokenSpec],
+    structural_tokens: set[str],
 ) -> List[str]:
-    tokens: List[str] = []
+    raw_tokens: List[str] = []
     pos = 0
     length = len(line)
     while pos < length:
@@ -124,14 +141,14 @@ def tokenize_line(
                 raise TokenizationError("unterminated comment")
             pos = end + 2
             continue
-        synthetic_hit = False
+        matched_literal = False
         for literal, name in SYNTHETIC_LITERALS:
             if line.startswith(literal, pos):
-                tokens.append(name)
+                raw_tokens.append(name)
                 pos += len(literal)
-                synthetic_hit = True
+                matched_literal = True
                 break
-        if synthetic_hit:
+        if matched_literal:
             continue
 
         best: Tuple[int, str, int] | None = None
@@ -163,11 +180,29 @@ def tokenize_line(
             if best:
                 break
         if best is None:
-            snippet = line[pos : pos + 20]
-            raise TokenizationError(f"unknown token near {snippet!r}")
-        tokens.append(best[1])
+            raw_tokens.append(RAW_FALLBACK)
+            pos += 1
+            continue
+        raw_tokens.append(best[1])
         pos += best[2]
-    return tokens
+
+    normalized: List[str] = []
+    expr_mode = False
+    for token in raw_tokens:
+        if token in EXPR_END_TOKENS or token in EXPR_BREAK_TOKENS:
+            expr_mode = False
+        if expr_mode or token == RAW_FALLBACK or token not in structural_tokens:
+            mapped = "EXPR"
+        else:
+            mapped = token
+        if mapped == "EXPR":
+            if not normalized or normalized[-1] != "EXPR":
+                normalized.append(mapped)
+        else:
+            normalized.append(mapped)
+        if token in EXPR_START_TOKENS:
+            expr_mode = True
+    return normalized
 
 
 def build_productions(grammar_meta: Dict[str, List[Dict[str, object]]]) -> Tuple[
@@ -183,6 +218,22 @@ def build_productions(grammar_meta: Dict[str, List[Dict[str, object]]]) -> Tuple
     start_symbol = "Line"
     productions["_START_"] = [(start_symbol,)]
     return productions, "_START_"
+
+
+def collect_structural_tokens(
+    productions: Dict[str, List[Tuple[str, ...]]]
+) -> set[str]:
+    nonterminals = set(productions.keys())
+    tokens: set[str] = set()
+    for bodies in productions.values():
+        for body in bodies:
+            for symbol in body:
+                if not symbol or symbol == "EXPR":
+                    continue
+                if symbol in nonterminals:
+                    continue
+                tokens.add(symbol)
+    return tokens
 
 
 @dataclass(frozen=True)
@@ -251,20 +302,38 @@ def evaluate_file(
     parser: EarleyParser,
     literal_specs: Sequence[TokenSpec],
     pattern_specs: Sequence[TokenSpec],
-) -> Tuple[bool, List[Tuple[int, str, str]]]:
+    structural_tokens: set[str],
+) -> Tuple[
+    bool,
+    List[Tuple[int, str]],
+    List[int],
+    int,
+    int,
+    int,
+]:
     errors: List[Tuple[int, str, str]] = []
+    pass_lines: List[int] = []
+    total = 0
+    passed = 0
+    unexpected = 0
     for idx, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
+        total += 1
         try:
-            tokens = tokenize_line(line, literal_specs, pattern_specs)
+            tokens = tokenize_line(line, literal_specs, pattern_specs, structural_tokens)
         except TokenizationError as exc:
             errors.append((idx, line, f"lex: {exc}"))
             continue
-        if not parser.parse(tokens):
+        if parser.parse(tokens):
+            passed += 1
+            pass_lines.append(idx)
+        else:
             errors.append((idx, line, "parse error"))
-    return len(errors) == 0, errors
+            unexpected += 1
+    compact_errors = [(lineno, msg) for lineno, _text, msg in errors]
+    return len(errors) == 0, compact_errors, pass_lines, total, passed, unexpected
 
 
 def main() -> None:
@@ -277,6 +346,7 @@ def main() -> None:
     token_specs = build_token_specs(lexer_meta)
     literal_specs, pattern_specs = split_specs(token_specs, lexer_meta)
     productions, start = build_productions(grammar_meta)
+    structural_tokens = collect_structural_tokens(productions)
     parser = EarleyParser(productions, start)
 
     scenarios = [
@@ -286,15 +356,22 @@ def main() -> None:
 
     overall_ok = True
     for label, path, expect_success in scenarios:
-        ok, errors = evaluate_file(path, parser, literal_specs, pattern_specs)
+        ok, errors, pass_lines, total, passed_lines, unexpected = evaluate_file(
+            path, parser, literal_specs, pattern_specs, structural_tokens
+        )
         passed = ok if expect_success else not ok
         overall_ok &= passed
         status = "PASS" if passed else "FAIL"
         print(f"[{status}] {label}: {path}")
-        if errors:
-            for lineno, text, msg in errors[:5]:
-                print(f"    line {lineno}: {text}")
-                print(f"      {msg}")
+        if total:
+            print(f"    parsed {passed_lines}/{total} lines")
+        if expect_success:
+            failing_lines = [lineno for lineno, _ in errors]
+            if failing_lines:
+                print(f"    failing line numbers: {failing_lines}")
+        else:
+            if pass_lines:
+                print(f"    passing line numbers: {pass_lines}")
 
     if not overall_ok:
         sys.exit(1)

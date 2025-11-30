@@ -123,6 +123,14 @@ WRAPPER_FUNCS = [
 ]
 
 
+ALIAS_HEADS: Dict[str, List[str]] = {
+    # `outline_kind` holds the low-level program-manipulation tactics (proc, call,
+    # inline, sim, ...). The Menhir grammar exposes them via the outline machinery,
+    # but for line-by-line tactic parsing we need to treat them as regular tactics.
+    "tactic_core_r": ["outline_kind"],
+}
+
+
 def strip_wrappers(body: str) -> str:
     def helper(text: str) -> str:
         result: List[str] = []
@@ -163,7 +171,7 @@ def strip_wrappers(body: str) -> str:
 
 def clean_symbol(symbol: str) -> str:
     cleaned = symbol.strip()
-    cleaned = cleaned.strip(",(){}[]")
+    cleaned = cleaned.strip(",(){}[]:")
     if "(" in cleaned:
         cleaned = cleaned.split("(", 1)[0]
     cleaned = cleaned.strip()
@@ -249,8 +257,36 @@ def reachable_heads(
 
 def find_structure_heads(heads: Set[str]) -> List[str]:
     patterns = ["expr", "form", "sform", "form_r", "form_u", "pterm", "qident", "qoident"]
-    matches = [head for head in heads if any(pattern in head for pattern in patterns)]
+    extra = {
+        "sexpr",
+        "pcutdef",
+        "pcutdef1",
+        "fel_pred_spec",
+        "fel_pred_specs",
+        "gpterm",
+        "gpterm_arg",
+        "gpoterm",
+        "gpoterm_head",
+        "prod_form",
+        "intro_pattern",
+        "ipcore",
+        "ipcore_name",
+    }
+    matches = [
+        head for head in heads if any(pattern in head for pattern in patterns) or head in extra
+    ]
     return sorted(matches)
+
+
+def alias_productions(grammar: Dict[str, List[Production]]) -> None:
+    for target, sources in ALIAS_HEADS.items():
+        if target not in grammar:
+            continue
+        for src in sources:
+            for prod in grammar.get(src, []):
+                grammar[target].append(
+                    Production(head=target, body=list(prod.body), raw=f"[alias:{src}] {prod.raw}")
+                )
 
 
 def collapse_expression_heads(
@@ -271,8 +307,13 @@ def collapse_expression_heads(
 def add_line_start(grammar: Dict[str, List[Production]]) -> Dict[str, List[Production]]:
     if "Line" in grammar:
         raise ValueError("Grammar already defines a 'Line' head.")
-    line_prod = Production(head="Line", body=["tactic", "DOT"], raw="tactic DOT")
-    new_grammar: Dict[str, List[Production]] = {"Line": [line_prod]}
+    line_prods = [
+        Production(head="Line", body=["tactic", "DOT"], raw="tactic DOT"),
+        Production(head="Line", body=["tactics_or_prf", "DOT"], raw="tactics_or_prf DOT"),
+        Production(head="Line", body=["stmt", "DOT"], raw="stmt DOT"),
+        Production(head="Line", body=["stmt"], raw="stmt"),
+    ]
+    new_grammar: Dict[str, List[Production]] = {"Line": line_prods}
     new_grammar.update(grammar)
     return new_grammar
 
@@ -344,11 +385,22 @@ def main() -> None:
         "tactic_core",
         "tactic_core_r",
         "tactic_chain",
+        "tactic_chain_r",
+        "tactic_genip",
         "logtactic",
         "phltactic",
         "tactics",
         "tactics0",
         "toptactic",
+        "tactics_or_prf",
+        "tcd_toptactic",
+        "tactic_dump",
+        "outline_kind",
+        "eager_tac",
+        "stmt",
+        "instr",
+        "block",
+        "base_instr",
     ]
     reachable = reachable_heads(seed_heads, head_to_prods, all_heads)
     print(f"Reachable heads from seeds ({len(reachable)} total):")
@@ -356,6 +408,7 @@ def main() -> None:
         print(f"  - {head}")
 
     reduced_head_to_prods = {head: head_to_prods[head] for head in reachable}
+    alias_productions(reduced_head_to_prods)
     reduced_prod_count = sum(len(prods) for prods in reduced_head_to_prods.values())
     print(f"Reduced grammar production count: {reduced_prod_count}")
     first_heads = sorted(reduced_head_to_prods.keys())[:20]
