@@ -387,6 +387,29 @@ def find_structure_heads(heads: Set[str]) -> List[str]:
         "intro_pattern",
         "ipcore",
         "ipcore_name",
+        "rwarg",
+        "rwarg1",
+        "rwpr_arg",
+        "rwocc",
+        "rwside",
+        "rwrepeat",
+        "smt_info",
+        "smt_info1",
+        "smt_option",
+        "dbmap1",
+        "dbmap_flag",
+        "dbmap_target",
+        "dbhint",
+        "crushmode",
+        "eqobs_in",
+        "eqobs_in_pos",
+        "eqobs_in_inv",
+        "eqobs_in_eqpost",
+        "eqobs_in_eqinv",
+        "eqobs_in_eqglob1",
+        "rnd_info",
+        "semrndpos",
+        "semrndpos1",
     }
     matches = [
         head for head in heads if any(pattern in head for pattern in patterns) or head in extra
@@ -403,6 +426,10 @@ def alias_productions(grammar: Dict[str, List[Production]]) -> None:
                 grammar[target].append(
                     Production(head=target, body=list(prod.body), raw=f"[alias:{src}] {prod.raw}")
                 )
+    if "tactic_core_r" in grammar:
+        grammar["tactic_core_r"].append(
+            Production(head="tactic_core_r", body=["RND"], raw="[synthetic] RND (no info)")
+        )
 
 
 def collapse_expression_heads(

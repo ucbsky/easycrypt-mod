@@ -32,6 +32,12 @@ BAD_CASE = PROJECT_ROOT / "grammar_examples" / "bad.ec"
 SYNTHETIC_LITERALS: List[Tuple[str, str]] = [
     (".", "DOT"),
     (";", "SEMICOLON"),
+    ("(", "LPAREN"),
+    (")", "RPAREN"),
+    ("{", "LBRACE"),
+    ("}", "RBRACE"),
+    ("[", "LBRACKET"),
+    ("]", "RBRACKET"),
 ]
 
 RAW_FALLBACK = "__RAW__"
@@ -54,6 +60,7 @@ class TokenSpec:
     priority: int
     name: str
     regex: re.Pattern[str]
+    is_literal: bool
 
 
 def build_token_specs(lexer_meta: Dict[str, Dict[str, object]]) -> List[TokenSpec]:
@@ -61,7 +68,6 @@ def build_token_specs(lexer_meta: Dict[str, Dict[str, object]]) -> List[TokenSpe
     priority = 0
     for name, spec in lexer_meta.items():
         pattern: str
-        is_literal = False
         if "literals" in spec:
             literals = spec["literals"] or []
             literals_sorted = sorted(
@@ -73,12 +79,16 @@ def build_token_specs(lexer_meta: Dict[str, Dict[str, object]]) -> List[TokenSpe
                 priority += 1
                 continue
             pattern = "|".join(escape_literal(lit) for lit in literals_sorted)
+            is_literal = True
         elif "pattern" in spec:
             pattern = str(spec["pattern"])
+            is_literal = False
         else:
             priority += 1
             continue
-        specs.append(TokenSpec(priority=priority, name=name, regex=re.compile(pattern)))
+        specs.append(
+            TokenSpec(priority=priority, name=name, regex=re.compile(pattern), is_literal=is_literal)
+        )
         priority += 1
     return specs
 
@@ -92,8 +102,7 @@ def split_specs(specs: Sequence[TokenSpec], lexer_meta: Dict[str, Dict[str, obje
     literal_specs: List[TokenSpec] = []
     pattern_specs: List[TokenSpec] = []
     for spec in specs:
-        meta = lexer_meta.get(spec.name, {})
-        if meta.get("literals"):
+        if spec.is_literal:
             literal_specs.append(spec)
         else:
             pattern_specs.append(spec)
@@ -126,8 +135,23 @@ EXPR_START_TOKENS = {
     "SIM",
     "AUTO",
 }
-EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON"}
+EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON", "BY"}
 EXPR_BREAK_TOKENS = set()
+
+FORBIDDEN_EXPR_START_TOKENS = {
+    "SLASHSLASH",
+    "SLASHSLASHEQ",
+    "SLASHSLASHTILDEQ",
+    "SLASHSLASHSHARP",
+    "SLASHSLASHGT",
+    "SLASHSHARP",
+    "SLASHEQ",
+    "SLASHTILDEQ",
+    "SLASHGT",
+    "SLASHSLASHGT",
+}
+
+RESTRICTED_EXPR_CONTEXTS = {"CALL"}
 
 
 def tokenize_line(
@@ -175,6 +199,10 @@ def tokenize_line(
                     span = trimmed_span
                 if span == 0:
                     continue
+                if spec.is_literal and lexeme and lexeme[-1].isalnum():
+                    end = pos + span
+                    if end < length and (line[end].isalnum() or line[end] == "_"):
+                        continue
                 if best is None or span > best[2]:
                     best = (spec.priority, spec.name, span)
                     continue
@@ -197,20 +225,54 @@ def tokenize_line(
 
     normalized: List[str] = []
     expr_mode = False
+    expr_active = False
+    expr_context: str | None = None
+    expr_depth = 0
     for token in raw_tokens:
-        if token in EXPR_END_TOKENS or token in EXPR_BREAK_TOKENS:
+        if token in EXPR_END_TOKENS and expr_depth == 0:
             expr_mode = False
-        if expr_mode or token == RAW_FALLBACK or token not in structural_tokens:
+            expr_active = False
+            expr_context = None
+            expr_depth = 0
+        elif token in EXPR_BREAK_TOKENS:
+            expr_mode = False
+            expr_active = False
+            expr_context = None
+            expr_depth = 0
+
+        should_collapse = expr_mode or token == RAW_FALLBACK or token not in structural_tokens
+
+        if should_collapse:
+            if token == RAW_FALLBACK and expr_context in RESTRICTED_EXPR_CONTEXTS:
+                raise TokenizationError("unknown token encountered inside restricted expression")
+            if (
+                expr_context in RESTRICTED_EXPR_CONTEXTS
+                and token in FORBIDDEN_EXPR_START_TOKENS
+                and not expr_active
+            ):
+                raise TokenizationError(f"invalid expression start token: {token}")
+            if expr_context == "HAVE" and token == "RARROW" and not expr_active:
+                raise TokenizationError("invalid HAVE arrow start token")
+            expr_active = True
+            if token in {"LPAREN", "LBRACE", "LBRACKET"}:
+                expr_depth += 1
+            elif token in {"RPAREN", "RBRACE", "RBRACKET"} and expr_depth > 0:
+                expr_depth -= 1
             mapped = "EXPR"
         else:
             mapped = token
-        if mapped == "EXPR":
-            if not normalized or normalized[-1] != "EXPR":
-                normalized.append(mapped)
-        else:
+            expr_active = False
+            if not expr_mode:
+                expr_depth = 0
+
+        if not (mapped == "EXPR" and normalized and normalized[-1] == "EXPR"):
             normalized.append(mapped)
+
         if token in EXPR_START_TOKENS:
             expr_mode = True
+            expr_active = False
+            expr_context = token
+            expr_depth = 0
     return normalized
 
 
