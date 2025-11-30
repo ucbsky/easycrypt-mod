@@ -134,6 +134,10 @@ EXPR_START_TOKENS = {
     "SMT",
     "SIM",
     "AUTO",
+    "BYEQUIV",
+    "BYPHOARE",
+    "BYEHOARE",
+    "MOVE",
 }
 EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON", "BY"}
 EXPR_BREAK_TOKENS = set()
@@ -223,6 +227,16 @@ def tokenize_line(
         raw_tokens.append(best[1])
         pos += best[2]
 
+    arrow_tokens = {"RARROW", "LARROW", "LLARROW", "RRARROW"}
+    for idx, tok in enumerate(raw_tokens):
+        if tok != "HAVE":
+            continue
+        j = idx + 1
+        while j < len(raw_tokens) and raw_tokens[j] in arrow_tokens:
+            j += 1
+        if j < len(raw_tokens) and raw_tokens[j] == "CEQ":
+            raise TokenizationError("bare HAVE := without intro pattern is invalid")
+
     normalized: List[str] = []
     expr_mode = False
     expr_active = False
@@ -251,8 +265,6 @@ def tokenize_line(
                 and not expr_active
             ):
                 raise TokenizationError(f"invalid expression start token: {token}")
-            if expr_context == "HAVE" and token == "RARROW" and not expr_active:
-                raise TokenizationError("invalid HAVE arrow start token")
             expr_active = True
             if token in {"LPAREN", "LBRACE", "LBRACKET"}:
                 expr_depth += 1

@@ -1,0 +1,58 @@
+Notes for future grammar/debug sessions
+=======================================
+
+1. Pipeline entry points
+------------------------
+- Grammar normalization + reachability: `python3 out/inspect_raw_grammar.py`
+  * Reads `out/grammar_raw.json`
+  * Seeds are in `inspect_raw_grammar.py` (search for `seed_heads =`); add new heads here if a keyword is missing.
+  * Expression heads are derived via `find_structure_heads`. Add/remove entries in `patterns`/`extra` to adjust what collapses to `EXPR`.
+  * Synthetic helpers live near `alias_productions`, `inject_list_recursions`, and `add_line_start`. These are where we add small custom rules (e.g. `RND`, `SIM`, `MOVE`, `QED DOT`) without touching Menhir sources.
+
+- Tests/tokenizer: `python3 tests/test_grammar_examples.py`
+  * Uses the JSONs produced by the script above (`out/grammar_reduced.json`, `out/grammar_reduced_expr.json`).
+  * `tokenize_line` is where EXPR collapsing rules live—`EXPR_START_TOKENS`, `EXPR_END_TOKENS`, `FORBIDDEN_EXPR_START_TOKENS`, etc.
+  * Earley parser lives in the same file. `build_productions` simply imports the JSON grammar; if a structure is missing, the fix belongs in the generator rather than here.
+
+2. Debug workflow
+-----------------
+- When a *valid* line fails:
+  1. Run `python3 tests/test_grammar_examples.py` and note the failing line number.
+  2. Drop into a REPL and call `tokenize_line` on that text (see earlier debugging commands) to confirm the token stream.
+  3. If tokens are wrong, fix the tokenizer (usually EXPR start/end handling).
+  4. If tokens look right, use `EarleyParser.parse([...])` with the token list to see which segment the grammar is missing. If it’s a structural keyword, add it to `alias_productions`, `seed_heads`, or `find_structure_heads` as appropriate.
+  5. Regenerate grammar (`python3 out/inspect_raw_grammar.py`) and rerun tests.
+
+- When an *invalid* line parses:
+  1. Tokenize the line and inspect whether the structural tokens are legitimate. If a forbidden construct (e.g. SSReflect `/=`) sneaks in as `EXPR`, add it to `FORBIDDEN_EXPR_START_TOKENS` or the “bare HAVE” check.
+  2. If the tokens look valid, we probably need to prune the grammar (e.g. expand the expression-collapse list so the offending head vanishes). Update `find_structure_heads` accordingly.
+  3. Regenerate + retest.
+
+3. Regeneration checklist
+-------------------------
+- After any change to `inspect_raw_grammar.py`:
+  * `python3 out/inspect_raw_grammar.py`
+  * `python3 tests/test_grammar_examples.py`
+  * Verify `good.ec` and `bad.ec` stats (expect 73/73 and 0/23 respectively).
+  * Spot-check specific lines via the helper snippets we used earlier if needed.
+
+4. Tokenizer gotchas
+--------------------
+- Literal vs. pattern priority comes from `build_token_specs`. We now store an `is_literal` flag so literal matches don’t overrun identifier patterns.
+- Expressions are opaque: the tokenizer only needs to decide *where* an EXPR span starts/ends. We track nested parentheses/braces via `expr_depth`.
+- Special cases:
+  * `HAVE` must be followed by intro patterns/colon; we detect arrow chains (`RARROW`, etc.) followed by `CEQ` to reject bare SSReflect-style `have :=` lines.
+  * Restricted contexts (`CALL`, `HAVE`) forbid `RAW_FALLBACK` tokens to block `/=` shorthands.
+  * `EXPR_START_TOKENS` includes structural keywords that introduce arbitrary subgoals (`BYEQUIV`, `BYPHOARE`, `MOVE`, etc.) so the rest of the line collapses cleanly.
+
+5. Structural coverage reminders
+--------------------------------
+- Seeds currently include tactic/proof heads, statements, commands, and supporting helpers. If EasyCrypt adds new top-level keywords, add them to `seed_heads`.
+- Expression collapses now include `im_stmt*`, `inline*`, rewrite options, and most helper heads. Whenever you see a non-structural symbol in `grammar_reduced_expr.json`, consider whether it should move into the collapse set.
+- Synthetic rules:
+  * `Line ::= tactic DOT | tactics_or_prf DOT | stmt DOT | stmt | QED DOT`
+  * `tactic_core_r` gets extra productions for `RND`, `SIM`, and `MOVE EXPR`.
+  * `subtactics -> subtactic ; subtactics` (via `inject_list_recursions`) so `tactic SEMICOLON` chains parse arbitrarily long.
+
+Keep these touchpoints handy and we can resume the exact debugging flow next time without re-deriving the state from scratch.
+

@@ -167,6 +167,11 @@ LIST_STAR_WRAPPERS = {
     "rseq",
 }
 
+LIST_RECURSIONS: Dict[str, Tuple[str, str]] = {
+    # Allow arbitrarily long semicolon-separated tactic lists.
+    "subtactics": ("subtactic", "SEMICOLON"),
+}
+
 
 def split_top_level_args(text: str) -> List[str]:
     args: List[str] = []
@@ -393,6 +398,18 @@ def find_structure_heads(heads: Set[str]) -> List[str]:
         "rwocc",
         "rwside",
         "rwrepeat",
+        "im_stmt",
+        "im_stmt_seq",
+        "im_stmt_seq_r",
+        "im_stmt_seq_named",
+        "im_stmt_base",
+        "im_stmt_base_r",
+        "im_stmt_atomic",
+        "inlineopt",
+        "inlinepat",
+        "inlinepat1",
+        "inlinesubpat",
+        "occurences",
         "smt_info",
         "smt_info1",
         "smt_option",
@@ -430,6 +447,25 @@ def alias_productions(grammar: Dict[str, List[Production]]) -> None:
         grammar["tactic_core_r"].append(
             Production(head="tactic_core_r", body=["RND"], raw="[synthetic] RND (no info)")
         )
+        grammar["tactic_core_r"].append(
+            Production(head="tactic_core_r", body=["SIM"], raw="[synthetic] SIM (no info)")
+        )
+        grammar["tactic_core_r"].append(
+            Production(head="tactic_core_r", body=["MOVE", "EXPR"], raw="[synthetic] MOVE intro")
+        )
+
+
+def inject_list_recursions(grammar: Dict[str, List[Production]]) -> None:
+    for head, (item, sep) in LIST_RECURSIONS.items():
+        if head not in grammar:
+            continue
+        grammar[head].append(
+            Production(
+                head=head,
+                body=[item, sep, head],
+                raw=f"[synthetic:list] {head} -> {item} {sep} {head}",
+            )
+        )
 
 
 def collapse_expression_heads(
@@ -455,6 +491,7 @@ def add_line_start(grammar: Dict[str, List[Production]]) -> Dict[str, List[Produ
         Production(head="Line", body=["tactics_or_prf", "DOT"], raw="tactics_or_prf DOT"),
         Production(head="Line", body=["stmt", "DOT"], raw="stmt DOT"),
         Production(head="Line", body=["stmt"], raw="stmt"),
+        Production(head="Line", body=["QED", "DOT"], raw="QED DOT"),
     ]
     new_grammar: Dict[str, List[Production]] = {"Line": line_prods}
     new_grammar.update(grammar)
@@ -622,6 +659,7 @@ def main() -> None:
 
     reduced_head_to_prods = {head: head_to_prods[head] for head in reachable}
     alias_productions(reduced_head_to_prods)
+    inject_list_recursions(reduced_head_to_prods)
     reduced_prod_count = sum(len(prods) for prods in reduced_head_to_prods.values())
     print(f"Reduced grammar production count: {reduced_prod_count}")
     first_heads = sorted(reduced_head_to_prods.keys())[:20]
