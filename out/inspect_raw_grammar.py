@@ -142,6 +142,52 @@ OPTIONAL_WRAPPERS = {
 }
 
 
+LIST_PLUS_WRAPPERS = {
+    "plist1",
+    "plist2",
+    "plist3",
+    "list1",
+    "rlist1",
+    "plist",
+    "list",
+    "rlist",
+    "pseq",
+    "repeat",
+    "prepeat",
+}
+
+
+LIST_STAR_WRAPPERS = {
+    "plist0",
+    "list0",
+    "rlist0",
+    "plist",
+    "list",
+    "rlist",
+    "rseq",
+}
+
+
+def split_top_level_args(text: str) -> List[str]:
+    args: List[str] = []
+    depth = 0
+    start = 0
+    for idx, ch in enumerate(text):
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        elif ch == "," and depth == 0:
+            fragment = text[start:idx].strip()
+            if fragment:
+                args.append(fragment)
+            start = idx + 1
+    tail = text[start:].strip()
+    if tail:
+        args.append(tail)
+    return args
+
+
 ALIAS_HEADS: Dict[str, List[str]] = {
     # `outline_kind` holds the low-level program-manipulation tactics (proc, call,
     # inline, sim, ...). The Menhir grammar exposes them via the outline machinery,
@@ -174,11 +220,19 @@ def strip_wrappers(body: str) -> str:
                         elif text[k] == ")":
                             depth -= 1
                         k += 1
-                    inner = helper(text[start : k - 1])
+                    raw_args = text[start : k - 1]
+                    arg_segments = split_top_level_args(raw_args)
+                    processed_args = [helper(arg) for arg in arg_segments if arg]
+                    primary = processed_args[0] if processed_args else ""
+                    combined = " ".join(fragment for fragment in processed_args if fragment)
                     if name in OPTIONAL_WRAPPERS:
-                        result.append(inner + "?")
+                        result.append(primary + "?")
+                    elif name in LIST_PLUS_WRAPPERS:
+                        result.append(primary + "+")
+                    elif name in LIST_STAR_WRAPPERS:
+                        result.append(primary + "*")
                     else:
-                        result.append(inner)
+                        result.append(combined)
                     i = k
                     continue
                 result.append(text[i:j])
@@ -441,29 +495,99 @@ def main() -> None:
             print(f"  body_symbols={prod.body}")
             print(f"    raw_body={prod.raw!r}")
 
-    seed_heads = [
-        "tactic",
-        "tactic_ip",
-        "tactic_core",
-        "tactic_core_r",
-        "tactic_chain",
-        "tactic_chain_r",
-        "tactic_genip",
-        "logtactic",
-        "phltactic",
-        "tactics",
-        "tactics0",
-        "toptactic",
-        "tactics_or_prf",
-        "tcd_toptactic",
-        "tactic_dump",
-        "outline_kind",
-        "eager_tac",
-        "stmt",
-        "instr",
-        "block",
-        "base_instr",
-    ]
+    seed_heads = sorted(
+        {
+            "tactic",
+            "tactic_ip",
+            "tactic_core",
+            "tactic_core_r",
+            "tactic_chain",
+            "tactic_chain_r",
+            "tactic_genip",
+            "logtactic",
+            "phltactic",
+            "tactics",
+            "tactics0",
+            "toptactic",
+            "tactics_or_prf",
+            "tcd_toptactic",
+            "tactic_dump",
+            "outline_kind",
+            "eager_tac",
+            "stmt",
+            "instr",
+            "block",
+            "base_instr",
+            "proof",
+            "proofend",
+            "script",
+            "command",
+            "proc_decl",
+            "qed",
+            "call",
+            "rnd",
+            "inline",
+            "rewrite",
+            "byequiv",
+            "move",
+            "sim",
+            "auto",
+            "trivial",
+            "field",
+            "smt",
+            "assert",
+            "while",
+            "match",
+            "if",
+            "have",
+            "pose",
+            "wlog",
+            "apply",
+            "change",
+            "subst",
+            "elim",
+            "left",
+            "right",
+            "exist",
+            "congr",
+            "split",
+            "alg_norm",
+            "by",
+            "do",
+            "case",
+            "progress",
+            "rweqv_proc",
+            "rweqv_res",
+            "trans_hyp",
+            "trans_kind",
+            "repl_hyp",
+            "repl_kind",
+            "bdhoare_split",
+            "async_while_tac_info",
+            "while_tac_info",
+            "semrndpos",
+            "semrndpos1",
+            "rnd_info",
+            "interleave_info",
+            "app_bd_info",
+            "if_option",
+            "eqobs_in",
+            "eqobs_in_pos",
+            "eqobs_in_inv",
+            "eqobs_in_eqinv",
+            "eqobs_in_eqglob1",
+            "eqobs_in_eqpost",
+            "fel_pred_spec",
+            "fel_pred_specs",
+            "cqoption",
+            "cqoptionkw",
+            "cqoptions",
+            "typed_vars_or_anons",
+            "var_or_anon",
+            "param_decl",
+            "ID",
+        }
+    )
     reachable = reachable_heads(seed_heads, head_to_prods, all_heads)
     print(f"Reachable heads from seeds ({len(reachable)} total):")
     for head in sorted(reachable):

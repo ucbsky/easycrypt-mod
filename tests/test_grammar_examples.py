@@ -116,6 +116,15 @@ EXPR_START_TOKENS = {
     "HAVE",
     "GEN",
     "POSE",
+    "CALL",
+    "PROC",
+    "INLINE",
+    "RND",
+    "REWRITE",
+    "FIELD",
+    "SMT",
+    "SIM",
+    "AUTO",
 }
 EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON"}
 EXPR_BREAK_TOKENS = set()
