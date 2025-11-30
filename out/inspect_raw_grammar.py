@@ -453,6 +453,9 @@ def alias_productions(grammar: Dict[str, List[Production]]) -> None:
         grammar["tactic_core_r"].append(
             Production(head="tactic_core_r", body=["MOVE", "EXPR"], raw="[synthetic] MOVE intro")
         )
+        grammar["tactic_core_r"].append(
+            Production(head="tactic_core_r", body=["RND", "EXPR"], raw="[synthetic] RND expr")
+        )
 
 
 def inject_list_recursions(grammar: Dict[str, List[Production]]) -> None:

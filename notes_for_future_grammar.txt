@@ -12,6 +12,7 @@ Notes for future grammar/debug sessions
 - Tests/tokenizer: `python3 tests/test_grammar_examples.py`
   * Uses the JSONs produced by the script above (`out/grammar_reduced.json`, `out/grammar_reduced_expr.json`).
   * `tokenize_line` is where EXPR collapsing rules live—`EXPR_START_TOKENS`, `EXPR_END_TOKENS`, `FORBIDDEN_EXPR_START_TOKENS`, etc.
+  * Script now has `--mode strict` (default) vs `--mode cfg`. The latter disables the bespoke tokenizer guards so you can see what a plain CFG decoder would accept (currently 103/103 good lines pass, 6/23 bad lines slip through).
   * Earley parser lives in the same file. `build_productions` simply imports the JSON grammar; if a structure is missing, the fix belongs in the generator rather than here.
 
 2. Debug workflow
@@ -51,8 +52,13 @@ Notes for future grammar/debug sessions
 - Expression collapses now include `im_stmt*`, `inline*`, rewrite options, and most helper heads. Whenever you see a non-structural symbol in `grammar_reduced_expr.json`, consider whether it should move into the collapse set.
 - Synthetic rules:
   * `Line ::= tactic DOT | tactics_or_prf DOT | stmt DOT | stmt | QED DOT`
-  * `tactic_core_r` gets extra productions for `RND`, `SIM`, and `MOVE EXPR`.
+  * `tactic_core_r` gets extra productions for `RND`, `SIM`, `MOVE EXPR`, and `RND EXPR` (covers bare `rnd` and `rnd expr` lines).
   * `subtactics -> subtactic ; subtactics` (via `inject_list_recursions`) so `tactic SEMICOLON` chains parse arbitrarily long.
+- Tokenizer additions since last run:
+  * `EXPR_START_TOKENS` now includes `APPLY`, `EXACT`, `WHILE`, `ASYNC`, so their arguments collapse to `EXPR`.
+  * Restricted contexts currently: `{CALL, APPLY}`; hitting a single `/` (added to `FORBIDDEN_EXPR_START_TOKENS`) in those contexts raises.
+  * `APPLY` followed by `WITH` is rejected explicitly to block SSReflect `apply … with ...`.
+  * When `expr_mode` activates because a non-structural token slips in, we now keep it active for the rest of that opaque span so `swap 3 3.` and `while (...) (...)` lines are treated as `EXPR`.
 
 Keep these touchpoints handy and we can resume the exact debugging flow next time without re-deriving the state from scratch.
 

@@ -1,0 +1,8149 @@
+{
+  "lexer": {
+    "ADMIT": {
+      "name": "ADMIT",
+      "literals": [
+        "admit"
+      ]
+    },
+    "ADMITTED": {
+      "name": "ADMITTED",
+      "literals": [
+        "admitted"
+      ]
+    },
+    "FORALL": {
+      "name": "FORALL",
+      "literals": [
+        "forall"
+      ]
+    },
+    "EXIST": {
+      "name": "EXIST",
+      "literals": [
+        "exists"
+      ]
+    },
+    "FUN": {
+      "name": "FUN",
+      "literals": [
+        "fun"
+      ]
+    },
+    "GLOB": {
+      "name": "GLOB",
+      "literals": [
+        "glob"
+      ]
+    },
+    "LET": {
+      "name": "LET",
+      "literals": [
+        "let"
+      ]
+    },
+    "IN": {
+      "name": "IN",
+      "literals": [
+        "in"
+      ]
+    },
+    "FOR": {
+      "name": "FOR",
+      "literals": [
+        "for"
+      ]
+    },
+    "VAR": {
+      "name": "VAR",
+      "literals": [
+        "var"
+      ]
+    },
+    "PROC": {
+      "name": "PROC",
+      "literals": [
+        "proc"
+      ]
+    },
+    "IF": {
+      "name": "IF",
+      "literals": [
+        "if"
+      ]
+    },
+    "IS": {
+      "name": "IS",
+      "literals": [
+        "is"
+      ]
+    },
+    "MATCH": {
+      "name": "MATCH",
+      "literals": [
+        "match"
+      ]
+    },
+    "THEN": {
+      "name": "THEN",
+      "literals": [
+        "then"
+      ]
+    },
+    "ELSE": {
+      "name": "ELSE",
+      "literals": [
+        "else"
+      ]
+    },
+    "ELIF": {
+      "name": "ELIF",
+      "literals": [
+        "elif"
+      ]
+    },
+    "WHILE": {
+      "name": "WHILE",
+      "literals": [
+        "while"
+      ]
+    },
+    "ASSERT": {
+      "name": "ASSERT",
+      "literals": [
+        "assert"
+      ]
+    },
+    "RETURN": {
+      "name": "RETURN",
+      "literals": [
+        "return"
+      ]
+    },
+    "RES": {
+      "name": "RES",
+      "literals": [
+        "res"
+      ]
+    },
+    "EQUIV": {
+      "name": "EQUIV",
+      "literals": [
+        "equiv"
+      ]
+    },
+    "HOARE": {
+      "name": "HOARE",
+      "literals": [
+        "hoare"
+      ]
+    },
+    "EHOARE": {
+      "name": "EHOARE",
+      "literals": [
+        "ehoare"
+      ]
+    },
+    "PHOARE": {
+      "name": "PHOARE",
+      "literals": [
+        "phoare"
+      ]
+    },
+    "LOSSLESS": {
+      "name": "LOSSLESS",
+      "literals": [
+        "islossless"
+      ]
+    },
+    "ASYNC": {
+      "name": "ASYNC",
+      "literals": [
+        "async"
+      ]
+    },
+    "TRY": {
+      "name": "TRY",
+      "literals": [
+        "try"
+      ]
+    },
+    "FIRST": {
+      "name": "FIRST",
+      "literals": [
+        "first"
+      ]
+    },
+    "LAST": {
+      "name": "LAST",
+      "literals": [
+        "last"
+      ]
+    },
+    "DO": {
+      "name": "DO",
+      "literals": [
+        "do"
+      ]
+    },
+    "EXPECT": {
+      "name": "EXPECT",
+      "literals": [
+        "expect"
+      ]
+    },
+    "BETA": {
+      "name": "BETA",
+      "literals": [
+        "beta"
+      ]
+    },
+    "IOTA": {
+      "name": "IOTA",
+      "literals": [
+        "iota"
+      ]
+    },
+    "ZETA": {
+      "name": "ZETA",
+      "literals": [
+        "zeta"
+      ]
+    },
+    "ETA": {
+      "name": "ETA",
+      "literals": [
+        "eta"
+      ]
+    },
+    "LOGIC": {
+      "name": "LOGIC",
+      "literals": [
+        "logic"
+      ]
+    },
+    "DELTA": {
+      "name": "DELTA",
+      "literals": [
+        "delta"
+      ]
+    },
+    "SIMPLIFY": {
+      "name": "SIMPLIFY",
+      "literals": [
+        "simplify"
+      ]
+    },
+    "CBV": {
+      "name": "CBV",
+      "literals": [
+        "cbv"
+      ]
+    },
+    "CONGR": {
+      "name": "CONGR",
+      "literals": [
+        "congr"
+      ]
+    },
+    "CHANGE": {
+      "name": "CHANGE",
+      "literals": [
+        "change"
+      ]
+    },
+    "SPLIT": {
+      "name": "SPLIT",
+      "literals": [
+        "split"
+      ]
+    },
+    "LEFT": {
+      "name": "LEFT",
+      "literals": [
+        "left"
+      ]
+    },
+    "RIGHT": {
+      "name": "RIGHT",
+      "literals": [
+        "right"
+      ]
+    },
+    "CASE": {
+      "name": "CASE",
+      "literals": [
+        "case"
+      ]
+    },
+    "POSE": {
+      "name": "POSE",
+      "literals": [
+        "pose"
+      ]
+    },
+    "GEN": {
+      "name": "GEN",
+      "literals": [
+        "gen"
+      ]
+    },
+    "HAVE": {
+      "name": "HAVE",
+      "literals": [
+        "have"
+      ]
+    },
+    "SUFF": {
+      "name": "SUFF",
+      "literals": [
+        "suff"
+      ]
+    },
+    "ELIM": {
+      "name": "ELIM",
+      "literals": [
+        "elim"
+      ]
+    },
+    "EXLIM": {
+      "name": "EXLIM",
+      "literals": [
+        "exlim"
+      ]
+    },
+    "ECALL": {
+      "name": "ECALL",
+      "literals": [
+        "ecall"
+      ]
+    },
+    "CLEAR": {
+      "name": "CLEAR",
+      "literals": [
+        "clear"
+      ]
+    },
+    "WLOG": {
+      "name": "WLOG",
+      "literals": [
+        "wlog"
+      ]
+    },
+    "APPLY": {
+      "name": "APPLY",
+      "literals": [
+        "apply"
+      ]
+    },
+    "REWRITE": {
+      "name": "REWRITE",
+      "literals": [
+        "rewrite"
+      ]
+    },
+    "RWNORMAL": {
+      "name": "RWNORMAL",
+      "literals": [
+        "rwnormal"
+      ]
+    },
+    "SUBST": {
+      "name": "SUBST",
+      "literals": [
+        "subst"
+      ]
+    },
+    "PROGRESS": {
+      "name": "PROGRESS",
+      "literals": [
+        "progress"
+      ]
+    },
+    "TRIVIAL": {
+      "name": "TRIVIAL",
+      "literals": [
+        "trivial"
+      ]
+    },
+    "AUTO": {
+      "name": "AUTO",
+      "literals": [
+        "auto"
+      ]
+    },
+    "IDTAC": {
+      "name": "IDTAC",
+      "literals": [
+        "idtac"
+      ]
+    },
+    "MOVE": {
+      "name": "MOVE",
+      "literals": [
+        "move"
+      ]
+    },
+    "MODPATH": {
+      "name": "MODPATH",
+      "literals": [
+        "modpath"
+      ]
+    },
+    "FIELD": {
+      "name": "FIELD",
+      "literals": [
+        "field",
+        "fieldeq"
+      ]
+    },
+    "RING": {
+      "name": "RING",
+      "literals": [
+        "ring",
+        "ringeq"
+      ]
+    },
+    "ALGNORM": {
+      "name": "ALGNORM",
+      "literals": [
+        "algebra"
+      ]
+    },
+    "EXACT": {
+      "name": "EXACT",
+      "literals": [
+        "exact"
+      ]
+    },
+    "ASSUMPTION": {
+      "name": "ASSUMPTION",
+      "literals": [
+        "assumption"
+      ]
+    },
+    "SMT": {
+      "name": "SMT",
+      "literals": [
+        "smt"
+      ]
+    },
+    "COQ": {
+      "name": "COQ",
+      "literals": [
+        "coq"
+      ]
+    },
+    "CHECK": {
+      "name": "CHECK",
+      "literals": [
+        "check"
+      ]
+    },
+    "EDIT": {
+      "name": "EDIT",
+      "literals": [
+        "edit"
+      ]
+    },
+    "FIX": {
+      "name": "FIX",
+      "literals": [
+        "fix"
+      ]
+    },
+    "BY": {
+      "name": "BY",
+      "literals": [
+        "by"
+      ]
+    },
+    "REFLEX": {
+      "name": "REFLEX",
+      "literals": [
+        "reflexivity"
+      ]
+    },
+    "DONE": {
+      "name": "DONE",
+      "literals": [
+        "done"
+      ]
+    },
+    "SOLVE": {
+      "name": "SOLVE",
+      "literals": [
+        "solve"
+      ]
+    },
+    "REPLACE": {
+      "name": "REPLACE",
+      "literals": [
+        "replace"
+      ]
+    },
+    "TRANSITIVITY": {
+      "name": "TRANSITIVITY",
+      "literals": [
+        "transitivity"
+      ]
+    },
+    "SYMMETRY": {
+      "name": "SYMMETRY",
+      "literals": [
+        "symmetry"
+      ]
+    },
+    "SEQ": {
+      "name": "SEQ",
+      "literals": [
+        "seq"
+      ]
+    },
+    "WP": {
+      "name": "WP",
+      "literals": [
+        "wp"
+      ]
+    },
+    "SP": {
+      "name": "SP",
+      "literals": [
+        "sp"
+      ]
+    },
+    "SIM": {
+      "name": "SIM",
+      "literals": [
+        "sim"
+      ]
+    },
+    "SKIP": {
+      "name": "SKIP",
+      "literals": [
+        "skip"
+      ]
+    },
+    "CALL": {
+      "name": "CALL",
+      "literals": [
+        "call"
+      ]
+    },
+    "RCONDT": {
+      "name": "RCONDT",
+      "literals": [
+        "rcondt"
+      ]
+    },
+    "RCONDF": {
+      "name": "RCONDF",
+      "literals": [
+        "rcondf"
+      ]
+    },
+    "SWAP": {
+      "name": "SWAP",
+      "literals": [
+        "swap"
+      ]
+    },
+    "CFOLD": {
+      "name": "CFOLD",
+      "literals": [
+        "cfold"
+      ]
+    },
+    "RND": {
+      "name": "RND",
+      "literals": [
+        "rnd"
+      ]
+    },
+    "RNDSEM": {
+      "name": "RNDSEM",
+      "literals": [
+        "rndsem"
+      ]
+    },
+    "PRBOUNDED": {
+      "name": "PRBOUNDED",
+      "literals": [
+        "pr_bounded"
+      ]
+    },
+    "BYPR": {
+      "name": "BYPR",
+      "literals": [
+        "bypr"
+      ]
+    },
+    "BYPHOARE": {
+      "name": "BYPHOARE",
+      "literals": [
+        "byphoare"
+      ]
+    },
+    "BYEHOARE": {
+      "name": "BYEHOARE",
+      "literals": [
+        "byehoare"
+      ]
+    },
+    "BYEQUIV": {
+      "name": "BYEQUIV",
+      "literals": [
+        "byequiv"
+      ]
+    },
+    "BYUPTO": {
+      "name": "BYUPTO",
+      "literals": [
+        "byupto"
+      ]
+    },
+    "FEL": {
+      "name": "FEL",
+      "literals": [
+        "fel"
+      ]
+    },
+    "CONSEQ": {
+      "name": "CONSEQ",
+      "literals": [
+        "conseq"
+      ]
+    },
+    "EXFALSO": {
+      "name": "EXFALSO",
+      "literals": [
+        "exfalso"
+      ]
+    },
+    "INLINE": {
+      "name": "INLINE",
+      "literals": [
+        "inline"
+      ]
+    },
+    "OUTLINE": {
+      "name": "OUTLINE",
+      "literals": [
+        "outline"
+      ]
+    },
+    "INTERLEAVE": {
+      "name": "INTERLEAVE",
+      "literals": [
+        "interleave"
+      ]
+    },
+    "ALIAS": {
+      "name": "ALIAS",
+      "literals": [
+        "alias"
+      ]
+    },
+    "WEAKMEM": {
+      "name": "WEAKMEM",
+      "literals": [
+        "weakmem"
+      ]
+    },
+    "FISSION": {
+      "name": "FISSION",
+      "literals": [
+        "fission"
+      ]
+    },
+    "FUSION": {
+      "name": "FUSION",
+      "literals": [
+        "fusion"
+      ]
+    },
+    "UNROLL": {
+      "name": "UNROLL",
+      "literals": [
+        "unroll"
+      ]
+    },
+    "SPLITWHILE": {
+      "name": "SPLITWHILE",
+      "literals": [
+        "splitwhile"
+      ]
+    },
+    "KILL": {
+      "name": "KILL",
+      "literals": [
+        "kill"
+      ]
+    },
+    "EAGER": {
+      "name": "EAGER",
+      "literals": [
+        "eager"
+      ]
+    },
+    "AXIOM": {
+      "name": "AXIOM",
+      "literals": [
+        "axiom"
+      ]
+    },
+    "AXIOMATIZED": {
+      "name": "AXIOMATIZED",
+      "literals": [
+        "axiomatized"
+      ]
+    },
+    "LEMMA": {
+      "name": "LEMMA",
+      "literals": [
+        "lemma"
+      ]
+    },
+    "REALIZE": {
+      "name": "REALIZE",
+      "literals": [
+        "realize"
+      ]
+    },
+    "PROOF": {
+      "name": "PROOF",
+      "literals": [
+        "proof"
+      ]
+    },
+    "QED": {
+      "name": "QED",
+      "literals": [
+        "qed"
+      ]
+    },
+    "ABORT": {
+      "name": "ABORT",
+      "literals": [
+        "abort"
+      ]
+    },
+    "GOAL": {
+      "name": "GOAL",
+      "literals": [
+        "goal"
+      ]
+    },
+    "END": {
+      "name": "END",
+      "literals": [
+        "end"
+      ]
+    },
+    "FROM": {
+      "name": "FROM",
+      "literals": [
+        "from"
+      ]
+    },
+    "IMPORT": {
+      "name": "IMPORT",
+      "literals": [
+        "import"
+      ]
+    },
+    "EXPORT": {
+      "name": "EXPORT",
+      "literals": [
+        "export"
+      ]
+    },
+    "INCLUDE": {
+      "name": "INCLUDE",
+      "literals": [
+        "include"
+      ]
+    },
+    "LOCAL": {
+      "name": "LOCAL",
+      "literals": [
+        "local"
+      ]
+    },
+    "GLOBAL": {
+      "name": "GLOBAL",
+      "literals": [
+        "global"
+      ]
+    },
+    "DECLARE": {
+      "name": "DECLARE",
+      "literals": [
+        "declare"
+      ]
+    },
+    "HINT": {
+      "name": "HINT",
+      "literals": [
+        "hint"
+      ]
+    },
+    "MODULE": {
+      "name": "MODULE",
+      "literals": [
+        "module"
+      ]
+    },
+    "OF": {
+      "name": "OF",
+      "literals": [
+        "of"
+      ]
+    },
+    "CONST": {
+      "name": "CONST",
+      "literals": [
+        "const"
+      ]
+    },
+    "OP": {
+      "name": "OP",
+      "literals": [
+        "op"
+      ]
+    },
+    "PRED": {
+      "name": "PRED",
+      "literals": [
+        "pred"
+      ]
+    },
+    "INDUCTIVE": {
+      "name": "INDUCTIVE",
+      "literals": [
+        "inductive"
+      ]
+    },
+    "NOTATION": {
+      "name": "NOTATION",
+      "literals": [
+        "notation"
+      ]
+    },
+    "ABBREV": {
+      "name": "ABBREV",
+      "literals": [
+        "abbrev"
+      ]
+    },
+    "REQUIRE": {
+      "name": "REQUIRE",
+      "literals": [
+        "require"
+      ]
+    },
+    "THEORY": {
+      "name": "THEORY",
+      "literals": [
+        "theory"
+      ]
+    },
+    "ABSTRACT": {
+      "name": "ABSTRACT",
+      "literals": [
+        "abstract"
+      ]
+    },
+    "SECTION": {
+      "name": "SECTION",
+      "literals": [
+        "section"
+      ]
+    },
+    "SUBTYPE": {
+      "name": "SUBTYPE",
+      "literals": [
+        "subtype"
+      ]
+    },
+    "TYPE": {
+      "name": "TYPE",
+      "literals": [
+        "type"
+      ]
+    },
+    "CLASS": {
+      "name": "CLASS",
+      "literals": [
+        "class"
+      ]
+    },
+    "INSTANCE": {
+      "name": "INSTANCE",
+      "literals": [
+        "instance"
+      ]
+    },
+    "PRINT": {
+      "name": "PRINT",
+      "literals": [
+        "print"
+      ]
+    },
+    "SEARCH": {
+      "name": "SEARCH",
+      "literals": [
+        "search"
+      ]
+    },
+    "LOCATE": {
+      "name": "LOCATE",
+      "literals": [
+        "locate"
+      ]
+    },
+    "AS": {
+      "name": "AS",
+      "literals": [
+        "as"
+      ]
+    },
+    "PR": {
+      "name": "PR",
+      "literals": [
+        "Pr"
+      ]
+    },
+    "CLONE": {
+      "name": "CLONE",
+      "literals": [
+        "clone"
+      ]
+    },
+    "WITH": {
+      "name": "WITH",
+      "literals": [
+        "with"
+      ]
+    },
+    "RENAME": {
+      "name": "RENAME",
+      "literals": [
+        "rename"
+      ]
+    },
+    "PROVER": {
+      "name": "PROVER",
+      "literals": [
+        "prover"
+      ]
+    },
+    "TIMEOUT": {
+      "name": "TIMEOUT",
+      "literals": [
+        "timeout"
+      ]
+    },
+    "WHY3": {
+      "name": "WHY3",
+      "literals": [
+        "why3"
+      ]
+    },
+    "DUMP": {
+      "name": "DUMP",
+      "literals": [
+        "dump"
+      ]
+    },
+    "REMOVE": {
+      "name": "REMOVE",
+      "literals": [
+        "remove"
+      ]
+    },
+    "EXIT": {
+      "name": "EXIT",
+      "literals": [
+        "exit"
+      ]
+    },
+    "FAIL": {
+      "name": "FAIL",
+      "literals": [
+        "fail"
+      ]
+    },
+    "TIME": {
+      "name": "TIME",
+      "literals": [
+        "time"
+      ]
+    },
+    "UNDO": {
+      "name": "UNDO",
+      "literals": [
+        "undo"
+      ]
+    },
+    "DEBUG": {
+      "name": "DEBUG",
+      "literals": [
+        "debug"
+      ]
+    },
+    "PRAGMA": {
+      "name": "PRAGMA",
+      "literals": [
+        "pragma"
+      ]
+    },
+    "TOP": {
+      "name": "TOP",
+      "literals": [
+        "Top"
+      ]
+    },
+    "SELF": {
+      "name": "SELF",
+      "literals": [
+        "Self"
+      ]
+    },
+    "COLON": {
+      "name": "COLON",
+      "literals": [
+        ":"
+      ]
+    },
+    "SHARP": {
+      "name": "SHARP",
+      "literals": [
+        "#"
+      ]
+    },
+    "SHARPPIPE": {
+      "name": "SHARPPIPE",
+      "literals": [
+        "#|"
+      ]
+    },
+    "SLASHSLASH": {
+      "name": "SLASHSLASH",
+      "literals": [
+        "//"
+      ]
+    },
+    "SLASHSLASHSHARP": {
+      "name": "SLASHSLASHSHARP",
+      "literals": [
+        "//#"
+      ]
+    },
+    "SLASHEQ": {
+      "name": "SLASHEQ",
+      "literals": [
+        "/="
+      ]
+    },
+    "SLASHSHARP": {
+      "name": "SLASHSHARP",
+      "literals": [
+        "/#"
+      ]
+    },
+    "SLASHSLASHEQ": {
+      "name": "SLASHSLASHEQ",
+      "literals": [
+        "//="
+      ]
+    },
+    "SLASHGT": {
+      "name": "SLASHGT",
+      "literals": [
+        "/>"
+      ]
+    },
+    "PIPEGT": {
+      "name": "PIPEGT",
+      "literals": [
+        "|>"
+      ]
+    },
+    "SLASHSLASHGT": {
+      "name": "SLASHSLASHGT",
+      "literals": [
+        "//>"
+      ]
+    },
+    "PIPEPIPEGT": {
+      "name": "PIPEPIPEGT",
+      "literals": [
+        "||>"
+      ]
+    },
+    "IMPL": {
+      "name": "IMPL",
+      "literals": [
+        "=>"
+      ]
+    },
+    "PIPE": {
+      "name": "PIPE",
+      "literals": [
+        "|"
+      ]
+    },
+    "CEQ": {
+      "name": "CEQ",
+      "literals": [
+        ":="
+      ]
+    },
+    "SLASH": {
+      "name": "SLASH",
+      "literals": [
+        "/"
+      ]
+    },
+    "BACKSLASH": {
+      "name": "BACKSLASH",
+      "literals": [
+        "\\"
+      ]
+    },
+    "LARROW": {
+      "name": "LARROW",
+      "literals": [
+        "<-"
+      ]
+    },
+    "RARROW": {
+      "name": "RARROW",
+      "literals": [
+        "->"
+      ]
+    },
+    "LLARROW": {
+      "name": "LLARROW",
+      "literals": [
+        "<<-"
+      ]
+    },
+    "RRARROW": {
+      "name": "RRARROW",
+      "literals": [
+        "->>"
+      ]
+    },
+    "NOT": {
+      "name": "NOT",
+      "literals": [
+        "!"
+      ]
+    },
+    "HAT": {
+      "name": "HAT",
+      "literals": [
+        "^"
+      ]
+    },
+    "AMP": {
+      "name": "AMP",
+      "literals": [
+        "&"
+      ]
+    },
+    "ANDA": {
+      "name": "ANDA",
+      "literals": [
+        "&&"
+      ]
+    },
+    "AND": {
+      "name": "AND",
+      "literals": [
+        "/\\"
+      ]
+    },
+    "ORA": {
+      "name": "ORA",
+      "literals": [
+        "||"
+      ]
+    },
+    "OR": {
+      "name": "OR",
+      "literals": [
+        "\\/"
+      ]
+    },
+    "IFF": {
+      "name": "IFF",
+      "literals": [
+        "<=>"
+      ]
+    },
+    "PCENT": {
+      "name": "PCENT",
+      "literals": [
+        "%"
+      ]
+    },
+    "PLUS": {
+      "name": "PLUS",
+      "literals": [
+        "+"
+      ]
+    },
+    "MINUS": {
+      "name": "MINUS",
+      "literals": [
+        "-"
+      ]
+    },
+    "STAR": {
+      "name": "STAR",
+      "literals": [
+        "*"
+      ]
+    },
+    "BACKS": {
+      "name": "BACKS",
+      "literals": [
+        "<<"
+      ]
+    },
+    "FWDS": {
+      "name": "FWDS",
+      "literals": [
+        ">>"
+      ]
+    },
+    "LTCOLON": {
+      "name": "LTCOLON",
+      "literals": [
+        "<:"
+      ]
+    },
+    "LONGARROW": {
+      "name": "LONGARROW",
+      "literals": [
+        "==>"
+      ]
+    },
+    "EQ": {
+      "name": "EQ",
+      "literals": [
+        "="
+      ]
+    },
+    "NE": {
+      "name": "NE",
+      "literals": [
+        "<>"
+      ]
+    },
+    "GT": {
+      "name": "GT",
+      "literals": [
+        ">"
+      ]
+    },
+    "LT": {
+      "name": "LT",
+      "literals": [
+        "<"
+      ]
+    },
+    "GE": {
+      "name": "GE",
+      "literals": [
+        ">="
+      ]
+    },
+    "LE": {
+      "name": "LE",
+      "literals": [
+        "<="
+      ]
+    },
+    "LTSTARGT": {
+      "name": "LTSTARGT",
+      "literals": [
+        "<*>"
+      ]
+    },
+    "LTLTSTARGT": {
+      "name": "LTLTSTARGT",
+      "literals": [
+        "<<*>"
+      ]
+    },
+    "LTSTARGTGT": {
+      "name": "LTSTARGTGT",
+      "literals": [
+        "<*>>"
+      ]
+    },
+    "L": {
+      "name": "L",
+      "literals": [
+        "   ,(SHARPPIPE        , true ));\n    (",
+        "(*"
+      ]
+    },
+    "B": {
+      "name": "B",
+      "literals": [
+        "\\",
+        "\\r"
+      ]
+    },
+    "LIDENT": {
+      "name": "LIDENT",
+      "pattern": "[a-z_][A-Za-z0-9_']*"
+    },
+    "UIDENT": {
+      "name": "UIDENT",
+      "pattern": "[A-Z][A-Za-z0-9_']*"
+    },
+    "TIDENT": {
+      "name": "TIDENT",
+      "pattern": "'?[A-Za-z][A-Za-z0-9_']*"
+    },
+    "MIDENT": {
+      "name": "MIDENT",
+      "pattern": "[A-Za-z0-9_.]+"
+    },
+    "STRING": {
+      "name": "STRING",
+      "pattern": "\"([^\"\\\\]|\\\\.)*\""
+    },
+    "UINT": {
+      "name": "UINT",
+      "pattern": "[0-9]+"
+    },
+    "DECIMAL": {
+      "name": "DECIMAL",
+      "pattern": "[0-9]+\\.[0-9]+"
+    }
+  },
+  "parser": {
+    "tokens": [
+      "LIDENT",
+      "UIDENT",
+      "TIDENT",
+      "MIDENT",
+      "PUNIOP",
+      "PBINOP",
+      "PNUMOP",
+      "PPSTOP",
+      "UINT",
+      "DECIMAL",
+      "STRING",
+      "ANDA",
+      "AND",
+      "ORA",
+      "OR",
+      "ABORT",
+      "ABBREV",
+      "ABSTRACT",
+      "ADMIT",
+      "ADMITTED",
+      "ALGNORM",
+      "ALIAS",
+      "AMP",
+      "APPLY",
+      "AS",
+      "ASSERT",
+      "ASSUMPTION",
+      "ASYNC",
+      "AT",
+      "AUTO",
+      "AXIOM",
+      "AXIOMATIZED",
+      "BACKS",
+      "BACKSLASH",
+      "BETA",
+      "BY",
+      "BYEQUIV",
+      "BYPHOARE",
+      "BYEHOARE",
+      "BYPR",
+      "BYUPTO",
+      "CALL",
+      "CASE",
+      "CBV",
+      "CEQ",
+      "CFOLD",
+      "CHANGE",
+      "CLASS",
+      "CLEAR",
+      "CLONE",
+      "COLON",
+      "COLONTILD",
+      "COMMA",
+      "CONGR",
+      "CONSEQ",
+      "CONST",
+      "COQ",
+      "CHECK",
+      "EDIT",
+      "FIX",
+      "DEBUG",
+      "DECLARE",
+      "DELTA",
+      "DLBRACKET",
+      "DO",
+      "DONE",
+      "DOT",
+      "DOTDOT",
+      "DOTTICK",
+      "DROP",
+      "DUMP",
+      "EAGER",
+      "ECALL",
+      "EHOARE",
+      "ELIF",
+      "ELIM",
+      "ELSE",
+      "END",
+      "EOF",
+      "EQ",
+      "EQUIV",
+      "ETA",
+      "EXACT",
+      "EXFALSO",
+      "EXIST",
+      "EXIT",
+      "EXLIM",
+      "EXPECT",
+      "EXPORT",
+      "FAIL",
+      "FEL",
+      "FIRST",
+      "FISSION",
+      "FOR",
+      "FORALL",
+      "FROM",
+      "FUN",
+      "FUSION",
+      "FWDS",
+      "GEN",
+      "GLOB",
+      "GLOBAL",
+      "GOAL",
+      "HAT",
+      "HAVE",
+      "HINT",
+      "HOARE",
+      "IDTAC",
+      "IF",
+      "IFF",
+      "IMPL",
+      "IMPORT",
+      "IMPOSSIBLE",
+      "IN",
+      "INCLUDE",
+      "INDUCTIVE",
+      "INLINE",
+      "INTERLEAVE",
+      "INSTANCE",
+      "IOTA",
+      "IS",
+      "KILL",
+      "LARROW",
+      "LAST",
+      "LBRACE",
+      "LBRACKET",
+      "LEAT",
+      "LEFT",
+      "LEMMA",
+      "LESAMPLE",
+      "LET",
+      "LLARROW",
+      "LOCAL",
+      "LOCATE",
+      "LOGIC",
+      "LONGARROW",
+      "LOSSLESS",
+      "LPAREN",
+      "LPBRACE",
+      "MATCH",
+      "MINUS",
+      "MODPATH",
+      "MODULE",
+      "MOVE",
+      "NE",
+      "NOT",
+      "NOTATION",
+      "OF",
+      "OP",
+      "OUTLINE",
+      "PCENT",
+      "PHOARE",
+      "PIPE",
+      "PIPEGT",
+      "PIPEPIPEGT",
+      "PLUS",
+      "POSE",
+      "PR",
+      "PRAGMA",
+      "PRBOUNDED",
+      "PRED",
+      "PRINT",
+      "PROC",
+      "PROGRESS",
+      "PROOF",
+      "PROVER",
+      "QED",
+      "QUESTION",
+      "RARROW",
+      "RBOOL",
+      "RBRACE",
+      "RBRACKET",
+      "RCONDF",
+      "RCONDT",
+      "REALIZE",
+      "REFLEX",
+      "REMOVE",
+      "RENAME",
+      "REPLACE",
+      "REQUIRE",
+      "RES",
+      "RETURN",
+      "REWRITE",
+      "RIGHT",
+      "RND",
+      "RNDSEM",
+      "RPAREN",
+      "RPBRACE",
+      "RRARROW",
+      "RWNORMAL",
+      "SEARCH",
+      "SECTION",
+      "SELF",
+      "SEMICOLON",
+      "SEQ",
+      "SHARP",
+      "SHARPPIPE",
+      "SIM",
+      "SIMPLIFY",
+      "SKIP",
+      "SLASH",
+      "SLASHEQ",
+      "SLASHGT",
+      "SLASHSHARP",
+      "SLASHSLASHGT",
+      "SLASHTILDEQ",
+      "SLASHSLASH",
+      "SLASHSLASHEQ",
+      "SLASHSLASHTILDEQ",
+      "SLASHSLASHSHARP",
+      "SMT",
+      "SOLVE",
+      "SP",
+      "SPLIT",
+      "SPLITWHILE",
+      "STAR",
+      "SUBST",
+      "SUBTYPE",
+      "SUFF",
+      "SWAP",
+      "SYMMETRY",
+      "THEN",
+      "THEORY",
+      "TICKBRACE",
+      "TICKPIPE",
+      "TILD",
+      "TIME",
+      "TIMEOUT",
+      "TOP",
+      "TRANSITIVITY",
+      "TRIVIAL",
+      "TRY",
+      "TYPE",
+      "UNDERSCORE",
+      "UNDO",
+      "UNROLL",
+      "VAR",
+      "WEAKMEM",
+      "WHILE",
+      "WHY3",
+      "WITH",
+      "WLOG",
+      "WP",
+      "ZETA",
+      "NOP",
+      "LOP1",
+      "ROP1",
+      "LOP2",
+      "ROP2",
+      "LOP3",
+      "ROP3",
+      "LOP4",
+      "ROP4",
+      "NUMOP",
+      "LTCOLON",
+      "DASHLT",
+      "GT",
+      "LT",
+      "GE",
+      "LE",
+      "LTSTARGT",
+      "LTLTSTARGT",
+      "LTSTARGTGT",
+      "FINAL"
+    ],
+    "start_symbols": [
+      "prog",
+      "global",
+      "is_uniop",
+      "is_binop",
+      "is_numop"
+    ],
+    "productions": [
+      {
+        "head": "_lident",
+        "body": "x=LIDENT",
+        "inline": false,
+        "line": 6
+      },
+      {
+        "head": "_lident",
+        "body": "ABORT",
+        "inline": false,
+        "line": 7
+      },
+      {
+        "head": "_lident",
+        "body": "ADMITTED",
+        "inline": false,
+        "line": 8
+      },
+      {
+        "head": "_lident",
+        "body": "ASYNC",
+        "inline": false,
+        "line": 9
+      },
+      {
+        "head": "_lident",
+        "body": "DEBUG",
+        "inline": false,
+        "line": 10
+      },
+      {
+        "head": "_lident",
+        "body": "DUMP",
+        "inline": false,
+        "line": 11
+      },
+      {
+        "head": "_lident",
+        "body": "EXPECT",
+        "inline": false,
+        "line": 12
+      },
+      {
+        "head": "_lident",
+        "body": "FIRST",
+        "inline": false,
+        "line": 13
+      },
+      {
+        "head": "_lident",
+        "body": "GEN",
+        "inline": false,
+        "line": 14
+      },
+      {
+        "head": "_lident",
+        "body": "INTERLEAVE",
+        "inline": false,
+        "line": 15
+      },
+      {
+        "head": "_lident",
+        "body": "LAST",
+        "inline": false,
+        "line": 16
+      },
+      {
+        "head": "_lident",
+        "body": "LEFT",
+        "inline": false,
+        "line": 17
+      },
+      {
+        "head": "_lident",
+        "body": "RIGHT",
+        "inline": false,
+        "line": 18
+      },
+      {
+        "head": "_lident",
+        "body": "SOLVE",
+        "inline": false,
+        "line": 19
+      },
+      {
+        "head": "_lident",
+        "body": "WLOG",
+        "inline": false,
+        "line": 20
+      },
+      {
+        "head": "_lident",
+        "body": "EXLIM",
+        "inline": false,
+        "line": 21
+      },
+      {
+        "head": "_lident",
+        "body": "ECALL",
+        "inline": false,
+        "line": 22
+      },
+      {
+        "head": "_lident",
+        "body": "FROM",
+        "inline": false,
+        "line": 23
+      },
+      {
+        "head": "_lident",
+        "body": "EXIT",
+        "inline": false,
+        "line": 24
+      },
+      {
+        "head": "_lident",
+        "body": "CHECK",
+        "inline": false,
+        "line": 25
+      },
+      {
+        "head": "_lident",
+        "body": "EDIT",
+        "inline": false,
+        "line": 26
+      },
+      {
+        "head": "_lident",
+        "body": "FIX",
+        "inline": false,
+        "line": 27
+      },
+      {
+        "head": "_lident",
+        "body": "GLOBAL",
+        "inline": false,
+        "line": 29
+      },
+      {
+        "head": "_lident",
+        "body": "x=RING",
+        "inline": false,
+        "line": 30
+      },
+      {
+        "head": "_lident",
+        "body": "x=FIELD",
+        "inline": false,
+        "line": 32
+      },
+      {
+        "head": "_uident",
+        "body": "x=UIDENT",
+        "inline": true,
+        "line": 35
+      },
+      {
+        "head": "_tident",
+        "body": "x=TIDENT",
+        "inline": true,
+        "line": 38
+      },
+      {
+        "head": "_mident",
+        "body": "x=MIDENT",
+        "inline": true,
+        "line": 41
+      },
+      {
+        "head": "lident",
+        "body": "x=loc(_lident)",
+        "inline": true,
+        "line": 42
+      },
+      {
+        "head": "uident",
+        "body": "x=loc(_uident)",
+        "inline": true,
+        "line": 43
+      },
+      {
+        "head": "tident",
+        "body": "x=loc(_tident)",
+        "inline": true,
+        "line": 44
+      },
+      {
+        "head": "mident",
+        "body": "x=loc(_mident)",
+        "inline": true,
+        "line": 46
+      },
+      {
+        "head": "_ident",
+        "body": "x=_lident",
+        "inline": true,
+        "line": 48
+      },
+      {
+        "head": "_ident",
+        "body": "x=_uident",
+        "inline": true,
+        "line": 50
+      },
+      {
+        "head": "ident",
+        "body": "x=loc(_ident)",
+        "inline": true,
+        "line": 53
+      },
+      {
+        "head": "uint",
+        "body": "n=UINT",
+        "inline": true,
+        "line": 55
+      },
+      {
+        "head": "word",
+        "body": "n=loc(UINT)",
+        "inline": true,
+        "line": 58
+      },
+      {
+        "head": "sword",
+        "body": "n=word",
+        "inline": true,
+        "line": 60
+      },
+      {
+        "head": "sword",
+        "body": "MINUS n=word",
+        "inline": true,
+        "line": 63
+      },
+      {
+        "head": "namespace",
+        "body": "nm=rlist1(UIDENT, DOT)",
+        "inline": true,
+        "line": 67
+      },
+      {
+        "head": "namespace",
+        "body": "TOP nm=rlist0(prefix(DOT, UIDENT), empty)",
+        "inline": true,
+        "line": 70
+      },
+      {
+        "head": "namespace",
+        "body": "SELF nm=rlist0(prefix(DOT, UIDENT), empty)",
+        "inline": true,
+        "line": 73
+      },
+      {
+        "head": "_genqident",
+        "body": "x=X",
+        "inline": false,
+        "line": 75
+      },
+      {
+        "head": "_genqident",
+        "body": "xs=namespace DOT x=X",
+        "inline": false,
+        "line": 77
+      },
+      {
+        "head": "genqident",
+        "body": "x=loc(_genqident(X))",
+        "inline": false,
+        "line": 82
+      },
+      {
+        "head": "qident",
+        "body": "x=genqident(_ident )",
+        "inline": true,
+        "line": 83
+      },
+      {
+        "head": "uqident",
+        "body": "x=genqident(_uident)",
+        "inline": true,
+        "line": 84
+      },
+      {
+        "head": "lqident",
+        "body": "x=genqident(_lident)",
+        "inline": true,
+        "line": 87
+      },
+      {
+        "head": "_boident",
+        "body": "x=_lident",
+        "inline": true,
+        "line": 89
+      },
+      {
+        "head": "_boident",
+        "body": "x=_uident",
+        "inline": true,
+        "line": 90
+      },
+      {
+        "head": "_boident",
+        "body": "x=PUNIOP",
+        "inline": true,
+        "line": 91
+      },
+      {
+        "head": "_boident",
+        "body": "x=PBINOP",
+        "inline": true,
+        "line": 92
+      },
+      {
+        "head": "_boident",
+        "body": "x=PNUMOP",
+        "inline": true,
+        "line": 93
+      },
+      {
+        "head": "_boident",
+        "body": "x=PPSTOP",
+        "inline": true,
+        "line": 95
+      },
+      {
+        "head": "_boident",
+        "body": "x=loc(STRING)",
+        "inline": true,
+        "line": 97
+      },
+      {
+        "head": "_oident",
+        "body": "x=_boident",
+        "inline": true,
+        "line": 99
+      },
+      {
+        "head": "_oident",
+        "body": "x=paren(PUNIOP)",
+        "inline": true,
+        "line": 101
+      },
+      {
+        "head": "boident",
+        "body": "x=loc(_boident)",
+        "inline": true,
+        "line": 102
+      },
+      {
+        "head": "oident",
+        "body": "x=loc( _oident)",
+        "inline": true,
+        "line": 104
+      },
+      {
+        "head": "qoident",
+        "body": "x=boident",
+        "inline": false,
+        "line": 108
+      },
+      {
+        "head": "qoident",
+        "body": "xs=namespace DOT x=oident",
+        "inline": false,
+        "line": 109
+      },
+      {
+        "head": "qoident",
+        "body": "xs=namespace DOT x=loc(NOP)",
+        "inline": false,
+        "line": 112
+      },
+      {
+        "head": "mod_ident1",
+        "body": "x=uident",
+        "inline": false,
+        "line": 116
+      },
+      {
+        "head": "mod_ident1",
+        "body": "x=uident LPAREN args=plist1(loc(mod_qident), COMMA) RPAREN",
+        "inline": false,
+        "line": 120
+      },
+      {
+        "head": "mod_qident",
+        "body": "x=rlist1(mod_ident1, DOT)",
+        "inline": true,
+        "line": 124
+      },
+      {
+        "head": "mod_qident",
+        "body": "_l=TOP DOT x=rlist1(mod_ident1, DOT)",
+        "inline": true,
+        "line": 127
+      },
+      {
+        "head": "mod_qident",
+        "body": "_l=SELF DOT x=rlist1(mod_ident1, DOT)",
+        "inline": true,
+        "line": 130
+      },
+      {
+        "head": "fident",
+        "body": "nm=mod_qident DOT x=lident",
+        "inline": true,
+        "line": 132
+      },
+      {
+        "head": "fident",
+        "body": "x=lident",
+        "inline": true,
+        "line": 134
+      },
+      {
+        "head": "f_or_mod_ident",
+        "body": "nm=mod_qident DOT x=lident",
+        "inline": false,
+        "line": 137
+      },
+      {
+        "head": "f_or_mod_ident",
+        "body": "x=lident",
+        "inline": false,
+        "line": 139
+      },
+      {
+        "head": "f_or_mod_ident",
+        "body": "m=loc(mod_qident)",
+        "inline": false,
+        "line": 142
+      },
+      {
+        "head": "inlinesubpat",
+        "body": "m=rlist1(uident, DOT)",
+        "inline": false,
+        "line": 144
+      },
+      {
+        "head": "inlinesubpat",
+        "body": "m=rlist1(uident, DOT) DOT f=lident",
+        "inline": false,
+        "line": 145
+      },
+      {
+        "head": "inlinesubpat",
+        "body": "f=lident",
+        "inline": false,
+        "line": 147
+      },
+      {
+        "head": "inlinepat1",
+        "body": "nm=loc(mod_qident)",
+        "inline": false,
+        "line": 149
+      },
+      {
+        "head": "inlinepat1",
+        "body": "f=loc(fident)",
+        "inline": false,
+        "line": 150
+      },
+      {
+        "head": "inlinepat1",
+        "body": "nm=loc(mod_qident) SLASH sub=inlinesubpat",
+        "inline": false,
+        "line": 151
+      },
+      {
+        "head": "inlinepat1",
+        "body": "u=loc(UNDERSCORE) SLASH sub=inlinesubpat",
+        "inline": false,
+        "line": 152
+      },
+      {
+        "head": "inlinepat1",
+        "body": "STAR",
+        "inline": false,
+        "line": 154
+      },
+      {
+        "head": "inlinepat",
+        "body": "sign=iboption(MINUS) p=inlinepat1",
+        "inline": false,
+        "line": 158
+      },
+      {
+        "head": "ordering_op",
+        "body": "GT",
+        "inline": true,
+        "line": 160
+      },
+      {
+        "head": "ordering_op",
+        "body": "LT",
+        "inline": true,
+        "line": 161
+      },
+      {
+        "head": "ordering_op",
+        "body": "GE",
+        "inline": true,
+        "line": 162
+      },
+      {
+        "head": "ordering_op",
+        "body": "LE",
+        "inline": true,
+        "line": 164
+      },
+      {
+        "head": "uniop",
+        "body": "x=NOP",
+        "inline": true,
+        "line": 166
+      },
+      {
+        "head": "uniop",
+        "body": "NOT",
+        "inline": true,
+        "line": 167
+      },
+      {
+        "head": "uniop",
+        "body": "PLUS",
+        "inline": true,
+        "line": 168
+      },
+      {
+        "head": "uniop",
+        "body": "MINUS",
+        "inline": true,
+        "line": 170
+      },
+      {
+        "head": "sbinop",
+        "body": "EQ",
+        "inline": true,
+        "line": 172
+      },
+      {
+        "head": "sbinop",
+        "body": "NE",
+        "inline": true,
+        "line": 173
+      },
+      {
+        "head": "sbinop",
+        "body": "PLUS",
+        "inline": true,
+        "line": 174
+      },
+      {
+        "head": "sbinop",
+        "body": "MINUS",
+        "inline": true,
+        "line": 175
+      },
+      {
+        "head": "sbinop",
+        "body": "STAR",
+        "inline": true,
+        "line": 176
+      },
+      {
+        "head": "sbinop",
+        "body": "SLASH",
+        "inline": true,
+        "line": 177
+      },
+      {
+        "head": "sbinop",
+        "body": "AT",
+        "inline": true,
+        "line": 178
+      },
+      {
+        "head": "sbinop",
+        "body": "OR",
+        "inline": true,
+        "line": 179
+      },
+      {
+        "head": "sbinop",
+        "body": "ORA",
+        "inline": true,
+        "line": 180
+      },
+      {
+        "head": "sbinop",
+        "body": "AND",
+        "inline": true,
+        "line": 181
+      },
+      {
+        "head": "sbinop",
+        "body": "ANDA",
+        "inline": true,
+        "line": 182
+      },
+      {
+        "head": "sbinop",
+        "body": "AMP",
+        "inline": true,
+        "line": 183
+      },
+      {
+        "head": "sbinop",
+        "body": "HAT",
+        "inline": true,
+        "line": 184
+      },
+      {
+        "head": "sbinop",
+        "body": "BACKSLASH",
+        "inline": true,
+        "line": 186
+      },
+      {
+        "head": "sbinop",
+        "body": "x=LOP1 | x=LOP2 | x=LOP3 | x=LOP4",
+        "inline": true,
+        "line": 187
+      },
+      {
+        "head": "sbinop",
+        "body": "x=ROP1 | x=ROP2 | x=ROP3 | x=ROP4",
+        "inline": true,
+        "line": 188
+      },
+      {
+        "head": "sbinop",
+        "body": "x=NOP",
+        "inline": true,
+        "line": 191
+      },
+      {
+        "head": "binop",
+        "body": "op=sbinop",
+        "inline": true,
+        "line": 193
+      },
+      {
+        "head": "binop",
+        "body": "IMPL",
+        "inline": true,
+        "line": 194
+      },
+      {
+        "head": "binop",
+        "body": "IFF",
+        "inline": true,
+        "line": 196
+      },
+      {
+        "head": "numop",
+        "body": "op=NUMOP",
+        "inline": true,
+        "line": 200
+      },
+      {
+        "head": "is_binop",
+        "body": "binop EOF",
+        "inline": false,
+        "line": 201
+      },
+      {
+        "head": "is_uniop",
+        "body": "uniop EOF",
+        "inline": false,
+        "line": 202
+      },
+      {
+        "head": "is_numop",
+        "body": "numop EOF",
+        "inline": false,
+        "line": 205
+      },
+      {
+        "head": "pside_",
+        "body": "x=_lident",
+        "inline": false,
+        "line": 207
+      },
+      {
+        "head": "pside_",
+        "body": "x=word",
+        "inline": false,
+        "line": 209
+      },
+      {
+        "head": "pside",
+        "body": "x=brace(pside_)",
+        "inline": false,
+        "line": 212
+      },
+      {
+        "head": "pside_force",
+        "body": "brace(b=boption(NOT) m=loc(pside_)  )",
+        "inline": false,
+        "line": 218
+      },
+      {
+        "head": "lpattern_u",
+        "body": "x=ident",
+        "inline": false,
+        "line": 222
+      },
+      {
+        "head": "lpattern_u",
+        "body": "LPAREN p=plist2(bdident, COMMA) RPAREN",
+        "inline": false,
+        "line": 225
+      },
+      {
+        "head": "lpattern_u",
+        "body": "LPBRACE fs=rlist1(lp_field, SEMICOLON) SEMICOLON? RPBRACE",
+        "inline": false,
+        "line": 228
+      },
+      {
+        "head": "lp_field",
+        "body": "f=qident EQ x=ident",
+        "inline": false,
+        "line": 231
+      },
+      {
+        "head": "lpattern",
+        "body": "x=loc(lpattern_u)",
+        "inline": true,
+        "line": 237
+      },
+      {
+        "head": "tyvar_byname1",
+        "body": "x=tident EQ ty=loc(type_exp)",
+        "inline": false,
+        "line": 240
+      },
+      {
+        "head": "tyvar_annot",
+        "body": "lt = plist1(loc(type_exp), COMMA)",
+        "inline": false,
+        "line": 242
+      },
+      {
+        "head": "tyvar_annot",
+        "body": "lt = plist1(tyvar_byname1, COMMA)",
+        "inline": false,
+        "line": 244
+      },
+      {
+        "head": "tvars_app",
+        "body": "LTCOLON k=loc(tyvar_annot) GT",
+        "inline": true,
+        "line": 248
+      },
+      {
+        "head": "sexpr",
+        "body": "f=sform",
+        "inline": true,
+        "line": 249
+      },
+      {
+        "head": "expr",
+        "body": "f=form",
+        "inline": true,
+        "line": 252
+      },
+      {
+        "head": "bdident_",
+        "body": "x=ident",
+        "inline": false,
+        "line": 254
+      },
+      {
+        "head": "bdident_",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 256
+      },
+      {
+        "head": "bdident",
+        "body": "x=loc(bdident_)",
+        "inline": true,
+        "line": 259
+      },
+      {
+        "head": "pty_varty",
+        "body": "x=loc(bdident+)",
+        "inline": false,
+        "line": 263
+      },
+      {
+        "head": "pty_varty",
+        "body": "x=bdident+ COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 266
+      },
+      {
+        "head": "ptybinding1",
+        "body": "LPAREN bds=plist1(pty_varty, COMMA) RPAREN",
+        "inline": true,
+        "line": 270
+      },
+      {
+        "head": "ptybinding1",
+        "body": "x=loc(bdident)",
+        "inline": true,
+        "line": 273
+      },
+      {
+        "head": "ptybindings",
+        "body": "x=ptybinding1+",
+        "inline": false,
+        "line": 277
+      },
+      {
+        "head": "ptybindings",
+        "body": "x=bdident+ COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 280
+      },
+      {
+        "head": "ptybindings_decl",
+        "body": "x=ptybinding1+",
+        "inline": false,
+        "line": 284
+      },
+      {
+        "head": "ptybindings_opdecl",
+        "body": "x=ptybinding1+",
+        "inline": false,
+        "line": 288
+      },
+      {
+        "head": "ptybindings_opdecl",
+        "body": "x=ptybinding1* SLASH y=ptybinding1*",
+        "inline": false,
+        "line": 294
+      },
+      {
+        "head": "sform_r",
+        "body": "x=loc(sform_u(P))",
+        "inline": true,
+        "line": 295
+      },
+      {
+        "head": "form_r",
+        "body": "x=loc( form_u(P))",
+        "inline": true,
+        "line": 297
+      },
+      {
+        "head": "sform",
+        "body": "x=sform_r(none)",
+        "inline": true,
+        "line": 298
+      },
+      {
+        "head": "form",
+        "body": "x=form_r (none)",
+        "inline": true,
+        "line": 300
+      },
+      {
+        "head": "sform_h",
+        "body": "x=loc(sform_u(hole))",
+        "inline": true,
+        "line": 301
+      },
+      {
+        "head": "form_h",
+        "body": "x=loc( form_u(hole))",
+        "inline": true,
+        "line": 303
+      },
+      {
+        "head": "hole",
+        "body": "UNDERSCORE",
+        "inline": true,
+        "line": 304
+      },
+      {
+        "head": "none",
+        "body": "IMPOSSIBLE",
+        "inline": true,
+        "line": 306
+      },
+      {
+        "head": "orcl_time",
+        "body": "| m=uident DOT f=lident COLON c=form_r(P)",
+        "inline": false,
+        "line": 309
+      },
+      {
+        "head": "qident_or_res_or_glob",
+        "body": "x=qident",
+        "inline": false,
+        "line": 313
+      },
+      {
+        "head": "qident_or_res_or_glob",
+        "body": "x=loc(RES)",
+        "inline": false,
+        "line": 316
+      },
+      {
+        "head": "qident_or_res_or_glob",
+        "body": "GLOB mp=loc(mod_qident)",
+        "inline": false,
+        "line": 319
+      },
+      {
+        "head": "qident_or_res_or_glob",
+        "body": "GLOB mp=loc(mod_qident) BACKSLASH ex=brace(plist1(qident, COMMA))",
+        "inline": false,
+        "line": 322
+      },
+      {
+        "head": "pfpos",
+        "body": "i=sword",
+        "inline": false,
+        "line": 326
+      },
+      {
+        "head": "pfpos",
+        "body": "f=bracket(form_h) off=pfoffset?",
+        "inline": false,
+        "line": 329
+      },
+      {
+        "head": "pfoffset",
+        "body": "PLUS  w=word",
+        "inline": false,
+        "line": 331
+      },
+      {
+        "head": "pfoffset",
+        "body": "MINUS w=word",
+        "inline": false,
+        "line": 333
+      },
+      {
+        "head": "pffilter",
+        "body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET",
+        "inline": false,
+        "line": 342
+      },
+      {
+        "head": "pffilter",
+        "body": "LPBRACE flat=iboption(SLASH) x=ident IN h=form_h RPBRACE",
+        "inline": false,
+        "line": 346
+      },
+      {
+        "head": "pffilter",
+        "body": "LPBRACE flat=iboption(SLASH) f=form FOR xs=plist1(ident, COMMA) IN h=form_h RPBRACE",
+        "inline": false,
+        "line": 352
+      },
+      {
+        "head": "pffilter",
+        "body": "LBRACE flat=iboption(SLASH) exclude=iboption(TILD) rooted=iboption(HAT) h=pffilter_pattern RBRACE",
+        "inline": false,
+        "line": 361
+      },
+      {
+        "head": "pffilter_pattern",
+        "body": "f=form_h",
+        "inline": false,
+        "line": 365
+      },
+      {
+        "head": "pffilter_pattern",
+        "body": "LBRACE xs=plist0(x=qoident s=loc(pside)?  , COMMA) RBRACE",
+        "inline": false,
+        "line": 368
+      },
+      {
+        "head": "sform_u",
+        "body": "x=P",
+        "inline": false,
+        "line": 372
+      },
+      {
+        "head": "sform_u",
+        "body": "f=sform_r(P) PCENT p=uqident",
+        "inline": false,
+        "line": 375
+      },
+      {
+        "head": "sform_u",
+        "body": "f=sform_r(P) p=loc(prefix(PCENT, _lident))",
+        "inline": false,
+        "line": 379
+      },
+      {
+        "head": "sform_u",
+        "body": "SHARP pf=pffilter* x=ident",
+        "inline": false,
+        "line": 382
+      },
+      {
+        "head": "sform_u",
+        "body": "LPAREN f=form_r(P) COLONTILD ty=loc(type_exp) RPAREN",
+        "inline": false,
+        "line": 385
+      },
+      {
+        "head": "sform_u",
+        "body": "n=uint",
+        "inline": false,
+        "line": 388
+      },
+      {
+        "head": "sform_u",
+        "body": "d=DECIMAL",
+        "inline": false,
+        "line": 391
+      },
+      {
+        "head": "sform_u",
+        "body": "x=loc(RES)",
+        "inline": false,
+        "line": 394
+      },
+      {
+        "head": "sform_u",
+        "body": "x=qoident ti=tvars_app?",
+        "inline": false,
+        "line": 397
+      },
+      {
+        "head": "sform_u",
+        "body": "x=mident",
+        "inline": false,
+        "line": 400
+      },
+      {
+        "head": "sform_u",
+        "body": "se=sform_r(P) DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=loc(plist1(form_r(P), COMMA)) RBRACKET",
+        "inline": false,
+        "line": 406
+      },
+      {
+        "head": "sform_u",
+        "body": "se=sform_r(P) DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e1=loc(plist1(form_r(P), COMMA)) LARROW e2=form_r(P) RBRACKET",
+        "inline": false,
+        "line": 412
+      },
+      {
+        "head": "sform_u",
+        "body": "x=sform_r(P) s=pside_force",
+        "inline": false,
+        "line": 415
+      },
+      {
+        "head": "sform_u",
+        "body": "op=loc(numop) ti=tvars_app?",
+        "inline": false,
+        "line": 418
+      },
+      {
+        "head": "sform_u",
+        "body": "TICKPIPE ti=tvars_app? e =form_r(P) PIPE",
+        "inline": false,
+        "line": 421
+      },
+      {
+        "head": "sform_u",
+        "body": "LPAREN fs=plist0(form_r(P), COMMA) RPAREN",
+        "inline": false,
+        "line": 424
+      },
+      {
+        "head": "sform_u",
+        "body": "LPBRACE fields=rlist1(form_field, SEMICOLON) SEMICOLON? RPBRACE",
+        "inline": false,
+        "line": 427
+      },
+      {
+        "head": "sform_u",
+        "body": "LPBRACE b=sform WITH fields=rlist1(form_field, SEMICOLON) SEMICOLON? RPBRACE",
+        "inline": false,
+        "line": 430
+      },
+      {
+        "head": "sform_u",
+        "body": "LBRACKET ti=tvars_app? es=loc(plist0(form_r(P), SEMICOLON)) RBRACKET",
+        "inline": false,
+        "line": 433
+      },
+      {
+        "head": "sform_u",
+        "body": "f=sform_r(P) DOTTICK x=qident",
+        "inline": false,
+        "line": 436
+      },
+      {
+        "head": "sform_u",
+        "body": "f=sform_r(P) DOTTICK n=loc(word)",
+        "inline": false,
+        "line": 439
+      },
+      {
+        "head": "sform_u",
+        "body": "HOARE LBRACKET hb=hoare_body(P) RBRACKET",
+        "inline": false,
+        "line": 441
+      },
+      {
+        "head": "sform_u",
+        "body": "EHOARE LBRACKET hb=ehoare_body(P) RBRACKET",
+        "inline": false,
+        "line": 443
+      },
+      {
+        "head": "sform_u",
+        "body": "EQUIV LBRACKET eb=equiv_body(P) RBRACKET",
+        "inline": false,
+        "line": 445
+      },
+      {
+        "head": "sform_u",
+        "body": "EAGER LBRACKET eb=eager_body(P) RBRACKET",
+        "inline": false,
+        "line": 447
+      },
+      {
+        "head": "sform_u",
+        "body": "PR LBRACKET mp=loc(fident) args=paren(plist0(form_r(P), COMMA)) AT pn=mident COLON event=form_r(P) RBRACKET",
+        "inline": false,
+        "line": 453
+      },
+      {
+        "head": "sform_u",
+        "body": "r=loc(RBOOL)",
+        "inline": false,
+        "line": 456
+      },
+      {
+        "head": "sform_u",
+        "body": "LBRACKET ti=tvars_app? e1=form_r(P) op=loc(DOTDOT) e2=form_r(P) RBRACKET",
+        "inline": false,
+        "line": 459
+      },
+      {
+        "head": "form_u",
+        "body": "GLOB mp=loc(mod_qident)",
+        "inline": false,
+        "line": 462
+      },
+      {
+        "head": "form_u",
+        "body": "e=sform_u(P)",
+        "inline": false,
+        "line": 464
+      },
+      {
+        "head": "form_u",
+        "body": "e=sform_r(P) args=sform_r(P)+",
+        "inline": false,
+        "line": 466
+      },
+      {
+        "head": "form_u",
+        "body": "op=loc(uniop) ti=tvars_app? e=form_r(P)",
+        "inline": false,
+        "line": 469
+      },
+      {
+        "head": "form_u",
+        "body": "f=form_chained_orderings(P) %prec prec_below_order",
+        "inline": false,
+        "line": 472
+      },
+      {
+        "head": "form_u",
+        "body": "e1=form_r(P) op=loc(binop) ti=tvars_app? e2=form_r(P)",
+        "inline": false,
+        "line": 475
+      },
+      {
+        "head": "form_u",
+        "body": "c=form_r(P) QUESTION e1=form_r(P) COLON e2=form_r(P) %prec LOP2",
+        "inline": false,
+        "line": 478
+      },
+      {
+        "head": "form_u",
+        "body": "MATCH f=form_r(P) WITH PIPE? bs=plist0(p=mcptn(sbinop) IMPL bf=form_r(P)  , PIPE) END",
+        "inline": false,
+        "line": 483
+      },
+      {
+        "head": "form_u",
+        "body": "EQ LBRACE xs=plist1(qident_or_res_or_glob, COMMA) RBRACE",
+        "inline": false,
+        "line": 486
+      },
+      {
+        "head": "form_u",
+        "body": "EQ LBRACE xs=plist1(qident_or_res_or_glob, COMMA) RBRACE LPAREN  m1=mod_qident COMMA m2=mod_qident RPAREN",
+        "inline": false,
+        "line": 490
+      },
+      {
+        "head": "form_u",
+        "body": "EQ LPBRACE xs=plist1(form_r(P), COMMA) RPBRACE",
+        "inline": false,
+        "line": 493
+      },
+      {
+        "head": "form_u",
+        "body": "IF c=form_r(P) THEN e1=form_r(P) ELSE e2=form_r(P)",
+        "inline": false,
+        "line": 496
+      },
+      {
+        "head": "form_u",
+        "body": "LET p=lpattern EQ e1=form_r(P) IN e2=form_r(P)",
+        "inline": false,
+        "line": 499
+      },
+      {
+        "head": "form_u",
+        "body": "LET p=lpattern COLON ty=loc(type_exp) EQ e1=form_r(P) IN e2=form_r(P)",
+        "inline": false,
+        "line": 502
+      },
+      {
+        "head": "form_u",
+        "body": "FORALL pd=pgtybindings COMMA e=form_r(P)",
+        "inline": false,
+        "line": 503
+      },
+      {
+        "head": "form_u",
+        "body": "EXIST  pd=pgtybindings COMMA e=form_r(P)",
+        "inline": false,
+        "line": 504
+      },
+      {
+        "head": "form_u",
+        "body": "FUN    pd=ptybindings  COMMA e=form_r(P)",
+        "inline": false,
+        "line": 505
+      },
+      {
+        "head": "form_u",
+        "body": "FUN    pd=ptybindings  IMPL  e=form_r(P)",
+        "inline": false,
+        "line": 507
+      },
+      {
+        "head": "form_u",
+        "body": "r=loc(RBOOL) TILD e=sform_r(P)",
+        "inline": false,
+        "line": 510
+      },
+      {
+        "head": "form_u",
+        "body": "PHOARE pb=phoare_body(P)",
+        "inline": false,
+        "line": 512
+      },
+      {
+        "head": "form_u",
+        "body": "LOSSLESS mp=loc(fident)",
+        "inline": false,
+        "line": 515
+      },
+      {
+        "head": "form_field",
+        "body": "x=qident EQ f=form",
+        "inline": false,
+        "line": 519
+      },
+      {
+        "head": "form_ordering",
+        "body": "f1=form_r(P) op=loc(ordering_op) ti=tvars_app? f2=form_r(P)",
+        "inline": false,
+        "line": 523
+      },
+      {
+        "head": "form_chained_orderings",
+        "body": "f=form_ordering(P)",
+        "inline": false,
+        "line": 527
+      },
+      {
+        "head": "form_chained_orderings",
+        "body": "f1=loc(form_chained_orderings(P)) op=loc(ordering_op) ti=tvars_app? f2=form_r(P)",
+        "inline": false,
+        "line": 530
+      },
+      {
+        "head": "hoare_bd_cmp",
+        "body": "LE",
+        "inline": false,
+        "line": 532
+      },
+      {
+        "head": "hoare_bd_cmp",
+        "body": "EQ",
+        "inline": false,
+        "line": 533
+      },
+      {
+        "head": "hoare_bd_cmp",
+        "body": "GE",
+        "inline": false,
+        "line": 535
+      },
+      {
+        "head": "hoare_body",
+        "body": "mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)",
+        "inline": false,
+        "line": 539
+      },
+      {
+        "head": "ehoare_body",
+        "body": "mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)",
+        "inline": false,
+        "line": 544
+      },
+      {
+        "head": "phoare_body",
+        "body": "LBRACKET mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P) RBRACKET cmp=hoare_bd_cmp bd=sform_r(P)",
+        "inline": false,
+        "line": 551
+      },
+      {
+        "head": "equiv_body",
+        "body": "mp1=loc(fident) TILD mp2=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)",
+        "inline": false,
+        "line": 556
+      },
+      {
+        "head": "eager_body",
+        "body": "s1=stmt COMMA  mp1=loc(fident) TILD mp2=loc(fident) COMMA s2=stmt COLON pre=form_r(P) LONGARROW post=form_r(P)",
+        "inline": false,
+        "line": 561
+      },
+      {
+        "head": "pgtybinding1",
+        "body": "x=ptybinding1",
+        "inline": false,
+        "line": 565
+      },
+      {
+        "head": "pgtybinding1",
+        "body": "LPAREN x=uident LTCOLON mi=mod_type_with_restr RPAREN",
+        "inline": false,
+        "line": 568
+      },
+      {
+        "head": "pgtybinding1",
+        "body": "pn=mident",
+        "inline": false,
+        "line": 571
+      },
+      {
+        "head": "pgtybinding1",
+        "body": "LPAREN pn=mident COLON mt=memtype RPAREN",
+        "inline": false,
+        "line": 574
+      },
+      {
+        "head": "pgtybindings",
+        "body": "x=pgtybinding1+",
+        "inline": false,
+        "line": 580
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 582
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "x=qident",
+        "inline": false,
+        "line": 583
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "x=tident",
+        "inline": false,
+        "line": 584
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "tya=type_args x=qident",
+        "inline": false,
+        "line": 585
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "GLOB m=loc(mod_qident)",
+        "inline": false,
+        "line": 586
+      },
+      {
+        "head": "simpl_type_exp",
+        "body": "LPAREN ty=type_exp RPAREN",
+        "inline": false,
+        "line": 588
+      },
+      {
+        "head": "type_args",
+        "body": "ty=loc(simpl_type_exp)",
+        "inline": false,
+        "line": 590
+      },
+      {
+        "head": "type_args",
+        "body": "LPAREN tys=plist2(loc(type_exp), COMMA) RPAREN",
+        "inline": false,
+        "line": 592
+      },
+      {
+        "head": "type_exp",
+        "body": "ty=simpl_type_exp",
+        "inline": false,
+        "line": 594
+      },
+      {
+        "head": "type_exp",
+        "body": "ty=plist2(loc(simpl_type_exp), STAR)",
+        "inline": false,
+        "line": 595
+      },
+      {
+        "head": "type_exp",
+        "body": "ty1=loc(type_exp) RARROW ty2=loc(type_exp)",
+        "inline": false,
+        "line": 599
+      },
+      {
+        "head": "var_or_anon",
+        "body": "x=loc(UNDERSCORE)",
+        "inline": false,
+        "line": 603
+      },
+      {
+        "head": "var_or_anon",
+        "body": "x=ident",
+        "inline": false,
+        "line": 606
+      },
+      {
+        "head": "typed_vars_or_anons",
+        "body": "xs=var_or_anon+ COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 610
+      },
+      {
+        "head": "typed_vars_or_anons",
+        "body": "xs=var_or_anon+",
+        "inline": false,
+        "line": 613
+      },
+      {
+        "head": "param_decl",
+        "body": "LPAREN aout=plist0(typed_vars_or_anons, COMMA) RPAREN",
+        "inline": false,
+        "line": 620
+      },
+      {
+        "head": "lvalue_var",
+        "body": "x=loc(fident)",
+        "inline": false,
+        "line": 624
+      },
+      {
+        "head": "lvalue_u",
+        "body": "x=lvalue_var",
+        "inline": false,
+        "line": 628
+      },
+      {
+        "head": "lvalue_u",
+        "body": "LPAREN p=plist2(qident, COMMA) RPAREN",
+        "inline": false,
+        "line": 631
+      },
+      {
+        "head": "lvalue_u",
+        "body": "x=lvalue_var DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=plist1(expr, COMMA) RBRACKET",
+        "inline": false,
+        "line": 637
+      },
+      {
+        "head": "lvalue",
+        "body": "x=loc(lvalue_u)",
+        "inline": true,
+        "line": 640
+      },
+      {
+        "head": "base_instr",
+        "body": "x=lident",
+        "inline": false,
+        "line": 644
+      },
+      {
+        "head": "base_instr",
+        "body": "x=lvalue LESAMPLE  e=expr",
+        "inline": false,
+        "line": 647
+      },
+      {
+        "head": "base_instr",
+        "body": "x=lvalue LARROW e=expr",
+        "inline": false,
+        "line": 650
+      },
+      {
+        "head": "base_instr",
+        "body": "x=lvalue LEAT f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN",
+        "inline": false,
+        "line": 653
+      },
+      {
+        "head": "base_instr",
+        "body": "f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN",
+        "inline": false,
+        "line": 656
+      },
+      {
+        "head": "base_instr",
+        "body": "ASSERT LPAREN c=expr RPAREN",
+        "inline": false,
+        "line": 659
+      },
+      {
+        "head": "instr",
+        "body": "bi=base_instr SEMICOLON",
+        "inline": false,
+        "line": 663
+      },
+      {
+        "head": "instr",
+        "body": "i=if_expr",
+        "inline": false,
+        "line": 666
+      },
+      {
+        "head": "instr",
+        "body": "WHILE LPAREN c=expr RPAREN b=block",
+        "inline": false,
+        "line": 669
+      },
+      {
+        "head": "instr",
+        "body": "MATCH e=expr WITH PIPE? bs=plist0(match_branch, PIPE) END SEMICOLON",
+        "inline": false,
+        "line": 672
+      },
+      {
+        "head": "instr",
+        "body": "IF LPAREN e=expr IS c=opptn RPAREN b1=block b2=option(prefix(ELSE, block))",
+        "inline": false,
+        "line": 675
+      },
+      {
+        "head": "if_expr",
+        "body": "IF c=paren(expr) b=block el=if_else_expr",
+        "inline": true,
+        "line": 679
+      },
+      {
+        "head": "if_else_expr",
+        "body": "/* empty */",
+        "inline": false,
+        "line": 681
+      },
+      {
+        "head": "if_else_expr",
+        "body": "ELSE b=block",
+        "inline": false,
+        "line": 683
+      },
+      {
+        "head": "if_else_expr",
+        "body": "ELIF e=paren(expr) b=block el=if_else_expr",
+        "inline": false,
+        "line": 686
+      },
+      {
+        "head": "match_branch",
+        "body": "c=opptn IMPL b=block",
+        "inline": false,
+        "line": 690
+      },
+      {
+        "head": "block",
+        "body": "i=loc(base_instr) SEMICOLON",
+        "inline": false,
+        "line": 694
+      },
+      {
+        "head": "block",
+        "body": "stmt=brace(stmt)",
+        "inline": false,
+        "line": 697
+      },
+      {
+        "head": "stmt",
+        "body": "aout=loc(instr)*",
+        "inline": false,
+        "line": 702
+      },
+      {
+        "head": "var_decl",
+        "body": "VAR xs=plist1(lident, COMMA) COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 706
+      },
+      {
+        "head": "loc_decl_names",
+        "body": "x=plist1(lident, COMMA)",
+        "inline": false,
+        "line": 709
+      },
+      {
+        "head": "loc_decl_names",
+        "body": "LPAREN x=plist2(lident, COMMA) RPAREN",
+        "inline": false,
+        "line": 711
+      },
+      {
+        "head": "loc_decl_r",
+        "body": "VAR x=loc(loc_decl_names)",
+        "inline": false,
+        "line": 715
+      },
+      {
+        "head": "loc_decl_r",
+        "body": "VAR x=loc(loc_decl_names) COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 718
+      },
+      {
+        "head": "loc_decl_r",
+        "body": "VAR x=loc(loc_decl_names) COLON ty=loc(type_exp) LARROW e=expr",
+        "inline": false,
+        "line": 721
+      },
+      {
+        "head": "loc_decl_r",
+        "body": "VAR x=loc(loc_decl_names) LARROW e=expr",
+        "inline": false,
+        "line": 724
+      },
+      {
+        "head": "loc_decl",
+        "body": "x=loc_decl_r SEMICOLON",
+        "inline": false,
+        "line": 727
+      },
+      {
+        "head": "memtype_decl",
+        "body": "x=loc(loc_decl_names) COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 731
+      },
+      {
+        "head": "memtype",
+        "body": "LBRACE m=rlist0(memtype_decl,COMMA) RBRACE",
+        "inline": false,
+        "line": 734
+      },
+      {
+        "head": "ret_stmt",
+        "body": "RETURN e=expr SEMICOLON",
+        "inline": false,
+        "line": 738
+      },
+      {
+        "head": "ret_stmt",
+        "body": "empty",
+        "inline": false,
+        "line": 741
+      },
+      {
+        "head": "fun_def_body",
+        "body": "LBRACE decl=loc_decl* s=stmt rs=ret_stmt RBRACE",
+        "inline": false,
+        "line": 745
+      },
+      {
+        "head": "fun_decl",
+        "body": "x=lident pd=param_decl ty=prefix(COLON, loc(type_exp))?",
+        "inline": false,
+        "line": 749
+      },
+      {
+        "head": "minclude_proc",
+        "body": "PLUS? xs=plist1(lident,COMMA)",
+        "inline": false,
+        "line": 751
+      },
+      {
+        "head": "minclude_proc",
+        "body": "MINUS xs=plist1(lident,COMMA)",
+        "inline": false,
+        "line": 753
+      },
+      {
+        "head": "mod_item",
+        "body": "v=var_decl",
+        "inline": false,
+        "line": 757
+      },
+      {
+        "head": "mod_item",
+        "body": "MODULE x=uident c=mod_cast? EQ m=loc(mod_body)",
+        "inline": false,
+        "line": 760
+      },
+      {
+        "head": "mod_item",
+        "body": "PROC decl=loc(fun_decl) EQ body=fun_def_body",
+        "inline": false,
+        "line": 762
+      },
+      {
+        "head": "mod_item",
+        "body": "PROC x=lident EQ f=loc(fident)",
+        "inline": false,
+        "line": 765
+      },
+      {
+        "head": "mod_item",
+        "body": "INCLUDE v=boption(VAR) m=loc(mod_qident) xs=bracket(minclude_proc)?",
+        "inline": false,
+        "line": 768
+      },
+      {
+        "head": "mod_item",
+        "body": "IMPORT VAR ms=loc(mod_qident)+",
+        "inline": false,
+        "line": 771
+      },
+      {
+        "head": "mod_remove_var",
+        "body": "MINUS VAR xs=plist1(lident, COMMA)",
+        "inline": false,
+        "line": 774
+      },
+      {
+        "head": "mod_update_var",
+        "body": "v=var_decl",
+        "inline": false,
+        "line": 777
+      },
+      {
+        "head": "mod_update_fun",
+        "body": "PROC x=lident LBRACKET lvs=var_decl* fups=fun_update+ RBRACKET res_up=option(RES TILD e=sexpr  )",
+        "inline": false,
+        "line": 781
+      },
+      {
+        "head": "update_stmt",
+        "body": "PLUS s=brace(stmt)",
+        "inline": false,
+        "line": 783
+      },
+      {
+        "head": "update_stmt",
+        "body": "PLUS HAT s=brace(stmt)",
+        "inline": false,
+        "line": 784
+      },
+      {
+        "head": "update_stmt",
+        "body": "TILD s=brace(stmt)",
+        "inline": false,
+        "line": 785
+      },
+      {
+        "head": "update_stmt",
+        "body": "MINUS",
+        "inline": false,
+        "line": 787
+      },
+      {
+        "head": "update_cond",
+        "body": "PLUS e=sexpr",
+        "inline": false,
+        "line": 789
+      },
+      {
+        "head": "update_cond",
+        "body": "PLUS HAT e=sexpr",
+        "inline": false,
+        "line": 790
+      },
+      {
+        "head": "update_cond",
+        "body": "TILD e=sexpr",
+        "inline": false,
+        "line": 791
+      },
+      {
+        "head": "update_cond",
+        "body": "MINUS bs=branch_select",
+        "inline": false,
+        "line": 793
+      },
+      {
+        "head": "fun_update",
+        "body": "cp=loc(codepos_or_range) sup=update_stmt",
+        "inline": false,
+        "line": 796
+      },
+      {
+        "head": "fun_update",
+        "body": "cp=loc(codepos_or_range) cup=update_cond",
+        "inline": false,
+        "line": 802
+      },
+      {
+        "head": "mod_body",
+        "body": "m=mod_qident",
+        "inline": false,
+        "line": 806
+      },
+      {
+        "head": "mod_body",
+        "body": "LBRACE stt=loc(mod_item)* RBRACE",
+        "inline": false,
+        "line": 809
+      },
+      {
+        "head": "mod_body",
+        "body": "m=mod_qident WITH LBRACE dvs=mod_remove_var? vs=mod_update_var* fs=mod_update_fun* RBRACE",
+        "inline": false,
+        "line": 812
+      },
+      {
+        "head": "mod_def_or_decl",
+        "body": "locality=locality MODULE header=mod_header c=mod_cast? EQ ptm_body=loc(mod_body)",
+        "inline": false,
+        "line": 816
+      },
+      {
+        "head": "mod_def_or_decl",
+        "body": "locality=locality MODULE ptm_name=uident LTCOLON ptm_modty=mod_type_with_restr",
+        "inline": false,
+        "line": 819
+      },
+      {
+        "head": "mod_header",
+        "body": "x=uident",
+        "inline": false,
+        "line": 821
+      },
+      {
+        "head": "mod_header",
+        "body": "mh=loc(mod_header_params)",
+        "inline": false,
+        "line": 822
+      },
+      {
+        "head": "mod_header",
+        "body": "LPAREN mh=mod_header c=mod_cast RPAREN",
+        "inline": false,
+        "line": 824
+      },
+      {
+        "head": "mod_cast",
+        "body": "COLON c=plist1(uqident,COMMA)",
+        "inline": false,
+        "line": 827
+      },
+      {
+        "head": "mod_header_params",
+        "body": "mh=mod_header p=mod_params",
+        "inline": false,
+        "line": 830
+      },
+      {
+        "head": "mod_params",
+        "body": "LPAREN a=plist1(sig_param, COMMA) RPAREN",
+        "inline": false,
+        "line": 836
+      },
+      {
+        "head": "mem_restr_el",
+        "body": "| PLUS  el=f_or_mod_ident | MINUS el=f_or_mod_ident |       el=f_or_mod_ident",
+        "inline": false,
+        "line": 841
+      },
+      {
+        "head": "mem_restr",
+        "body": "| ol=rlist0(mem_restr_el,COMMA)",
+        "inline": false,
+        "line": 846
+      },
+      {
+        "head": "qident_inparam",
+        "body": "SHARP q=qident",
+        "inline": false,
+        "line": 848
+      },
+      {
+        "head": "qident_inparam",
+        "body": "q=qident",
+        "inline": false,
+        "line": 852
+      },
+      {
+        "head": "oracle_restr",
+        "body": "| LBRACE ol=rlist0(qident_inparam,COMMA) RBRACE",
+        "inline": false,
+        "line": 858
+      },
+      {
+        "head": "mod_restr",
+        "body": "| LBRACE mr=mem_restr RBRACE",
+        "inline": false,
+        "line": 866
+      },
+      {
+        "head": "mod_type",
+        "body": "x = qident",
+        "inline": true,
+        "line": 869
+      },
+      {
+        "head": "mod_type_with_restr",
+        "body": "x = qident",
+        "inline": true,
+        "line": 873
+      },
+      {
+        "head": "mod_type_with_restr",
+        "body": "x = qident mr=mod_restr",
+        "inline": true,
+        "line": 876
+      },
+      {
+        "head": "sig_def",
+        "body": "pi_locality=loc(locality) MODULE TYPE pi_name=uident args=sig_params* EQ i=sig_body",
+        "inline": false,
+        "line": 880
+      },
+      {
+        "head": "sig_body",
+        "body": "body=sig_struct_body",
+        "inline": false,
+        "line": 883
+      },
+      {
+        "head": "sig_struct_body",
+        "body": "LBRACE ty=signature_item* RBRACE",
+        "inline": false,
+        "line": 887
+      },
+      {
+        "head": "sig_params",
+        "body": "LPAREN params=plist1(sig_param, COMMA) RPAREN",
+        "inline": false,
+        "line": 891
+      },
+      {
+        "head": "sig_param",
+        "body": "x=uident COLON i=mod_type",
+        "inline": false,
+        "line": 894
+      },
+      {
+        "head": "signature_item",
+        "body": "INCLUDE i=mod_type xs=bracket(minclude_proc)? qs=brace(qident*)?",
+        "inline": false,
+        "line": 898
+      },
+      {
+        "head": "signature_item",
+        "body": "PROC x=lident pd=param_decl COLON ty=loc(type_exp) orcls=option(oracle_restr)",
+        "inline": false,
+        "line": 902
+      },
+      {
+        "head": "locality",
+        "body": "LOCAL",
+        "inline": true,
+        "line": 905
+      },
+      {
+        "head": "locality",
+        "body": "DECLARE",
+        "inline": true,
+        "line": 907
+      },
+      {
+        "head": "locality",
+        "body": "LOCAL DECLARE",
+        "inline": true,
+        "line": 908
+      },
+      {
+        "head": "locality",
+        "body": "DECLARE LOCAL",
+        "inline": true,
+        "line": 911
+      },
+      {
+        "head": "is_local",
+        "body": "lc=loc(locality)",
+        "inline": true,
+        "line": 917
+      },
+      {
+        "head": "typaram",
+        "body": "x=tident",
+        "inline": false,
+        "line": 919
+      },
+      {
+        "head": "typaram",
+        "body": "x=tident LTCOLON tc=plist1(lqident, AMP)",
+        "inline": false,
+        "line": 921
+      },
+      {
+        "head": "typarams",
+        "body": "empty",
+        "inline": false,
+        "line": 923
+      },
+      {
+        "head": "typarams",
+        "body": "x=tident",
+        "inline": false,
+        "line": 924
+      },
+      {
+        "head": "typarams",
+        "body": "xs=paren(plist1(typaram, COMMA))",
+        "inline": false,
+        "line": 926
+      },
+      {
+        "head": "tyd_name",
+        "body": "tya=typarams x=ident",
+        "inline": true,
+        "line": 929
+      },
+      {
+        "head": "dt_ctor_def",
+        "body": "x=oident",
+        "inline": false,
+        "line": 931
+      },
+      {
+        "head": "dt_ctor_def",
+        "body": "x=oident OF ty=plist1(loc(simpl_type_exp), AMP)",
+        "inline": false,
+        "line": 933
+      },
+      {
+        "head": "datatype_def",
+        "body": "LBRACKET PIPE? ctors=plist1(dt_ctor_def, PIPE) RBRACKET",
+        "inline": true,
+        "line": 936
+      },
+      {
+        "head": "rec_field_def",
+        "body": "x=ident COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 939
+      },
+      {
+        "head": "record_def",
+        "body": "LBRACE fields=rlist1(rec_field_def, SEMICOLON) SEMICOLON? RBRACE",
+        "inline": true,
+        "line": 943
+      },
+      {
+        "head": "typedecl",
+        "body": "locality=locality TYPE td=rlist1(tyd_name, COMMA)",
+        "inline": false,
+        "line": 947
+      },
+      {
+        "head": "typedecl",
+        "body": "locality=locality TYPE td=tyd_name LTCOLON tcs=rlist1(qident, COMMA)",
+        "inline": false,
+        "line": 950
+      },
+      {
+        "head": "typedecl",
+        "body": "locality=locality TYPE td=tyd_name EQ te=loc(type_exp)",
+        "inline": false,
+        "line": 953
+      },
+      {
+        "head": "typedecl",
+        "body": "locality=locality TYPE td=tyd_name EQ te=record_def",
+        "inline": false,
+        "line": 956
+      },
+      {
+        "head": "typedecl",
+        "body": "locality=locality TYPE td=tyd_name EQ te=datatype_def",
+        "inline": false,
+        "line": 961
+      },
+      {
+        "head": "subtype",
+        "body": "SUBTYPE name=lident cname=prefix(AS, uident)? EQ LBRACE x=lident COLON carrier=loc(type_exp) PIPE pred=form RBRACE rename=subtype_rename?",
+        "inline": false,
+        "line": 967
+      },
+      {
+        "head": "subtype_rename",
+        "body": "RENAME x=STRING COMMA y=STRING",
+        "inline": false,
+        "line": 972
+      },
+      {
+        "head": "typeclass",
+        "body": "loca=is_local TYPE CLASS x=lident inth=tc_inth? EQ LBRACE body=tc_body RBRACE",
+        "inline": false,
+        "line": 975
+      },
+      {
+        "head": "tc_inth",
+        "body": "LTCOLON x=lqident",
+        "inline": false,
+        "line": 978
+      },
+      {
+        "head": "tc_body",
+        "body": "ops=tc_op* axs=tc_ax*",
+        "inline": false,
+        "line": 981
+      },
+      {
+        "head": "tc_op",
+        "body": "OP x=oident COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 984
+      },
+      {
+        "head": "tc_ax",
+        "body": "AXIOM x=ident COLON ax=form",
+        "inline": false,
+        "line": 989
+      },
+      {
+        "head": "tycinstance",
+        "body": "loca=is_local INSTANCE x=qident WITH typ=tyvars_decl? ty=loc(type_exp) ops=tyci_op* axs=tyci_ax*",
+        "inline": false,
+        "line": 994
+      },
+      {
+        "head": "tycinstance",
+        "body": "loca=is_local INSTANCE x=qident c=uoption(UINT) p=uoption(UINT) WITH typ=tyvars_decl? ty=loc(type_exp) ops=tyci_op* axs=tyci_ax*",
+        "inline": false,
+        "line": 998
+      },
+      {
+        "head": "tyci_op",
+        "body": "OP x=oident EQ tg=qoident",
+        "inline": false,
+        "line": 1002
+      },
+      {
+        "head": "tyci_op",
+        "body": "OP x=oident EQ tg=qoident LTCOLON tvi=plist0(loc(type_exp), COMMA) GT",
+        "inline": false,
+        "line": 1005
+      },
+      {
+        "head": "tyci_ax",
+        "body": "PROOF x=ident BY tg=tactic_core",
+        "inline": false,
+        "line": 1012
+      },
+      {
+        "head": "pred_tydom",
+        "body": "ty=loc(type_exp)",
+        "inline": false,
+        "line": 1016
+      },
+      {
+        "head": "pred_tydom",
+        "body": "tys=plist2(loc(simpl_type_exp), AMP)",
+        "inline": false,
+        "line": 1019
+      },
+      {
+        "head": "pred_tydom",
+        "body": "tys=paren(plist2(loc(type_exp), COMMA))",
+        "inline": false,
+        "line": 1022
+      },
+      {
+        "head": "tyvars_decl",
+        "body": "LBRACKET tyvars=rlist0(typaram, COMMA) RBRACKET",
+        "inline": false,
+        "line": 1026
+      },
+      {
+        "head": "tyvars_decl",
+        "body": "LBRACKET tyvars=rlist2(tident , empty) RBRACKET",
+        "inline": false,
+        "line": 1029
+      },
+      {
+        "head": "op_or_const",
+        "body": "OP",
+        "inline": false,
+        "line": 1031
+      },
+      {
+        "head": "op_or_const",
+        "body": "CONST",
+        "inline": false,
+        "line": 1033
+      },
+      {
+        "head": "operator",
+        "body": "locality=locality k=op_or_const tags=bracket(ident*)? x=plist1(oident, COMMA) tyvars=tyvars_decl? args=ptybindings_opdecl? sty=prefix(COLON, loc(type_exp))? b=seq(prefix(EQ, loc(opbody)), opax?)?",
+        "inline": false,
+        "line": 1040
+      },
+      {
+        "head": "operator",
+        "body": "locality=locality k=op_or_const tags=bracket(ident*)? x=plist1(oident, COMMA) tyvars=tyvars_decl? args=ptybindings_opdecl? COLON LBRACE sty=loc(type_exp) PIPE reft=form RBRACE AS rname=ident",
+        "inline": false,
+        "line": 1046
+      },
+      {
+        "head": "opbody",
+        "body": "f=form",
+        "inline": false,
+        "line": 1048
+      },
+      {
+        "head": "opbody",
+        "body": "bs=opbr+",
+        "inline": false,
+        "line": 1050
+      },
+      {
+        "head": "opax",
+        "body": "AXIOMATIZED BY x=ident",
+        "inline": false,
+        "line": 1053
+      },
+      {
+        "head": "opbr",
+        "body": "WITH ptn=plist1(opcase, COMMA) IMPL e=expr",
+        "inline": false,
+        "line": 1057
+      },
+      {
+        "head": "opcase",
+        "body": "x=ident EQ p=opptn",
+        "inline": true,
+        "line": 1061
+      },
+      {
+        "head": "opptn",
+        "body": "p=mcptn(sbinop)",
+        "inline": true,
+        "line": 1065
+      },
+      {
+        "head": "opptn",
+        "body": "p=paren(mcptn(binop))",
+        "inline": true,
+        "line": 1068
+      },
+      {
+        "head": "mcptn",
+        "body": "c=qoident tvi=tvars_app? ps=bdident*",
+        "inline": false,
+        "line": 1072
+      },
+      {
+        "head": "mcptn",
+        "body": "LBRACKET tvi=tvars_app? RBRACKET",
+        "inline": false,
+        "line": 1074
+      },
+      {
+        "head": "mcptn",
+        "body": "op=loc(uniop) tvi=tvars_app?",
+        "inline": false,
+        "line": 1077
+      },
+      {
+        "head": "mcptn",
+        "body": "op=loc(uniop) tvi=tvars_app? x=bdident",
+        "inline": false,
+        "line": 1080
+      },
+      {
+        "head": "mcptn",
+        "body": "x1=bdident op=loc(BOP) tvi=tvars_app? x2=bdident",
+        "inline": false,
+        "line": 1083
+      },
+      {
+        "head": "mcptn",
+        "body": "x1=bdident op=loc(ordering_op) tvi=tvars_app? x2=bdident",
+        "inline": false,
+        "line": 1088
+      },
+      {
+        "head": "procop",
+        "body": "locality=locality PROC OP x=ident EQ f=loc(fident)",
+        "inline": false,
+        "line": 1094
+      },
+      {
+        "head": "predicate",
+        "body": "locality=locality PRED x=oident",
+        "inline": false,
+        "line": 1098
+      },
+      {
+        "head": "predicate",
+        "body": "locality=locality PRED x=oident tyvars=tyvars_decl? COLON sty=pred_tydom",
+        "inline": false,
+        "line": 1101
+      },
+      {
+        "head": "predicate",
+        "body": "locality=locality PRED x=oident tyvars=tyvars_decl? p=ptybindings? EQ f=form",
+        "inline": false,
+        "line": 1104
+      },
+      {
+        "head": "predicate",
+        "body": "locality=locality INDUCTIVE x=oident tyvars=tyvars_decl? p=ptybindings? EQ b=indpred_def",
+        "inline": false,
+        "line": 1109
+      },
+      {
+        "head": "indpred_def",
+        "body": "PIPE? ctors=plist0(ip_ctor_def, PIPE)",
+        "inline": false,
+        "line": 1111
+      },
+      {
+        "head": "indpred_def",
+        "body": "ctors=bracket(plist0(ip_ctor_def, PIPE))",
+        "inline": false,
+        "line": 1113
+      },
+      {
+        "head": "ip_ctor_def",
+        "body": "x=oident bd=pgtybindings? fs=prefix(OF, plist1(sform, AMP))?",
+        "inline": false,
+        "line": 1119
+      },
+      {
+        "head": "nt_binding1",
+        "body": "x=ident",
+        "inline": false,
+        "line": 1123
+      },
+      {
+        "head": "nt_binding1",
+        "body": "x=ident COLON ty=loc(type_exp)",
+        "inline": false,
+        "line": 1126
+      },
+      {
+        "head": "nt_argty",
+        "body": "ty=loc(type_exp)",
+        "inline": false,
+        "line": 1130
+      },
+      {
+        "head": "nt_argty",
+        "body": "xs=plist0(ident, COMMA) LONGARROW ty=loc(type_exp)",
+        "inline": false,
+        "line": 1133
+      },
+      {
+        "head": "nt_arg1",
+        "body": "x=ident",
+        "inline": false,
+        "line": 1137
+      },
+      {
+        "head": "nt_arg1",
+        "body": "LPAREN x=ident COLON ty=nt_argty RPAREN",
+        "inline": false,
+        "line": 1140
+      },
+      {
+        "head": "nt_bindings",
+        "body": "DASHLT bd=plist0(nt_binding1, COMMA) GT",
+        "inline": false,
+        "line": 1144
+      },
+      {
+        "head": "notation",
+        "body": "locality=loc(locality) NOTATION x=loc(NOP) tv=tyvars_decl? bd=nt_bindings? args=nt_arg1* codom=prefix(COLON, loc(type_exp))? EQ body=expr",
+        "inline": false,
+        "line": 1149
+      },
+      {
+        "head": "abrvopt",
+        "body": "b=boption(MINUS) x=ident",
+        "inline": false,
+        "line": 1152
+      },
+      {
+        "head": "abrvopts",
+        "body": "opts=bracket(abrvopt+)",
+        "inline": false,
+        "line": 1155
+      },
+      {
+        "head": "abbreviation",
+        "body": "locality=loc(locality) ABBREV opts=abrvopts? x=oident tyvars=tyvars_decl? args=ptybindings_decl? sty=prefix(COLON, loc(type_exp))? EQ b=expr",
+        "inline": false,
+        "line": 1162
+      },
+      {
+        "head": "mempred_binding",
+        "body": "| TICKBRACE u=uident+ RBRACE",
+        "inline": false,
+        "line": 1168
+      },
+      {
+        "head": "lemma_decl",
+        "body": "x=ident tyvars=tyvars_decl? predvars=mempred_binding? pd=pgtybindings? COLON f=form",
+        "inline": false,
+        "line": 1176
+      },
+      {
+        "head": "axiom_tc",
+        "body": "/* empty */",
+        "inline": false,
+        "line": 1178
+      },
+      {
+        "head": "axiom_tc",
+        "body": "BY bracket(empty)",
+        "inline": false,
+        "line": 1179
+      },
+      {
+        "head": "axiom_tc",
+        "body": "BY t=tactics",
+        "inline": false,
+        "line": 1181
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality AXIOM ids=bracket(ident+)? d=lemma_decl",
+        "inline": false,
+        "line": 1185
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality LEMMA d=lemma_decl ao=axiom_tc",
+        "inline": false,
+        "line": 1188
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality  EQUIV x=ident pd=pgtybindings? COLON p=loc( equiv_body(none)) ao=axiom_tc",
+        "inline": false,
+        "line": 1189
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality  HOARE x=ident pd=pgtybindings? COLON p=loc( hoare_body(none)) ao=axiom_tc",
+        "inline": false,
+        "line": 1190
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality EHOARE x=ident pd=pgtybindings? COLON p=loc( ehoare_body(none)) ao=axiom_tc",
+        "inline": false,
+        "line": 1191
+      },
+      {
+        "head": "axiom",
+        "body": "l=locality PHOARE x=ident pd=pgtybindings? COLON p=loc(phoare_body(none)) ao=axiom_tc",
+        "inline": false,
+        "line": 1194
+      },
+      {
+        "head": "proofend",
+        "body": "QED",
+        "inline": false,
+        "line": 1196
+      },
+      {
+        "head": "proofend",
+        "body": "ADMITTED",
+        "inline": false,
+        "line": 1197
+      },
+      {
+        "head": "proofend",
+        "body": "ABORT",
+        "inline": false,
+        "line": 1202
+      },
+      {
+        "head": "theory_clear_item1",
+        "body": "l=genqident(STAR)",
+        "inline": false,
+        "line": 1205
+      },
+      {
+        "head": "theory_clear_items",
+        "body": "xs=theory_clear_item1*",
+        "inline": false,
+        "line": 1208
+      },
+      {
+        "head": "theory_open",
+        "body": "loca=is_local b=iboption(ABSTRACT) THEORY x=uident",
+        "inline": false,
+        "line": 1212
+      },
+      {
+        "head": "theory_close",
+        "body": "END xs=bracket(theory_clear_items)? x=uident",
+        "inline": false,
+        "line": 1216
+      },
+      {
+        "head": "theory_clear",
+        "body": "CLEAR xs=bracket(theory_clear_items)",
+        "inline": false,
+        "line": 1220
+      },
+      {
+        "head": "section_open",
+        "body": "SECTION     x=option(uident)",
+        "inline": false,
+        "line": 1221
+      },
+      {
+        "head": "section_close",
+        "body": "END SECTION x=option(uident)",
+        "inline": false,
+        "line": 1223
+      },
+      {
+        "head": "import_flag",
+        "body": "IMPORT",
+        "inline": false,
+        "line": 1225
+      },
+      {
+        "head": "import_flag",
+        "body": "EXPORT",
+        "inline": false,
+        "line": 1227
+      },
+      {
+        "head": "theory_require",
+        "body": "nm=prefix(FROM, uident)? REQUIRE ip=import_flag? x=theory_require_1+",
+        "inline": false,
+        "line": 1231
+      },
+      {
+        "head": "theory_require_1",
+        "body": "x=uident",
+        "inline": false,
+        "line": 1235
+      },
+      {
+        "head": "theory_require_1",
+        "body": "LBRACKET x=uident AS y=uident RBRACKET",
+        "inline": false,
+        "line": 1238
+      },
+      {
+        "head": "theory_import",
+        "body": "IMPORT xs=uqident*",
+        "inline": false,
+        "line": 1239
+      },
+      {
+        "head": "theory_export",
+        "body": "EXPORT xs=uqident*",
+        "inline": false,
+        "line": 1241
+      },
+      {
+        "head": "module_import",
+        "body": "IMPORT VAR xs=loc(mod_qident)+",
+        "inline": false,
+        "line": 1247
+      },
+      {
+        "head": "im_block_start",
+        "body": "LBRACE",
+        "inline": true,
+        "line": 1249
+      },
+      {
+        "head": "im_block_start",
+        "body": "LPBRACE",
+        "inline": true,
+        "line": 1251
+      },
+      {
+        "head": "im_block_end",
+        "body": "RBRACE",
+        "inline": true,
+        "line": 1253
+      },
+      {
+        "head": "im_block_end",
+        "body": "RPBRACE",
+        "inline": true,
+        "line": 1255
+      },
+      {
+        "head": "im_block",
+        "body": "a1=im_block_start s=im_stmt a2=im_block_end",
+        "inline": false,
+        "line": 1259
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 1263
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "LARROW",
+        "inline": false,
+        "line": 1264
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "UNDERSCORE LARROW UNDERSCORE",
+        "inline": false,
+        "line": 1267
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "LESAMPLE",
+        "inline": false,
+        "line": 1268
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "UNDERSCORE LESAMPLE UNDERSCORE",
+        "inline": false,
+        "line": 1271
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "LEAT",
+        "inline": false,
+        "line": 1272
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "UNDERSCORE LEAT UNDERSCORE",
+        "inline": false,
+        "line": 1275
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "IF",
+        "inline": false,
+        "line": 1278
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "WHILE",
+        "inline": false,
+        "line": 1281
+      },
+      {
+        "head": "im_stmt_atomic",
+        "body": "n=lident",
+        "inline": false,
+        "line": 1284
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "x=im_stmt_atomic S",
+        "inline": false,
+        "line": 1288
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "IF x1=im_block",
+        "inline": false,
+        "line": 1291
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "IF x1=im_block ELSE x2=im_block",
+        "inline": false,
+        "line": 1294
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "WHILE x=im_block",
+        "inline": false,
+        "line": 1297
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "x=paren(im_stmt) S",
+        "inline": false,
+        "line": 1300
+      },
+      {
+        "head": "im_stmt_base_r",
+        "body": "s=im_repeat_mark x=im_stmt_base_r(S)",
+        "inline": false,
+        "line": 1303
+      },
+      {
+        "head": "im_stmt_base",
+        "body": "x=im_stmt_base_r(S)",
+        "inline": false,
+        "line": 1307
+      },
+      {
+        "head": "im_stmt_base",
+        "body": "xs=plist2(im_stmt_base_r(empty), PIPE) S",
+        "inline": false,
+        "line": 1310
+      },
+      {
+        "head": "im_stmt_seq_r",
+        "body": "x=im_stmt_base(empty)",
+        "inline": false,
+        "line": 1314
+      },
+      {
+        "head": "im_stmt_seq_r",
+        "body": "x=im_stmt_base(SEMICOLON) xs=im_stmt_seq_r",
+        "inline": false,
+        "line": 1317
+      },
+      {
+        "head": "im_stmt_seq_named",
+        "body": "x=im_stmt_seq_r AS n=lident",
+        "inline": true,
+        "line": 1321
+      },
+      {
+        "head": "im_stmt_seq",
+        "body": "x=im_stmt_seq_named",
+        "inline": false,
+        "line": 1325
+      },
+      {
+        "head": "im_stmt_seq",
+        "body": "xs=im_stmt_seq_r",
+        "inline": false,
+        "line": 1328
+      },
+      {
+        "head": "im_stmt_seq",
+        "body": "x=im_stmt_seq_named SEMICOLON xs=im_stmt_seq",
+        "inline": false,
+        "line": 1331
+      },
+      {
+        "head": "im_stmt",
+        "body": "xs=im_stmt_seq?",
+        "inline": true,
+        "line": 1335
+      },
+      {
+        "head": "im_base_repeat_mark",
+        "body": "x=im_range NOT",
+        "inline": false,
+        "line": 1339
+      },
+      {
+        "head": "im_base_repeat_mark",
+        "body": "x=im_range_question QUESTION",
+        "inline": false,
+        "line": 1342
+      },
+      {
+        "head": "im_repeat_mark",
+        "body": "b=boption(TILD) x=im_base_repeat_mark",
+        "inline": false,
+        "line": 1346
+      },
+      {
+        "head": "im_range",
+        "body": "empty",
+        "inline": false,
+        "line": 1350
+      },
+      {
+        "head": "im_range",
+        "body": "i=word",
+        "inline": false,
+        "line": 1353
+      },
+      {
+        "head": "im_range",
+        "body": "LBRACKET n=word DOTDOT m=word RBRACKET",
+        "inline": false,
+        "line": 1356
+      },
+      {
+        "head": "im_range",
+        "body": "LBRACKET n=word DOTDOT RBRACKET",
+        "inline": false,
+        "line": 1359
+      },
+      {
+        "head": "im_range",
+        "body": "LBRACKET DOTDOT m=word RBRACKET",
+        "inline": false,
+        "line": 1362
+      },
+      {
+        "head": "im_range_question",
+        "body": "empty",
+        "inline": false,
+        "line": 1366
+      },
+      {
+        "head": "im_range_question",
+        "body": "i=word",
+        "inline": false,
+        "line": 1372
+      },
+      {
+        "head": "ipcore_name",
+        "body": "s=_lident",
+        "inline": false,
+        "line": 1374
+      },
+      {
+        "head": "ipcore_name",
+        "body": "s=_uident",
+        "inline": false,
+        "line": 1375
+      },
+      {
+        "head": "ipcore_name",
+        "body": "s=_mident",
+        "inline": false,
+        "line": 1377
+      },
+      {
+        "head": "ipcore",
+        "body": "PLUS",
+        "inline": false,
+        "line": 1381
+      },
+      {
+        "head": "ipcore",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 1384
+      },
+      {
+        "head": "ipcore",
+        "body": "QUESTION",
+        "inline": false,
+        "line": 1387
+      },
+      {
+        "head": "ipcore",
+        "body": "n=word QUESTION",
+        "inline": false,
+        "line": 1390
+      },
+      {
+        "head": "ipcore",
+        "body": "STAR",
+        "inline": false,
+        "line": 1393
+      },
+      {
+        "head": "ipcore",
+        "body": "s=ipcore_name",
+        "inline": false,
+        "line": 1396
+      },
+      {
+        "head": "sharp",
+        "body": "SHARP",
+        "inline": true,
+        "line": 1398
+      },
+      {
+        "head": "sharp",
+        "body": "SHARPPIPE",
+        "inline": true,
+        "line": 1400
+      },
+      {
+        "head": "icasemode",
+        "body": "/* empty */",
+        "inline": true,
+        "line": 1404
+      },
+      {
+        "head": "icasemode",
+        "body": "opt=icasemode_full_opt wb=sharp",
+        "inline": true,
+        "line": 1407
+      },
+      {
+        "head": "icasemode",
+        "body": "i=word NOT opt=icasemode_full_opt wb=sharp",
+        "inline": true,
+        "line": 1410
+      },
+      {
+        "head": "icasemode",
+        "body": "NOT opt=icasemode_full_opt wb=sharp",
+        "inline": true,
+        "line": 1413
+      },
+      {
+        "head": "icasemode_full_opt",
+        "body": "h=iboption(TILD) d=iboption(SLASH)",
+        "inline": true,
+        "line": 1416
+      },
+      {
+        "head": "ip_repeat",
+        "body": "i=ioption(word) NOT",
+        "inline": false,
+        "line": 1418
+      },
+      {
+        "head": "ip_repeat",
+        "body": "i=word",
+        "inline": false,
+        "line": 1420
+      },
+      {
+        "head": "ipsubsttop",
+        "body": "LTSTARGT",
+        "inline": false,
+        "line": 1422
+      },
+      {
+        "head": "ipsubsttop",
+        "body": "LTLTSTARGT",
+        "inline": false,
+        "line": 1423
+      },
+      {
+        "head": "ipsubsttop",
+        "body": "LTSTARGTGT",
+        "inline": false,
+        "line": 1425
+      },
+      {
+        "head": "crushmode",
+        "body": "PIPEGT",
+        "inline": false,
+        "line": 1428
+      },
+      {
+        "head": "crushmode",
+        "body": "SLASHGT",
+        "inline": false,
+        "line": 1430
+      },
+      {
+        "head": "crushmode",
+        "body": "PIPEPIPEGT",
+        "inline": false,
+        "line": 1432
+      },
+      {
+        "head": "crushmode",
+        "body": "SLASHSLASHGT",
+        "inline": false,
+        "line": 1434
+      },
+      {
+        "head": "intro_pattern",
+        "body": "x=ipcore",
+        "inline": false,
+        "line": 1438
+      },
+      {
+        "head": "intro_pattern",
+        "body": "HAT",
+        "inline": false,
+        "line": 1441
+      },
+      {
+        "head": "intro_pattern",
+        "body": "LBRACKET mode=icasemode RBRACKET",
+        "inline": false,
+        "line": 1444
+      },
+      {
+        "head": "intro_pattern",
+        "body": "LBRACKET mode=icasemode ip=loc(intro_pattern)+ RBRACKET",
+        "inline": false,
+        "line": 1447
+      },
+      {
+        "head": "intro_pattern",
+        "body": "LBRACKET mode=icasemode ip=plist2(loc(intro_pattern)*, PIPE) RBRACKET",
+        "inline": false,
+        "line": 1450
+      },
+      {
+        "head": "intro_pattern",
+        "body": "i=ioption(ip_repeat) o=rwocc? RARROW",
+        "inline": false,
+        "line": 1453
+      },
+      {
+        "head": "intro_pattern",
+        "body": "i=ioption(ip_repeat) o=rwocc? LARROW",
+        "inline": false,
+        "line": 1456
+      },
+      {
+        "head": "intro_pattern",
+        "body": "i=ioption(ip_repeat) RRARROW",
+        "inline": false,
+        "line": 1459
+      },
+      {
+        "head": "intro_pattern",
+        "body": "i=ioption(ip_repeat) LLARROW",
+        "inline": false,
+        "line": 1462
+      },
+      {
+        "head": "intro_pattern",
+        "body": "LBRACE xs=loc(ipcore_name)+ RBRACE",
+        "inline": false,
+        "line": 1465
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHSLASH",
+        "inline": false,
+        "line": 1468
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHSLASHEQ",
+        "inline": false,
+        "line": 1471
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHSLASHTILDEQ",
+        "inline": false,
+        "line": 1474
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHSHARP",
+        "inline": false,
+        "line": 1477
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHSLASHSHARP",
+        "inline": false,
+        "line": 1480
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHEQ",
+        "inline": false,
+        "line": 1483
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASHTILDEQ",
+        "inline": false,
+        "line": 1486
+      },
+      {
+        "head": "intro_pattern",
+        "body": "SLASH f=pterm",
+        "inline": false,
+        "line": 1489
+      },
+      {
+        "head": "intro_pattern",
+        "body": "AT s=rwside o=rwocc? SLASH x=sform_h",
+        "inline": false,
+        "line": 1492
+      },
+      {
+        "head": "intro_pattern",
+        "body": "ip=ipsubsttop",
+        "inline": false,
+        "line": 1495
+      },
+      {
+        "head": "intro_pattern",
+        "body": "n=word NOT ip=ipsubsttop",
+        "inline": false,
+        "line": 1498
+      },
+      {
+        "head": "intro_pattern",
+        "body": "MINUS",
+        "inline": false,
+        "line": 1501
+      },
+      {
+        "head": "intro_pattern",
+        "body": "cm=crushmode",
+        "inline": false,
+        "line": 1504
+      },
+      {
+        "head": "gpterm_head",
+        "body": "exp=iboption(AT) p=qident tvi=tvars_app?",
+        "inline": false,
+        "line": 1508
+      },
+      {
+        "head": "gpterm_head",
+        "body": "LPAREN exp=iboption(AT) UNDERSCORE? COLON f=F RPAREN",
+        "inline": false,
+        "line": 1511
+      },
+      {
+        "head": "gpoterm_head",
+        "body": "x=gpterm_head(F?)",
+        "inline": false,
+        "line": 1515
+      },
+      {
+        "head": "gpoterm_head",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 1518
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "LPAREN LTCOLON m=loc(mod_qident) RPAREN",
+        "inline": false,
+        "line": 1522
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "f=sform_h",
+        "inline": false,
+        "line": 1525
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "LPAREN COLON exp=iboption(AT) p=qident tvi=tvars_app? args=loc(gpterm_arg)* RPAREN",
+        "inline": false,
+        "line": 1530
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "SLASHSLASH",
+        "inline": false,
+        "line": 1533
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "SLASHSHARP",
+        "inline": false,
+        "line": 1536
+      },
+      {
+        "head": "gpterm_arg",
+        "body": "SLASHSLASHSHARP",
+        "inline": false,
+        "line": 1539
+      },
+      {
+        "head": "gpterm",
+        "body": "hd=gpterm_head(F)",
+        "inline": false,
+        "line": 1543
+      },
+      {
+        "head": "gpterm",
+        "body": "LPAREN hd=gpterm_head(F) args=loc(gpterm_arg)* RPAREN",
+        "inline": false,
+        "line": 1546
+      },
+      {
+        "head": "gpoterm",
+        "body": "hd=gpoterm_head(F)",
+        "inline": false,
+        "line": 1550
+      },
+      {
+        "head": "gpoterm",
+        "body": "LPAREN hd=gpoterm_head(F) args=loc(gpterm_arg)* RPAREN",
+        "inline": false,
+        "line": 1553
+      },
+      {
+        "head": "pterm",
+        "body": "pt=gpoterm(form_h)",
+        "inline": true,
+        "line": 1557
+      },
+      {
+        "head": "pcutdef1",
+        "body": "p=qident tvi=tvars_app? args=loc(gpterm_arg)*",
+        "inline": false,
+        "line": 1561
+      },
+      {
+        "head": "pcutdef",
+        "body": "cd=pcutdef1",
+        "inline": false,
+        "line": 1563
+      },
+      {
+        "head": "pcutdef",
+        "body": "LPAREN cd=pcutdef1 RPAREN",
+        "inline": false,
+        "line": 1566
+      },
+      {
+        "head": "rwside",
+        "body": "MINUS",
+        "inline": true,
+        "line": 1568
+      },
+      {
+        "head": "rwside",
+        "body": "empty",
+        "inline": true,
+        "line": 1570
+      },
+      {
+        "head": "rwrepeat",
+        "body": "NOT",
+        "inline": false,
+        "line": 1572
+      },
+      {
+        "head": "rwrepeat",
+        "body": "QUESTION",
+        "inline": false,
+        "line": 1573
+      },
+      {
+        "head": "rwrepeat",
+        "body": "n=word NOT",
+        "inline": false,
+        "line": 1574
+      },
+      {
+        "head": "rwrepeat",
+        "body": "n=word QUESTION",
+        "inline": false,
+        "line": 1576
+      },
+      {
+        "head": "rwocc",
+        "body": "LBRACE       x=word+ RBRACE",
+        "inline": false,
+        "line": 1578
+      },
+      {
+        "head": "rwocc",
+        "body": "LBRACE MINUS x=word+ RBRACE",
+        "inline": false,
+        "line": 1579
+      },
+      {
+        "head": "rwocc",
+        "body": "LBRACE PLUS          RBRACE",
+        "inline": false,
+        "line": 1581
+      },
+      {
+        "head": "rwpr_arg",
+        "body": "i=ident",
+        "inline": false,
+        "line": 1583
+      },
+      {
+        "head": "rwpr_arg",
+        "body": "i=ident f=form",
+        "inline": false,
+        "line": 1585
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHSLASH",
+        "inline": false,
+        "line": 1589
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHSLASHEQ",
+        "inline": false,
+        "line": 1592
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHSLASHTILDEQ",
+        "inline": false,
+        "line": 1595
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHSHARP",
+        "inline": false,
+        "line": 1598
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHSLASHSHARP",
+        "inline": false,
+        "line": 1601
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHEQ",
+        "inline": false,
+        "line": 1604
+      },
+      {
+        "head": "rwarg1",
+        "body": "SLASHTILDEQ",
+        "inline": false,
+        "line": 1607
+      },
+      {
+        "head": "rwarg1",
+        "body": "s=rwside r=rwrepeat? o=rwocc? p=bracket(form_h)? fp=rwpterms",
+        "inline": false,
+        "line": 1610
+      },
+      {
+        "head": "rwarg1",
+        "body": "s=rwside r=rwrepeat? o=rwocc? SLASH x=sform_h %prec prec_tactic",
+        "inline": false,
+        "line": 1613
+      },
+      {
+        "head": "rwarg1",
+        "body": "PR s=bracket(rwpr_arg)",
+        "inline": false,
+        "line": 1616
+      },
+      {
+        "head": "rwarg1",
+        "body": "AMP f=pterm",
+        "inline": false,
+        "line": 1619
+      },
+      {
+        "head": "rwarg1",
+        "body": "SHARP SMT",
+        "inline": false,
+        "line": 1622
+      },
+      {
+        "head": "rwarg1",
+        "body": "SHARP SMT COLON pi=bracket(smt_info)",
+        "inline": false,
+        "line": 1625
+      },
+      {
+        "head": "rwarg1",
+        "body": "SHARP SMT COLON dbmap=paren(dbmap1*)",
+        "inline": false,
+        "line": 1628
+      },
+      {
+        "head": "rwarg1",
+        "body": "SHARP x=ident",
+        "inline": false,
+        "line": 1630
+      },
+      {
+        "head": "rwpterms",
+        "body": "f=pterm",
+        "inline": false,
+        "line": 1634
+      },
+      {
+        "head": "rwpterms",
+        "body": "LPAREN fs=rlist2(rwpterm, COMMA) RPAREN",
+        "inline": false,
+        "line": 1637
+      },
+      {
+        "head": "rwpterm",
+        "body": "s=rwside f=pterm",
+        "inline": false,
+        "line": 1641
+      },
+      {
+        "head": "rwarg",
+        "body": "r=loc(rwarg1)",
+        "inline": false,
+        "line": 1645
+      },
+      {
+        "head": "rwarg",
+        "body": "rg=loc(tcfc) COLON r=loc(rwarg1)",
+        "inline": false,
+        "line": 1648
+      },
+      {
+        "head": "genpattern",
+        "body": "l=sform_h %prec prec_tactic",
+        "inline": false,
+        "line": 1652
+      },
+      {
+        "head": "genpattern",
+        "body": "o=rwocc l=sform_h %prec prec_tactic",
+        "inline": false,
+        "line": 1655
+      },
+      {
+        "head": "genpattern",
+        "body": "LPAREN exp=iboption(AT) UNDERSCORE COLON f=form RPAREN",
+        "inline": false,
+        "line": 1658
+      },
+      {
+        "head": "genpattern",
+        "body": "LPAREN LPAREN exp=iboption(AT) UNDERSCORE COLON f=form RPAREN args=loc(gpterm_arg)* RPAREN",
+        "inline": false,
+        "line": 1664
+      },
+      {
+        "head": "genpattern",
+        "body": "AT x=ident",
+        "inline": false,
+        "line": 1667
+      },
+      {
+        "head": "simplify_arg",
+        "body": "DELTA l=qoident*",
+        "inline": false,
+        "line": 1669
+      },
+      {
+        "head": "simplify_arg",
+        "body": "ZETA",
+        "inline": false,
+        "line": 1670
+      },
+      {
+        "head": "simplify_arg",
+        "body": "IOTA",
+        "inline": false,
+        "line": 1671
+      },
+      {
+        "head": "simplify_arg",
+        "body": "BETA",
+        "inline": false,
+        "line": 1672
+      },
+      {
+        "head": "simplify_arg",
+        "body": "ETA",
+        "inline": false,
+        "line": 1673
+      },
+      {
+        "head": "simplify_arg",
+        "body": "LOGIC",
+        "inline": false,
+        "line": 1674
+      },
+      {
+        "head": "simplify_arg",
+        "body": "MODPATH",
+        "inline": false,
+        "line": 1676
+      },
+      {
+        "head": "simplify",
+        "body": "l=simplify_arg+",
+        "inline": false,
+        "line": 1678
+      },
+      {
+        "head": "simplify",
+        "body": "SIMPLIFY",
+        "inline": false,
+        "line": 1679
+      },
+      {
+        "head": "simplify",
+        "body": "SIMPLIFY l=qoident+",
+        "inline": false,
+        "line": 1680
+      },
+      {
+        "head": "simplify",
+        "body": "SIMPLIFY DELTA",
+        "inline": false,
+        "line": 1682
+      },
+      {
+        "head": "cbv",
+        "body": "CBV",
+        "inline": false,
+        "line": 1684
+      },
+      {
+        "head": "cbv",
+        "body": "CBV l=qoident+",
+        "inline": false,
+        "line": 1685
+      },
+      {
+        "head": "cbv",
+        "body": "CBV DELTA",
+        "inline": false,
+        "line": 1687
+      },
+      {
+        "head": "conseq",
+        "body": "empty",
+        "inline": false,
+        "line": 1689
+      },
+      {
+        "head": "conseq",
+        "body": "UNDERSCORE LONGARROW UNDERSCORE",
+        "inline": false,
+        "line": 1690
+      },
+      {
+        "head": "conseq",
+        "body": "f1=form LONGARROW",
+        "inline": false,
+        "line": 1691
+      },
+      {
+        "head": "conseq",
+        "body": "f1=form LONGARROW UNDERSCORE",
+        "inline": false,
+        "line": 1692
+      },
+      {
+        "head": "conseq",
+        "body": "f2=form",
+        "inline": false,
+        "line": 1693
+      },
+      {
+        "head": "conseq",
+        "body": "LONGARROW f2=form",
+        "inline": false,
+        "line": 1694
+      },
+      {
+        "head": "conseq",
+        "body": "UNDERSCORE LONGARROW f2=form",
+        "inline": false,
+        "line": 1695
+      },
+      {
+        "head": "conseq",
+        "body": "f1=form LONGARROW f2=form",
+        "inline": false,
+        "line": 1697
+      },
+      {
+        "head": "conseq_xt",
+        "body": "c=conseq",
+        "inline": false,
+        "line": 1699
+      },
+      {
+        "head": "conseq_xt",
+        "body": "c=conseq   COLON cmp=hoare_bd_cmp? bd=sform",
+        "inline": false,
+        "line": 1700
+      },
+      {
+        "head": "conseq_xt",
+        "body": "UNDERSCORE COLON cmp=hoare_bd_cmp? bd=sform",
+        "inline": false,
+        "line": 1703
+      },
+      {
+        "head": "call_info",
+        "body": "f1=form LONGARROW f2=form",
+        "inline": false,
+        "line": 1705
+      },
+      {
+        "head": "call_info",
+        "body": "f=form",
+        "inline": false,
+        "line": 1706
+      },
+      {
+        "head": "call_info",
+        "body": "bad=form COMMA p=form",
+        "inline": false,
+        "line": 1707
+      },
+      {
+        "head": "call_info",
+        "body": "bad=form COMMA p=form COMMA q=form",
+        "inline": false,
+        "line": 1709
+      },
+      {
+        "head": "tac_dir",
+        "body": "BACKS",
+        "inline": false,
+        "line": 1711
+      },
+      {
+        "head": "tac_dir",
+        "body": "FWDS",
+        "inline": false,
+        "line": 1712
+      },
+      {
+        "head": "tac_dir",
+        "body": "empty",
+        "inline": false,
+        "line": 1714
+      },
+      {
+        "head": "icodepos_r",
+        "body": "IF",
+        "inline": false,
+        "line": 1716
+      },
+      {
+        "head": "icodepos_r",
+        "body": "WHILE",
+        "inline": false,
+        "line": 1717
+      },
+      {
+        "head": "icodepos_r",
+        "body": "MATCH",
+        "inline": false,
+        "line": 1719
+      },
+      {
+        "head": "icodepos_r",
+        "body": "lvm=lvmatch LESAMPLE",
+        "inline": false,
+        "line": 1720
+      },
+      {
+        "head": "icodepos_r",
+        "body": "lvm=lvmatch LEAT",
+        "inline": false,
+        "line": 1721
+      },
+      {
+        "head": "icodepos_r",
+        "body": "lvm=lvmatch LARROW",
+        "inline": false,
+        "line": 1722
+      },
+      {
+        "head": "icodepos_r",
+        "body": "lvm=paren(lvmatch)  LARROW",
+        "inline": false,
+        "line": 1724
+      },
+      {
+        "head": "lvmatch",
+        "body": "empty",
+        "inline": false,
+        "line": 1726
+      },
+      {
+        "head": "lvmatch",
+        "body": "x=lvalue_var",
+        "inline": false,
+        "line": 1728
+      },
+      {
+        "head": "icodepos",
+        "body": "| HAT x=icodepos_r",
+        "inline": true,
+        "line": 1731
+      },
+      {
+        "head": "codepos1_wo_off",
+        "body": "i=sword",
+        "inline": false,
+        "line": 1735
+      },
+      {
+        "head": "codepos1_wo_off",
+        "body": "k=icodepos i=option(brace(sword))",
+        "inline": false,
+        "line": 1738
+      },
+      {
+        "head": "codepos1",
+        "body": "cp=codepos1_wo_off",
+        "inline": false,
+        "line": 1741
+      },
+      {
+        "head": "codepos1",
+        "body": "cp=codepos1_wo_off AMP PLUS  i=word",
+        "inline": false,
+        "line": 1742
+      },
+      {
+        "head": "codepos1",
+        "body": "cp=codepos1_wo_off AMP MINUS i=word",
+        "inline": false,
+        "line": 1744
+      },
+      {
+        "head": "branch_select",
+        "body": "SHARP s=boident DOT",
+        "inline": false,
+        "line": 1746
+      },
+      {
+        "head": "branch_select",
+        "body": "DOT",
+        "inline": false,
+        "line": 1747
+      },
+      {
+        "head": "branch_select",
+        "body": "QUESTION",
+        "inline": false,
+        "line": 1749
+      },
+      {
+        "head": "nm1_codepos",
+        "body": "i=codepos1 bs=branch_select",
+        "inline": true,
+        "line": 1753
+      },
+      {
+        "head": "codepos",
+        "body": "nm=rlist0(nm1_codepos, empty) i=codepos1",
+        "inline": false,
+        "line": 1757
+      },
+      {
+        "head": "codepos_range",
+        "body": "LBRACKET cps=codepos DOTDOT cpe=codepos RBRACKET",
+        "inline": false,
+        "line": 1759
+      },
+      {
+        "head": "codepos_range",
+        "body": "LBRACKET cps=codepos MINUS cpe=codepos1 RBRACKET",
+        "inline": false,
+        "line": 1761
+      },
+      {
+        "head": "codepos_or_range",
+        "body": "cp=codepos",
+        "inline": false,
+        "line": 1763
+      },
+      {
+        "head": "codepos_or_range",
+        "body": "cpr=codepos_range",
+        "inline": false,
+        "line": 1765
+      },
+      {
+        "head": "codeoffset1",
+        "body": "i=sword",
+        "inline": false,
+        "line": 1767
+      },
+      {
+        "head": "codeoffset1",
+        "body": "AT p=codepos1",
+        "inline": false,
+        "line": 1769
+      },
+      {
+        "head": "o_codepos1",
+        "body": "UNDERSCORE",
+        "inline": false,
+        "line": 1771
+      },
+      {
+        "head": "o_codepos1",
+        "body": "i=codepos1",
+        "inline": false,
+        "line": 1773
+      },
+      {
+        "head": "s_codepos1",
+        "body": "n=codepos1",
+        "inline": false,
+        "line": 1777
+      },
+      {
+        "head": "s_codepos1",
+        "body": "n1=codepos1 n2=codepos1",
+        "inline": false,
+        "line": 1780
+      },
+      {
+        "head": "semrndpos1",
+        "body": "b=boption(STAR) c=codepos1",
+        "inline": false,
+        "line": 1784
+      },
+      {
+        "head": "semrndpos",
+        "body": "n=semrndpos1",
+        "inline": false,
+        "line": 1788
+      },
+      {
+        "head": "semrndpos",
+        "body": "n1=semrndpos1 n2=semrndpos1",
+        "inline": false,
+        "line": 1791
+      },
+      {
+        "head": "while_tac_info",
+        "body": "inv=sform",
+        "inline": false,
+        "line": 1795
+      },
+      {
+        "head": "while_tac_info",
+        "body": "inv=sform vrnt=sform",
+        "inline": false,
+        "line": 1798
+      },
+      {
+        "head": "while_tac_info",
+        "body": "inv=sform vrnt=sform k=sform eps=sform",
+        "inline": false,
+        "line": 1801
+      },
+      {
+        "head": "async_while_tac_info",
+        "body": "LBRACKET t1=expr COMMA f1=form RBRACKET LBRACKET t2=expr COMMA f2=form RBRACKET p0=sform p1=sform COLON inv=sform",
+        "inline": false,
+        "line": 1806
+      },
+      {
+        "head": "rnd_info",
+        "body": "empty",
+        "inline": false,
+        "line": 1810
+      },
+      {
+        "head": "rnd_info",
+        "body": "f=sform",
+        "inline": false,
+        "line": 1813
+      },
+      {
+        "head": "rnd_info",
+        "body": "f=sform g=sform",
+        "inline": false,
+        "line": 1816
+      },
+      {
+        "head": "rnd_info",
+        "body": "phi=sform d1=sform d2=sform d3=sform d4=sform p=sform? %public phltactic:",
+        "inline": false,
+        "line": 1822
+      },
+      {
+        "head": "rnd_info",
+        "body": "SWAP info=iplist1(loc(swap_info), COMMA) %prec prec_below_comma",
+        "inline": false,
+        "line": 1825
+      },
+      {
+        "head": "swap_info",
+        "body": "s=side? p=swap_position",
+        "inline": false,
+        "line": 1828
+      },
+      {
+        "head": "swap_position",
+        "body": "offset=codeoffset1",
+        "inline": false,
+        "line": 1832
+      },
+      {
+        "head": "swap_position",
+        "body": "start=codepos1 offset=codeoffset1",
+        "inline": false,
+        "line": 1835
+      },
+      {
+        "head": "swap_position",
+        "body": "LBRACKET start=codepos1 DOTDOT end_=codepos1 RBRACKET offset=codeoffset1",
+        "inline": false,
+        "line": 1838
+      },
+      {
+        "head": "side",
+        "body": "LBRACE n=word RBRACE",
+        "inline": false,
+        "line": 1841
+      },
+      {
+        "head": "occurences",
+        "body": "p=paren(word+)",
+        "inline": false,
+        "line": 1844
+      },
+      {
+        "head": "dbmap1",
+        "body": "f=dbmap_flag? x=dbmap_target",
+        "inline": false,
+        "line": 1848
+      },
+      {
+        "head": "dbmap_flag",
+        "body": "PLUS",
+        "inline": true,
+        "line": 1850
+      },
+      {
+        "head": "dbmap_flag",
+        "body": "MINUS",
+        "inline": true,
+        "line": 1852
+      },
+      {
+        "head": "dbmap_target",
+        "body": "AT x=uqident",
+        "inline": true,
+        "line": 1854
+      },
+      {
+        "head": "dbmap_target",
+        "body": "x=qident",
+        "inline": true,
+        "line": 1856
+      },
+      {
+        "head": "dbhint",
+        "body": "m=dbmap1",
+        "inline": false,
+        "line": 1858
+      },
+      {
+        "head": "dbhint",
+        "body": "m=paren(dbmap1*)",
+        "inline": false,
+        "line": 1860
+      },
+      {
+        "head": "prod_form",
+        "body": "f1=sform f2=sform",
+        "inline": true,
+        "line": 1862
+      },
+      {
+        "head": "prod_form",
+        "body": "UNDERSCORE f2=sform",
+        "inline": true,
+        "line": 1863
+      },
+      {
+        "head": "prod_form",
+        "body": "f1=sform UNDERSCORE",
+        "inline": true,
+        "line": 1865
+      },
+      {
+        "head": "app_bd_info",
+        "body": "empty",
+        "inline": false,
+        "line": 1869
+      },
+      {
+        "head": "app_bd_info",
+        "body": "f=sform",
+        "inline": false,
+        "line": 1872
+      },
+      {
+        "head": "app_bd_info",
+        "body": "f=prod_form g=prod_form s=sform?",
+        "inline": false,
+        "line": 1875
+      },
+      {
+        "head": "revert",
+        "body": "cl=ioption(brace(loc(ipcore_name)+)) gp=genpattern*",
+        "inline": false,
+        "line": 1879
+      },
+      {
+        "head": "have_or_suff",
+        "body": "HAVE",
+        "inline": true,
+        "line": 1881
+      },
+      {
+        "head": "have_or_suff",
+        "body": "SUFF",
+        "inline": true,
+        "line": 1883
+      },
+      {
+        "head": "logtactic",
+        "body": "REFLEX",
+        "inline": false,
+        "line": 1887
+      },
+      {
+        "head": "logtactic",
+        "body": "ASSUMPTION",
+        "inline": false,
+        "line": 1890
+      },
+      {
+        "head": "logtactic",
+        "body": "MOVE vw=prefix(SLASH, pterm)* gp=prefix(COLON, revert)?",
+        "inline": false,
+        "line": 1893
+      },
+      {
+        "head": "logtactic",
+        "body": "CLEAR",
+        "inline": false,
+        "line": 1896
+      },
+      {
+        "head": "logtactic",
+        "body": "CLEAR MINUS l=loc(ipcore_name)+",
+        "inline": false,
+        "line": 1899
+      },
+      {
+        "head": "logtactic",
+        "body": "CLEAR l=loc(ipcore_name)+",
+        "inline": false,
+        "line": 1902
+      },
+      {
+        "head": "logtactic",
+        "body": "CONGR",
+        "inline": false,
+        "line": 1905
+      },
+      {
+        "head": "logtactic",
+        "body": "TRIVIAL",
+        "inline": false,
+        "line": 1908
+      },
+      {
+        "head": "logtactic",
+        "body": "SMT pi=smt_info",
+        "inline": false,
+        "line": 1911
+      },
+      {
+        "head": "logtactic",
+        "body": "COQ mode=coq_info name=loc(STRING) LPAREN dbmap=dbmap1* RPAREN",
+        "inline": false,
+        "line": 1914
+      },
+      {
+        "head": "logtactic",
+        "body": "SMT LPAREN dbmap=dbmap1* RPAREN",
+        "inline": false,
+        "line": 1917
+      },
+      {
+        "head": "logtactic",
+        "body": "SPLIT i=word?",
+        "inline": false,
+        "line": 1920
+      },
+      {
+        "head": "logtactic",
+        "body": "FIELD eqs=ident*",
+        "inline": false,
+        "line": 1923
+      },
+      {
+        "head": "logtactic",
+        "body": "RING eqs=ident*",
+        "inline": false,
+        "line": 1926
+      },
+      {
+        "head": "logtactic",
+        "body": "ALGNORM",
+        "inline": false,
+        "line": 1929
+      },
+      {
+        "head": "logtactic",
+        "body": "EXIST a=iplist1(loc(gpterm_arg), empty)",
+        "inline": false,
+        "line": 1932
+      },
+      {
+        "head": "logtactic",
+        "body": "LEFT",
+        "inline": false,
+        "line": 1935
+      },
+      {
+        "head": "logtactic",
+        "body": "RIGHT",
+        "inline": false,
+        "line": 1938
+      },
+      {
+        "head": "logtactic",
+        "body": "ELIM COLON? e=revert",
+        "inline": false,
+        "line": 1941
+      },
+      {
+        "head": "logtactic",
+        "body": "ELIM SLASH p=qident COLON? e=revert",
+        "inline": false,
+        "line": 1944
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY",
+        "inline": false,
+        "line": 1947
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY e=pterm",
+        "inline": false,
+        "line": 1950
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY COLON e=pterm rv=revert",
+        "inline": false,
+        "line": 1953
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY es=prefix(SLASH, pterm)+",
+        "inline": false,
+        "line": 1956
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY e=pterm IN x=ident",
+        "inline": false,
+        "line": 1959
+      },
+      {
+        "head": "logtactic",
+        "body": "APPLY COLON e=pterm rv=revert IN x=ident",
+        "inline": false,
+        "line": 1962
+      },
+      {
+        "head": "logtactic",
+        "body": "EXACT",
+        "inline": false,
+        "line": 1965
+      },
+      {
+        "head": "logtactic",
+        "body": "EXACT e=pterm",
+        "inline": false,
+        "line": 1968
+      },
+      {
+        "head": "logtactic",
+        "body": "EXACT COLON e=pterm rv=revert",
+        "inline": false,
+        "line": 1971
+      },
+      {
+        "head": "logtactic",
+        "body": "EXACT es=prefix(SLASH, pterm)+",
+        "inline": false,
+        "line": 1974
+      },
+      {
+        "head": "logtactic",
+        "body": "l=simplify",
+        "inline": false,
+        "line": 1977
+      },
+      {
+        "head": "logtactic",
+        "body": "l=cbv",
+        "inline": false,
+        "line": 1980
+      },
+      {
+        "head": "logtactic",
+        "body": "CHANGE f=sform",
+        "inline": false,
+        "line": 1983
+      },
+      {
+        "head": "logtactic",
+        "body": "REWRITE a=rwarg+",
+        "inline": false,
+        "line": 1986
+      },
+      {
+        "head": "logtactic",
+        "body": "REWRITE a=rwarg+ IN x=ident",
+        "inline": false,
+        "line": 1989
+      },
+      {
+        "head": "logtactic",
+        "body": "RWNORMAL f=sform WITH ps=qident+",
+        "inline": false,
+        "line": 1992
+      },
+      {
+        "head": "logtactic",
+        "body": "SUBST l=sform*",
+        "inline": false,
+        "line": 1995
+      },
+      {
+        "head": "logtactic",
+        "body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form %prec prec_below_IMPL",
+        "inline": false,
+        "line": 1998
+      },
+      {
+        "head": "logtactic",
+        "body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form BY t=loc(tactics)",
+        "inline": false,
+        "line": 2001
+      },
+      {
+        "head": "logtactic",
+        "body": "GEN HAVE x=loc(ipcore_name) ip=prefix(COMMA, loc(intro_pattern)*)? COLON ids=loc(ipcore_name)* SLASH f=form %prec prec_below_IMPL",
+        "inline": false,
+        "line": 2005
+      },
+      {
+        "head": "logtactic",
+        "body": "HAVE ip=loc(intro_pattern)* CEQ fp=pcutdef",
+        "inline": false,
+        "line": 2008
+      },
+      {
+        "head": "logtactic",
+        "body": "POSE o=rwocc? x=ident xs=ptybindings? CEQ p=form_h %prec prec_below_IMPL",
+        "inline": false,
+        "line": 2011
+      },
+      {
+        "head": "logtactic",
+        "body": "POSE x=mident",
+        "inline": false,
+        "line": 2014
+      },
+      {
+        "head": "logtactic",
+        "body": "WLOG b=boption(SUFF) COLON ids=loc(ipcore_name)* SLASH f=form",
+        "inline": false,
+        "line": 2017
+      },
+      {
+        "head": "eager_info",
+        "body": "h=ident",
+        "inline": false,
+        "line": 2021
+      },
+      {
+        "head": "eager_info",
+        "body": "LPAREN h=ident COLON s1=stmt TILD s2=stmt COLON pr=form LONGARROW po=form RPAREN",
+        "inline": false,
+        "line": 2024
+      },
+      {
+        "head": "eager_tac",
+        "body": "SEQ n1=codepos1 n2=codepos1 i=eager_info COLON p=sform",
+        "inline": false,
+        "line": 2028
+      },
+      {
+        "head": "eager_tac",
+        "body": "IF",
+        "inline": false,
+        "line": 2031
+      },
+      {
+        "head": "eager_tac",
+        "body": "WHILE i=eager_info",
+        "inline": false,
+        "line": 2034
+      },
+      {
+        "head": "eager_tac",
+        "body": "PROC",
+        "inline": false,
+        "line": 2037
+      },
+      {
+        "head": "eager_tac",
+        "body": "PROC i=eager_info f=sform",
+        "inline": false,
+        "line": 2040
+      },
+      {
+        "head": "eager_tac",
+        "body": "CALL info=gpterm(call_info)",
+        "inline": false,
+        "line": 2043
+      },
+      {
+        "head": "eager_tac",
+        "body": "info=eager_info COLON p=sform",
+        "inline": false,
+        "line": 2046
+      },
+      {
+        "head": "form_or_double_form",
+        "body": "f=sform",
+        "inline": false,
+        "line": 2050
+      },
+      {
+        "head": "form_or_double_form",
+        "body": "LPAREN UNDERSCORE? COLON f1=form LONGARROW f2=form RPAREN",
+        "inline": false,
+        "line": 2053
+      },
+      {
+        "head": "if_option",
+        "body": "s=option(side)",
+        "inline": true,
+        "line": 2057
+      },
+      {
+        "head": "if_option",
+        "body": "s=option(side) i1=o_codepos1 i2=o_codepos1 COLON f=sform",
+        "inline": true,
+        "line": 2060
+      },
+      {
+        "head": "if_option",
+        "body": "CEQ f=sform",
+        "inline": true,
+        "line": 2063
+      },
+      {
+        "head": "if_option",
+        "body": "s=option(side) i=codepos1? COLON LPAREN UNDERSCORE COLON f1=form LONGARROW f2=form RPAREN",
+        "inline": true,
+        "line": 2068
+      },
+      {
+        "head": "byequivopt",
+        "body": "b=boption(MINUS) x=lident",
+        "inline": false,
+        "line": 2071
+      },
+      {
+        "head": "inlineopt",
+        "body": "LBRACKET b=boption(MINUS) x=lident RBRACKET",
+        "inline": false,
+        "line": 2074
+      },
+      {
+        "head": "interleavepos",
+        "body": "LBRACKET c=word COLON n=word RBRACKET",
+        "inline": false,
+        "line": 2078
+      },
+      {
+        "head": "interleave_info",
+        "body": "s=side? c1=interleavepos c2=interleavepos c3=interleavepos* k=word",
+        "inline": false,
+        "line": 2082
+      },
+      {
+        "head": "outline_kind",
+        "body": "BY s=brace(stmt)",
+        "inline": true,
+        "line": 2084
+      },
+      {
+        "head": "outline_kind",
+        "body": "TILD f=loc(fident)",
+        "inline": true,
+        "line": 2085
+      },
+      {
+        "head": "outline_kind",
+        "body": "f=loc(fident) %public phltactic:",
+        "inline": true,
+        "line": 2088
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC",
+        "inline": true,
+        "line": 2091
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC f=sform",
+        "inline": true,
+        "line": 2094
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC bad=sform p=sform q=sform?",
+        "inline": true,
+        "line": 2097
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC STAR",
+        "inline": true,
+        "line": 2100
+      },
+      {
+        "head": "outline_kind",
+        "body": "SEQ s=side? d=tac_dir pos=s_codepos1 COLON p=form_or_double_form f=app_bd_info",
+        "inline": true,
+        "line": 2103
+      },
+      {
+        "head": "outline_kind",
+        "body": "WP n=s_codepos1?",
+        "inline": true,
+        "line": 2106
+      },
+      {
+        "head": "outline_kind",
+        "body": "SP n=s_codepos1?",
+        "inline": true,
+        "line": 2109
+      },
+      {
+        "head": "outline_kind",
+        "body": "SKIP",
+        "inline": true,
+        "line": 2112
+      },
+      {
+        "head": "outline_kind",
+        "body": "WHILE s=side? info=while_tac_info",
+        "inline": true,
+        "line": 2115
+      },
+      {
+        "head": "outline_kind",
+        "body": "ASYNC WHILE info=async_while_tac_info",
+        "inline": true,
+        "line": 2118
+      },
+      {
+        "head": "outline_kind",
+        "body": "CALL s=side? info=gpterm(call_info)",
+        "inline": true,
+        "line": 2121
+      },
+      {
+        "head": "outline_kind",
+        "body": "CALL SLASH fc=sform info=gpterm(call_info)",
+        "inline": true,
+        "line": 2124
+      },
+      {
+        "head": "outline_kind",
+        "body": "RCONDT s=side? i=codepos1",
+        "inline": true,
+        "line": 2127
+      },
+      {
+        "head": "outline_kind",
+        "body": "RCONDF s=side? i=codepos1",
+        "inline": true,
+        "line": 2130
+      },
+      {
+        "head": "outline_kind",
+        "body": "MATCH c=oident s=side? i=codepos1",
+        "inline": true,
+        "line": 2133
+      },
+      {
+        "head": "outline_kind",
+        "body": "IF opt=if_option",
+        "inline": true,
+        "line": 2136
+      },
+      {
+        "head": "outline_kind",
+        "body": "MATCH s=loc(side?) eq=boption(EQ)",
+        "inline": true,
+        "line": 2139
+      },
+      {
+        "head": "outline_kind",
+        "body": "INTERLEAVE info=loc(interleave_info)",
+        "inline": true,
+        "line": 2142
+      },
+      {
+        "head": "outline_kind",
+        "body": "CFOLD s=side? c=codepos n=word?",
+        "inline": true,
+        "line": 2145
+      },
+      {
+        "head": "outline_kind",
+        "body": "RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?",
+        "inline": true,
+        "line": 2148
+      },
+      {
+        "head": "outline_kind",
+        "body": "RNDSEM red=boption(STAR) s=side? c=codepos1",
+        "inline": true,
+        "line": 2151
+      },
+      {
+        "head": "outline_kind",
+        "body": "INLINE s=side? u=inlineopt? o=occurences?",
+        "inline": true,
+        "line": 2154
+      },
+      {
+        "head": "outline_kind",
+        "body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)",
+        "inline": true,
+        "line": 2157
+      },
+      {
+        "head": "outline_kind",
+        "body": "INLINE s=side? u=inlineopt? p=codepos",
+        "inline": true,
+        "line": 2160
+      },
+      {
+        "head": "outline_kind",
+        "body": "OUTLINE s=side cpr=codepos_or_range k=outline_kind",
+        "inline": true,
+        "line": 2163
+      },
+      {
+        "head": "outline_kind",
+        "body": "KILL s=side? o=codepos",
+        "inline": true,
+        "line": 2166
+      },
+      {
+        "head": "outline_kind",
+        "body": "KILL s=side? o=codepos NOT n=word",
+        "inline": true,
+        "line": 2169
+      },
+      {
+        "head": "outline_kind",
+        "body": "KILL s=side? o=codepos NOT STAR",
+        "inline": true,
+        "line": 2172
+      },
+      {
+        "head": "outline_kind",
+        "body": "CASE LARROW s=side? o=codepos",
+        "inline": true,
+        "line": 2175
+      },
+      {
+        "head": "outline_kind",
+        "body": "ALIAS s=side? o=codepos",
+        "inline": true,
+        "line": 2178
+      },
+      {
+        "head": "outline_kind",
+        "body": "ALIAS s=side? o=codepos WITH x=lident",
+        "inline": true,
+        "line": 2181
+      },
+      {
+        "head": "outline_kind",
+        "body": "ALIAS s=side? o=codepos x=lident EQ e=expr",
+        "inline": true,
+        "line": 2184
+      },
+      {
+        "head": "outline_kind",
+        "body": "ALIAS s=side? x=lident CEQ p=sform_h AT o=codepos",
+        "inline": true,
+        "line": 2187
+      },
+      {
+        "head": "outline_kind",
+        "body": "WEAKMEM s=side? h=loc(ipcore_name) p=param_decl",
+        "inline": true,
+        "line": 2190
+      },
+      {
+        "head": "outline_kind",
+        "body": "FISSION s=side? o=codepos AT d1=word COMMA d2=word",
+        "inline": true,
+        "line": 2193
+      },
+      {
+        "head": "outline_kind",
+        "body": "FISSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word",
+        "inline": true,
+        "line": 2196
+      },
+      {
+        "head": "outline_kind",
+        "body": "FUSION s=side? o=codepos AT d1=word COMMA d2=word",
+        "inline": true,
+        "line": 2199
+      },
+      {
+        "head": "outline_kind",
+        "body": "FUSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word",
+        "inline": true,
+        "line": 2202
+      },
+      {
+        "head": "outline_kind",
+        "body": "UNROLL b=boption(FOR) s=side? o=codepos",
+        "inline": true,
+        "line": 2205
+      },
+      {
+        "head": "outline_kind",
+        "body": "SPLITWHILE s=side? o=codepos COLON c=expr %prec prec_tactic",
+        "inline": true,
+        "line": 2208
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYPHOARE info=gpterm(conseq)?",
+        "inline": true,
+        "line": 2211
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYEHOARE info=gpterm(conseq)?",
+        "inline": true,
+        "line": 2214
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?",
+        "inline": true,
+        "line": 2217
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform",
+        "inline": true,
+        "line": 2220
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYUPTO",
+        "inline": true,
+        "line": 2223
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ SLASH fc=sform info=gpterm(conseq)",
+        "inline": true,
+        "line": 2226
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions?",
+        "inline": true,
+        "line": 2229
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt)",
+        "inline": true,
+        "line": 2232
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?",
+        "inline": true,
+        "line": 2235
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) UNDERSCORE info3=gpterm(conseq_xt)",
+        "inline": true,
+        "line": 2238
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) info3=gpterm(conseq_xt)",
+        "inline": true,
+        "line": 2244
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?",
+        "inline": true,
+        "line": 2247
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cq=cqoptions? UNDERSCORE UNDERSCORE info3=gpterm(conseq_xt)",
+        "inline": true,
+        "line": 2250
+      },
+      {
+        "head": "outline_kind",
+        "body": "CONSEQ cm=crushmode",
+        "inline": true,
+        "line": 2252
+      },
+      {
+        "head": "outline_kind",
+        "body": "ELIM STAR",
+        "inline": true,
+        "line": 2255
+      },
+      {
+        "head": "outline_kind",
+        "body": "b=ID(EXIST STAR   | EXLIM  ) l=iplist1(sform, COMMA) %prec prec_below_comma",
+        "inline": true,
+        "line": 2260
+      },
+      {
+        "head": "outline_kind",
+        "body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )",
+        "inline": true,
+        "line": 2263
+      },
+      {
+        "head": "outline_kind",
+        "body": "EXFALSO",
+        "inline": true,
+        "line": 2266
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYPR",
+        "inline": true,
+        "line": 2269
+      },
+      {
+        "head": "outline_kind",
+        "body": "BYPR f1=sform f2=sform",
+        "inline": true,
+        "line": 2272
+      },
+      {
+        "head": "outline_kind",
+        "body": "FEL at_pos=codepos1 cntr=sform delta=sform q=sform f_event=sform some_p=fel_pred_specs inv=sform?",
+        "inline": true,
+        "line": 2276
+      },
+      {
+        "head": "outline_kind",
+        "body": "SIM cm=crushmode? info=eqobs_in",
+        "inline": true,
+        "line": 2279
+      },
+      {
+        "head": "outline_kind",
+        "body": "REPLACE rk=repl_kind h1=repl_hyp h2=repl_hyp",
+        "inline": true,
+        "line": 2282
+      },
+      {
+        "head": "outline_kind",
+        "body": "REPLACE STAR rk=repl_kind",
+        "inline": true,
+        "line": 2285
+      },
+      {
+        "head": "outline_kind",
+        "body": "TRANSITIVITY tk=trans_kind h1=trans_hyp h2=trans_hyp",
+        "inline": true,
+        "line": 2288
+      },
+      {
+        "head": "outline_kind",
+        "body": "TRANSITIVITY STAR tk=trans_kind",
+        "inline": true,
+        "line": 2291
+      },
+      {
+        "head": "outline_kind",
+        "body": "REWRITE EQUIV LBRACKET s=side cp=codepos1 rws=rwside x=pterm proc=rweqv_proc? RBRACKET",
+        "inline": true,
+        "line": 2296
+      },
+      {
+        "head": "outline_kind",
+        "body": "SYMMETRY",
+        "inline": true,
+        "line": 2299
+      },
+      {
+        "head": "outline_kind",
+        "body": "EAGER t=eager_tac",
+        "inline": true,
+        "line": 2302
+      },
+      {
+        "head": "outline_kind",
+        "body": "HOARE",
+        "inline": true,
+        "line": 2305
+      },
+      {
+        "head": "outline_kind",
+        "body": "PRBOUNDED",
+        "inline": true,
+        "line": 2308
+      },
+      {
+        "head": "outline_kind",
+        "body": "PHOARE SPLIT i=bdhoare_split",
+        "inline": true,
+        "line": 2311
+      },
+      {
+        "head": "outline_kind",
+        "body": "PHOARE EQUIV s=side pr=sform po=sform",
+        "inline": true,
+        "line": 2314
+      },
+      {
+        "head": "outline_kind",
+        "body": "AUTO",
+        "inline": true,
+        "line": 2317
+      },
+      {
+        "head": "outline_kind",
+        "body": "LOSSLESS",
+        "inline": true,
+        "line": 2320
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC CHANGE side=side? pos=codepos COLON f=sexpr",
+        "inline": true,
+        "line": 2323
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC REWRITE side=side? pos=codepos f=pterm",
+        "inline": true,
+        "line": 2326
+      },
+      {
+        "head": "outline_kind",
+        "body": "PROC REWRITE side=side? pos=codepos SLASHEQ",
+        "inline": true,
+        "line": 2329
+      },
+      {
+        "head": "bdhoare_split",
+        "body": "b1=sform b2=sform b3=sform?",
+        "inline": false,
+        "line": 2333
+      },
+      {
+        "head": "bdhoare_split",
+        "body": "b1=sform b2=sform COLON f=sform",
+        "inline": false,
+        "line": 2336
+      },
+      {
+        "head": "bdhoare_split",
+        "body": "NOT b1=sform b2=sform",
+        "inline": false,
+        "line": 2339
+      },
+      {
+        "head": "trans_kind",
+        "body": "s=side c=brace(stmt)",
+        "inline": true,
+        "line": 2343
+      },
+      {
+        "head": "trans_kind",
+        "body": "f=loc(fident)",
+        "inline": true,
+        "line": 2346
+      },
+      {
+        "head": "trans_hyp",
+        "body": "LPAREN p=form LONGARROW q=form RPAREN",
+        "inline": true,
+        "line": 2349
+      },
+      {
+        "head": "rweqv_res",
+        "body": "COLON AT res=sexpr",
+        "inline": true,
+        "line": 2352
+      },
+      {
+        "head": "rweqv_proc",
+        "body": "p=paren(args=loc(plist0(expr, COMMA)) res=rweqv_res?  )",
+        "inline": true,
+        "line": 2355
+      },
+      {
+        "head": "repl_kind",
+        "body": "s=side p=im_block BY c=brace(stmt)",
+        "inline": true,
+        "line": 2359
+      },
+      {
+        "head": "repl_hyp",
+        "body": "h=trans_hyp",
+        "inline": true,
+        "line": 2363
+      },
+      {
+        "head": "fel_pred_spec",
+        "body": "f=loc(fident) COLON p=sform",
+        "inline": false,
+        "line": 2367
+      },
+      {
+        "head": "fel_pred_specs",
+        "body": "LBRACKET assoc_ps = plist0(fel_pred_spec, SEMICOLON) RBRACKET",
+        "inline": false,
+        "line": 2371
+      },
+      {
+        "head": "eqobs_in_pos",
+        "body": "i1=codepos1 i2=codepos1",
+        "inline": false,
+        "line": 2374
+      },
+      {
+        "head": "eqobs_in_eqglob1",
+        "body": "LPAREN mp1= uoption(loc(fident)) TILD mp2= uoption(loc(fident)) COLON geq=form RPAREN",
+        "inline": false,
+        "line": 2379
+      },
+      {
+        "head": "eqobs_in_eqglob1",
+        "body": "LPAREN UNDERSCORE? COLON geq=form RPAREN",
+        "inline": false,
+        "line": 2381
+      },
+      {
+        "head": "eqobs_in_inv",
+        "body": "SLASH inv=sform",
+        "inline": false,
+        "line": 2384
+      },
+      {
+        "head": "eqobs_in_eqinv",
+        "body": "geqs=eqobs_in_eqglob1* inv=eqobs_in_inv?",
+        "inline": false,
+        "line": 2387
+      },
+      {
+        "head": "eqobs_in_eqpost",
+        "body": "COLON f=sform",
+        "inline": false,
+        "line": 2390
+      },
+      {
+        "head": "eqobs_in",
+        "body": "pos=eqobs_in_pos? i=eqobs_in_eqinv p=eqobs_in_eqpost?",
+        "inline": false,
+        "line": 2393
+      },
+      {
+        "head": "pgoptionkw",
+        "body": "x=loc(SPLIT)",
+        "inline": false,
+        "line": 2395
+      },
+      {
+        "head": "pgoptionkw",
+        "body": "x=loc(SUBST)",
+        "inline": false,
+        "line": 2396
+      },
+      {
+        "head": "pgoptionkw",
+        "body": "x=lident",
+        "inline": false,
+        "line": 2398
+      },
+      {
+        "head": "pgoption",
+        "body": "b=boption(MINUS) DELTA",
+        "inline": false,
+        "line": 2402
+      },
+      {
+        "head": "pgoption",
+        "body": "b=boption(MINUS) DELTA COLON SPLIT",
+        "inline": false,
+        "line": 2405
+      },
+      {
+        "head": "pgoption",
+        "body": "b=boption(MINUS) DELTA COLON CASE",
+        "inline": false,
+        "line": 2408
+      },
+      {
+        "head": "pgoption",
+        "body": "b=boption(MINUS) x=pgoptionkw",
+        "inline": false,
+        "line": 2410
+      },
+      {
+        "head": "pgoptions",
+        "body": "AT? xs=bracket(pgoption+)",
+        "inline": true,
+        "line": 2413
+      },
+      {
+        "head": "cqoptionkw",
+        "body": "x=lident",
+        "inline": false,
+        "line": 2416
+      },
+      {
+        "head": "cqoption",
+        "body": "b=boption(MINUS) x=cqoptionkw",
+        "inline": false,
+        "line": 2419
+      },
+      {
+        "head": "cqoptions",
+        "body": "xs=bracket(cqoption+)",
+        "inline": true,
+        "line": 2422
+      },
+      {
+        "head": "caseoption",
+        "body": "b=boption(MINUS) x=lident",
+        "inline": false,
+        "line": 2425
+      },
+      {
+        "head": "caseoptions",
+        "body": "AT xs=bracket(caseoption+)",
+        "inline": true,
+        "line": 2428
+      },
+      {
+        "head": "do_repeat",
+        "body": "n=word? NOT",
+        "inline": true,
+        "line": 2430
+      },
+      {
+        "head": "do_repeat",
+        "body": "n=word? QUESTION",
+        "inline": true,
+        "line": 2432
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "IDTAC",
+        "inline": false,
+        "line": 2436
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "IDTAC s=STRING",
+        "inline": false,
+        "line": 2439
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "TRY t=tactic_core",
+        "inline": false,
+        "line": 2442
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "TRY NOT t=tactic_core",
+        "inline": false,
+        "line": 2445
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "BY t=tactics",
+        "inline": false,
+        "line": 2448
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "BY bracket(empty) | DONE",
+        "inline": false,
+        "line": 2451
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "SOLVE dp=word? base=option(paren(plist1(lident, COMMA)))",
+        "inline": false,
+        "line": 2454
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "DO r=do_repeat? t=tactic_core",
+        "inline": false,
+        "line": 2457
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "LPAREN s=tactics RPAREN",
+        "inline": false,
+        "line": 2460
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "ADMIT",
+        "inline": false,
+        "line": 2463
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "CASE vw=prefix(SLASH, pterm)* opts=ioption(caseoptions) eq=ioption(postfix(boption(UNDERSCORE), COLON)) gp=revert",
+        "inline": false,
+        "line": 2470
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "PROGRESS opts=pgoptions? t=tactic_core?",
+        "inline": false,
+        "line": 2472
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "x=logtactic",
+        "inline": false,
+        "line": 2475
+      },
+      {
+        "head": "tactic_core_r",
+        "body": "x=phltactic",
+        "inline": false,
+        "line": 2478
+      },
+      {
+        "head": "tactic_core",
+        "body": "x=loc(tactic_core_r)",
+        "inline": true,
+        "line": 2481
+      },
+      {
+        "head": "tactic_ip",
+        "body": "t=tactic_core %prec prec_below_IMPL",
+        "inline": false,
+        "line": 2485
+      },
+      {
+        "head": "tactic_ip",
+        "body": "t=tactic_core ip=plist1(tactic_genip, empty)",
+        "inline": false,
+        "line": 2488
+      },
+      {
+        "head": "tactic_genip",
+        "body": "IMPL ip=loc(intro_pattern)+",
+        "inline": true,
+        "line": 2492
+      },
+      {
+        "head": "tactic_genip",
+        "body": "LEAT gn=revert",
+        "inline": true,
+        "line": 2495
+      },
+      {
+        "head": "tactic",
+        "body": "t=tactic_ip %prec prec_below_IMPL",
+        "inline": false,
+        "line": 2499
+      },
+      {
+        "head": "tactic",
+        "body": "t1=tactic_ip ORA t2=tactic",
+        "inline": false,
+        "line": 2502
+      },
+      {
+        "head": "tcfc_1",
+        "body": "i=loc(sword)",
+        "inline": true,
+        "line": 2505
+      },
+      {
+        "head": "tcfc_rg",
+        "body": "i1=tcfc_1",
+        "inline": true,
+        "line": 2507
+      },
+      {
+        "head": "tcfc_rg",
+        "body": "i1=tcfc_1 DOTDOT i2=tcfc_1",
+        "inline": true,
+        "line": 2508
+      },
+      {
+        "head": "tcfc_rg",
+        "body": "i1=tcfc_1 DOTDOT",
+        "inline": true,
+        "line": 2509
+      },
+      {
+        "head": "tcfc_rg",
+        "body": "DOTDOT i2=tcfc_1",
+        "inline": true,
+        "line": 2511
+      },
+      {
+        "head": "tcfc_set",
+        "body": "xs=plist1(tcfc_rg, COMMA)",
+        "inline": true,
+        "line": 2514
+      },
+      {
+        "head": "tcfc",
+        "body": "s1=tcfc_set",
+        "inline": true,
+        "line": 2518
+      },
+      {
+        "head": "tcfc",
+        "body": "s1=tcfc_set? TILD s2=tcfc_set",
+        "inline": true,
+        "line": 2521
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LBRACKET ts=plist1(loc(tactics0), PIPE) RBRACKET",
+        "inline": false,
+        "line": 2525
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LBRACKET ts=plist1(sep(tcfc, COLON, loc(tactics)), PIPE) RBRACKET",
+        "inline": false,
+        "line": 2528
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LBRACKET ts=plist1(sep(tcfc, COLON, loc(tactics)), PIPE) ELSE t=loc(tactics) RBRACKET",
+        "inline": false,
+        "line": 2533
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "FIRST t=loc(tactics)",
+        "inline": false,
+        "line": 2534
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LAST  t=loc(tactics)",
+        "inline": false,
+        "line": 2536
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "FIRST n=word t=loc(tactics)",
+        "inline": false,
+        "line": 2537
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LAST  n=word t=loc(tactics)",
+        "inline": false,
+        "line": 2539
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "FIRST LAST",
+        "inline": false,
+        "line": 2540
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LAST  FIRST",
+        "inline": false,
+        "line": 2542
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "FIRST n=word LAST",
+        "inline": false,
+        "line": 2543
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "LAST  n=word FIRST",
+        "inline": false,
+        "line": 2545
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "EXPECT n=word",
+        "inline": false,
+        "line": 2548
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "EXPECT n=word t=loc(tactics)",
+        "inline": false,
+        "line": 2551
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "EXPECT n=word t=loc(paren(rlist1(tactic_chain_r, SEMICOLON)))",
+        "inline": false,
+        "line": 2554
+      },
+      {
+        "head": "tactic_chain_r",
+        "body": "fc=tcfc COLON t=tactic",
+        "inline": false,
+        "line": 2557
+      },
+      {
+        "head": "tactic_chain",
+        "body": "t=loc(tactic_chain_r) %prec prec_below_IMPL",
+        "inline": false,
+        "line": 2561
+      },
+      {
+        "head": "tactic_chain",
+        "body": "t=loc(tactic_chain_r) ip=plist1(tactic_genip, empty)",
+        "inline": false,
+        "line": 2564
+      },
+      {
+        "head": "subtactic",
+        "body": "t=tactic_chain",
+        "inline": false,
+        "line": 2566
+      },
+      {
+        "head": "subtactic",
+        "body": "t=tactic",
+        "inline": false,
+        "line": 2569
+      },
+      {
+        "head": "subtactics",
+        "body": "x=rlist1(subtactic, SEMICOLON)",
+        "inline": true,
+        "line": 2572
+      },
+      {
+        "head": "tactics",
+        "body": "t=tactic %prec SEMICOLON",
+        "inline": false,
+        "line": 2574
+      },
+      {
+        "head": "tactics",
+        "body": "t=tactic SEMICOLON ts=subtactics",
+        "inline": false,
+        "line": 2576
+      },
+      {
+        "head": "tactics0",
+        "body": "ts=tactics",
+        "inline": false,
+        "line": 2578
+      },
+      {
+        "head": "tactics0",
+        "body": "x=loc(empty)",
+        "inline": false,
+        "line": 2580
+      },
+      {
+        "head": "toptactic",
+        "body": "PLUS  t=tactics",
+        "inline": false,
+        "line": 2582
+      },
+      {
+        "head": "toptactic",
+        "body": "STAR  t=tactics",
+        "inline": false,
+        "line": 2583
+      },
+      {
+        "head": "toptactic",
+        "body": "MINUS t=tactics",
+        "inline": false,
+        "line": 2584
+      },
+      {
+        "head": "toptactic",
+        "body": "t=tactics",
+        "inline": false,
+        "line": 2586
+      },
+      {
+        "head": "tactics_or_prf",
+        "body": "t=toptactic",
+        "inline": false,
+        "line": 2588
+      },
+      {
+        "head": "tactics_or_prf",
+        "body": "PROOF",
+        "inline": false,
+        "line": 2591
+      },
+      {
+        "head": "tcd_toptactic",
+        "body": "t=toptactic",
+        "inline": false,
+        "line": 2594
+      },
+      {
+        "head": "tactic_dump",
+        "body": "DUMP aout=STRING wd=word? t=paren(tcd_toptactic)",
+        "inline": false,
+        "line": 2601
+      },
+      {
+        "head": "local_type",
+        "body": "| | GLOBAL | LOCAL",
+        "inline": true,
+        "line": 2606
+      },
+      {
+        "head": "theory_clone",
+        "body": "local=local_type CLONE options=clone_opts? ip=clone_import? x=uqident y=prefix(AS, uident)? cw=clone_with? c=or3(clone_proof, clone_rename, clone_clear)*",
+        "inline": false,
+        "line": 2613
+      },
+      {
+        "head": "clone_import",
+        "body": "EXPORT",
+        "inline": false,
+        "line": 2615
+      },
+      {
+        "head": "clone_import",
+        "body": "IMPORT",
+        "inline": false,
+        "line": 2616
+      },
+      {
+        "head": "clone_import",
+        "body": "INCLUDE",
+        "inline": false,
+        "line": 2618
+      },
+      {
+        "head": "clone_opt",
+        "body": "b=boption(MINUS) ABSTRACT",
+        "inline": false,
+        "line": 2621
+      },
+      {
+        "head": "clone_opts",
+        "body": "xs=bracket(clone_opt+)",
+        "inline": false,
+        "line": 2624
+      },
+      {
+        "head": "clone_with",
+        "body": "WITH x=plist1(clone_override, COMMA)",
+        "inline": false,
+        "line": 2627
+      },
+      {
+        "head": "clone_lemma_tag",
+        "body": "x=ident",
+        "inline": false,
+        "line": 2629
+      },
+      {
+        "head": "clone_lemma_tag",
+        "body": "MINUS x=ident",
+        "inline": false,
+        "line": 2631
+      },
+      {
+        "head": "clone_lemma_base",
+        "body": "STAR x=bracket(clone_lemma_tag+)?",
+        "inline": false,
+        "line": 2635
+      },
+      {
+        "head": "clone_lemma_base",
+        "body": "x=_ident",
+        "inline": false,
+        "line": 2638
+      },
+      {
+        "head": "clone_lemma_1_core",
+        "body": "l=genqident(clone_lemma_base)",
+        "inline": false,
+        "line": 2641
+      },
+      {
+        "head": "clone_lemma_1",
+        "body": "cl=clone_lemma_1_core",
+        "inline": false,
+        "line": 2645
+      },
+      {
+        "head": "clone_lemma_1",
+        "body": "cl=clone_lemma_1_core BY t=tactic_core",
+        "inline": false,
+        "line": 2648
+      },
+      {
+        "head": "clone_lemma",
+        "body": "x=plist1(clone_lemma_1, COMMA)",
+        "inline": false,
+        "line": 2651
+      },
+      {
+        "head": "clone_proof",
+        "body": "PROOF x=clone_lemma",
+        "inline": false,
+        "line": 2654
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "TYPE",
+        "inline": false,
+        "line": 2656
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "OP",
+        "inline": false,
+        "line": 2657
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "PRED",
+        "inline": false,
+        "line": 2658
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "LEMMA",
+        "inline": false,
+        "line": 2659
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "MODULE",
+        "inline": false,
+        "line": 2660
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "MODULE TYPE",
+        "inline": false,
+        "line": 2661
+      },
+      {
+        "head": "clone_rename_kind",
+        "body": "THEORY",
+        "inline": false,
+        "line": 2663
+      },
+      {
+        "head": "clone_rename_1",
+        "body": "k=bracket(plist1(clone_rename_kind, COMMA))? r1=loc(STRING) AS r2=loc(STRING)",
+        "inline": false,
+        "line": 2667
+      },
+      {
+        "head": "clone_rename",
+        "body": "RENAME rnm=clone_rename_1+",
+        "inline": false,
+        "line": 2670
+      },
+      {
+        "head": "clone_clear_1",
+        "body": "ABBREV qs=qoident+",
+        "inline": false,
+        "line": 2674
+      },
+      {
+        "head": "clone_clear",
+        "body": "REMOVE cl=clone_clear_1+",
+        "inline": false,
+        "line": 2677
+      },
+      {
+        "head": "opclmode",
+        "body": "EQ",
+        "inline": false,
+        "line": 2679
+      },
+      {
+        "head": "opclmode",
+        "body": "LARROW",
+        "inline": false,
+        "line": 2680
+      },
+      {
+        "head": "opclmode",
+        "body": "LE",
+        "inline": false,
+        "line": 2682
+      },
+      {
+        "head": "cltyparams",
+        "body": "empty",
+        "inline": false,
+        "line": 2684
+      },
+      {
+        "head": "cltyparams",
+        "body": "x=tident",
+        "inline": false,
+        "line": 2685
+      },
+      {
+        "head": "cltyparams",
+        "body": "xs=paren(plist1(tident, COMMA))",
+        "inline": false,
+        "line": 2687
+      },
+      {
+        "head": "clone_override",
+        "body": "TYPE ps=cltyparams x=qident mode=opclmode t=loc(type_exp)",
+        "inline": false,
+        "line": 2691
+      },
+      {
+        "head": "clone_override",
+        "body": "OP x=qoident tyvars=bracket(tident*)? p=ptybinding1* sty=ioption(prefix(COLON, loc(type_exp))) mode=loc(opclmode) f=form",
+        "inline": false,
+        "line": 2697
+      },
+      {
+        "head": "clone_override",
+        "body": "PRED x=qoident tyvars=bracket(tident*)? p=ptybinding1* mode=loc(opclmode) f=form",
+        "inline": false,
+        "line": 2700
+      },
+      {
+        "head": "clone_override",
+        "body": "AXIOM x=qoident mode=loc(opclmode) y=qoident",
+        "inline": false,
+        "line": 2703
+      },
+      {
+        "head": "clone_override",
+        "body": "LEMMA x=qoident mode=loc(opclmode) y=qoident",
+        "inline": false,
+        "line": 2706
+      },
+      {
+        "head": "clone_override",
+        "body": "MODULE uqident loc(opclmode) uqident",
+        "inline": false,
+        "line": 2709
+      },
+      {
+        "head": "clone_override",
+        "body": "MODULE TYPE x=uqident mode=loc(opclmode) y=uqident",
+        "inline": false,
+        "line": 2712
+      },
+      {
+        "head": "clone_override",
+        "body": "THEORY x=uqident mode=loc(opclmode) y=uqident",
+        "inline": false,
+        "line": 2715
+      },
+      {
+        "head": "realize",
+        "body": "REALIZE x=qident",
+        "inline": false,
+        "line": 2719
+      },
+      {
+        "head": "realize",
+        "body": "REALIZE x=qident BY t=tactics",
+        "inline": false,
+        "line": 2722
+      },
+      {
+        "head": "realize",
+        "body": "REALIZE x=qident BY bracket(empty)",
+        "inline": false,
+        "line": 2729
+      },
+      {
+        "head": "theory_alias",
+        "body": "THEORY name=uident EQ target=uqident",
+        "inline": false,
+        "line": 2734
+      },
+      {
+        "head": "phint",
+        "body": "SIMPLIFY",
+        "inline": false,
+        "line": 2736
+      },
+      {
+        "head": "phint",
+        "body": "SOLVE",
+        "inline": false,
+        "line": 2737
+      },
+      {
+        "head": "phint",
+        "body": "REWRITE",
+        "inline": false,
+        "line": 2739
+      },
+      {
+        "head": "print",
+        "body": "qs=qoident",
+        "inline": false,
+        "line": 2741
+      },
+      {
+        "head": "print",
+        "body": "STAR        qs=qoident",
+        "inline": false,
+        "line": 2742
+      },
+      {
+        "head": "print",
+        "body": "TYPE        qs=qident",
+        "inline": false,
+        "line": 2743
+      },
+      {
+        "head": "print",
+        "body": "OP          qs=qoident",
+        "inline": false,
+        "line": 2744
+      },
+      {
+        "head": "print",
+        "body": "THEORY      qs=qident",
+        "inline": false,
+        "line": 2745
+      },
+      {
+        "head": "print",
+        "body": "PRED        qs=qoident",
+        "inline": false,
+        "line": 2746
+      },
+      {
+        "head": "print",
+        "body": "AXIOM       qs=qident",
+        "inline": false,
+        "line": 2747
+      },
+      {
+        "head": "print",
+        "body": "LEMMA       qs=qident",
+        "inline": false,
+        "line": 2748
+      },
+      {
+        "head": "print",
+        "body": "MODULE      qs=qident",
+        "inline": false,
+        "line": 2749
+      },
+      {
+        "head": "print",
+        "body": "MODULE TYPE qs=qident",
+        "inline": false,
+        "line": 2750
+      },
+      {
+        "head": "print",
+        "body": "GLOB        qs=loc(mod_qident)",
+        "inline": false,
+        "line": 2751
+      },
+      {
+        "head": "print",
+        "body": "GOAL        n=sword",
+        "inline": false,
+        "line": 2752
+      },
+      {
+        "head": "print",
+        "body": "REWRITE     qs=qident",
+        "inline": false,
+        "line": 2753
+      },
+      {
+        "head": "print",
+        "body": "SOLVE       qs=ident",
+        "inline": false,
+        "line": 2754
+      },
+      {
+        "head": "print",
+        "body": "AXIOM",
+        "inline": false,
+        "line": 2755
+      },
+      {
+        "head": "print",
+        "body": "HINT        p=phint?",
+        "inline": false,
+        "line": 2757
+      },
+      {
+        "head": "coq_info",
+        "body": "CHECK",
+        "inline": false,
+        "line": 2760
+      },
+      {
+        "head": "coq_info",
+        "body": "EDIT",
+        "inline": false,
+        "line": 2761
+      },
+      {
+        "head": "coq_info",
+        "body": "FIX",
+        "inline": false,
+        "line": 2763
+      },
+      {
+        "head": "smt_info",
+        "body": "li=smt_info1*",
+        "inline": false,
+        "line": 2766
+      },
+      {
+        "head": "smt_info1",
+        "body": "t=word",
+        "inline": false,
+        "line": 2770
+      },
+      {
+        "head": "smt_info1",
+        "body": "TIMEOUT EQ t=word",
+        "inline": false,
+        "line": 2773
+      },
+      {
+        "head": "smt_info1",
+        "body": "p=prover_kind",
+        "inline": false,
+        "line": 2776
+      },
+      {
+        "head": "smt_info1",
+        "body": "PROVER EQ p=prover_kind",
+        "inline": false,
+        "line": 2779
+      },
+      {
+        "head": "smt_info1",
+        "body": "DUMP IN EQ file=loc(STRING)",
+        "inline": false,
+        "line": 2782
+      },
+      {
+        "head": "smt_info1",
+        "body": "x=lident po=prefix(EQ, smt_option)?",
+        "inline": false,
+        "line": 2785
+      },
+      {
+        "head": "prover_kind1",
+        "body": "l=loc(STRING)",
+        "inline": false,
+        "line": 2787
+      },
+      {
+        "head": "prover_kind1",
+        "body": "PLUS  l=loc(STRING)",
+        "inline": false,
+        "line": 2788
+      },
+      {
+        "head": "prover_kind1",
+        "body": "MINUS l=loc(STRING)",
+        "inline": false,
+        "line": 2790
+      },
+      {
+        "head": "prover_kind",
+        "body": "LBRACKET lp=prover_kind1* RBRACKET",
+        "inline": false,
+        "line": 2793
+      },
+      {
+        "head": "smt_option",
+        "body": "n=word",
+        "inline": true,
+        "line": 2795
+      },
+      {
+        "head": "smt_option",
+        "body": "d=dbhint",
+        "inline": true,
+        "line": 2796
+      },
+      {
+        "head": "smt_option",
+        "body": "p=prover_kind",
+        "inline": true,
+        "line": 2798
+      },
+      {
+        "head": "gprover_info",
+        "body": "PROVER x=smt_info",
+        "inline": false,
+        "line": 2801
+      },
+      {
+        "head": "gprover_info",
+        "body": "TIMEOUT t=word",
+        "inline": false,
+        "line": 2804
+      },
+      {
+        "head": "gprover_info",
+        "body": "TIMEOUT STAR t=word",
+        "inline": false,
+        "line": 2807
+      },
+      {
+        "head": "addrw",
+        "body": "local=is_local HINT REWRITE p=lqident COLON l=lqident*",
+        "inline": false,
+        "line": 2811
+      },
+      {
+        "head": "hintoption",
+        "body": "x=lident",
+        "inline": false,
+        "line": 2814
+      },
+      {
+        "head": "hint",
+        "body": "local=is_local HINT opts=ioption(bracket(hintoption)+) prio=ID(EXACT   | SOLVE i=word  ) base=lident? COLON l=qident*",
+        "inline": false,
+        "line": 2823
+      },
+      {
+        "head": "reduction",
+        "body": "HINT SIMPLIFY opt=bracket(user_red_option*)? xs=plist1(user_red_info, COMMA)",
+        "inline": false,
+        "line": 2827
+      },
+      {
+        "head": "user_red_info",
+        "body": "x=qident i=prefix(AT, word)?",
+        "inline": false,
+        "line": 2831
+      },
+      {
+        "head": "user_red_info",
+        "body": "xs=paren(plist1(qident, COMMA)) i=prefix(AT, word)?",
+        "inline": false,
+        "line": 2834
+      },
+      {
+        "head": "user_red_option",
+        "body": "x=lident",
+        "inline": false,
+        "line": 2839
+      },
+      {
+        "head": "search",
+        "body": "x=sform_h",
+        "inline": true,
+        "line": 2844
+      },
+      {
+        "head": "global_action",
+        "body": "theory_open",
+        "inline": false,
+        "line": 2846
+      },
+      {
+        "head": "global_action",
+        "body": "theory_close",
+        "inline": false,
+        "line": 2847
+      },
+      {
+        "head": "global_action",
+        "body": "theory_require",
+        "inline": false,
+        "line": 2848
+      },
+      {
+        "head": "global_action",
+        "body": "theory_import",
+        "inline": false,
+        "line": 2849
+      },
+      {
+        "head": "global_action",
+        "body": "theory_export",
+        "inline": false,
+        "line": 2850
+      },
+      {
+        "head": "global_action",
+        "body": "theory_clone",
+        "inline": false,
+        "line": 2851
+      },
+      {
+        "head": "global_action",
+        "body": "theory_clear",
+        "inline": false,
+        "line": 2852
+      },
+      {
+        "head": "global_action",
+        "body": "theory_alias",
+        "inline": false,
+        "line": 2853
+      },
+      {
+        "head": "global_action",
+        "body": "module_import",
+        "inline": false,
+        "line": 2854
+      },
+      {
+        "head": "global_action",
+        "body": "section_open",
+        "inline": false,
+        "line": 2855
+      },
+      {
+        "head": "global_action",
+        "body": "section_close",
+        "inline": false,
+        "line": 2856
+      },
+      {
+        "head": "global_action",
+        "body": "mod_def_or_decl",
+        "inline": false,
+        "line": 2857
+      },
+      {
+        "head": "global_action",
+        "body": "sig_def",
+        "inline": false,
+        "line": 2858
+      },
+      {
+        "head": "global_action",
+        "body": "typedecl",
+        "inline": false,
+        "line": 2859
+      },
+      {
+        "head": "global_action",
+        "body": "subtype",
+        "inline": false,
+        "line": 2860
+      },
+      {
+        "head": "global_action",
+        "body": "typeclass",
+        "inline": false,
+        "line": 2861
+      },
+      {
+        "head": "global_action",
+        "body": "tycinstance",
+        "inline": false,
+        "line": 2862
+      },
+      {
+        "head": "global_action",
+        "body": "operator",
+        "inline": false,
+        "line": 2863
+      },
+      {
+        "head": "global_action",
+        "body": "procop",
+        "inline": false,
+        "line": 2864
+      },
+      {
+        "head": "global_action",
+        "body": "predicate",
+        "inline": false,
+        "line": 2865
+      },
+      {
+        "head": "global_action",
+        "body": "notation",
+        "inline": false,
+        "line": 2866
+      },
+      {
+        "head": "global_action",
+        "body": "abbreviation",
+        "inline": false,
+        "line": 2867
+      },
+      {
+        "head": "global_action",
+        "body": "reduction",
+        "inline": false,
+        "line": 2868
+      },
+      {
+        "head": "global_action",
+        "body": "axiom",
+        "inline": false,
+        "line": 2869
+      },
+      {
+        "head": "global_action",
+        "body": "tactics_or_prf",
+        "inline": false,
+        "line": 2870
+      },
+      {
+        "head": "global_action",
+        "body": "tactic_dump",
+        "inline": false,
+        "line": 2871
+      },
+      {
+        "head": "global_action",
+        "body": "x=loc(realize)",
+        "inline": false,
+        "line": 2872
+      },
+      {
+        "head": "global_action",
+        "body": "gprover_info",
+        "inline": false,
+        "line": 2873
+      },
+      {
+        "head": "global_action",
+        "body": "addrw",
+        "inline": false,
+        "line": 2874
+      },
+      {
+        "head": "global_action",
+        "body": "hint",
+        "inline": false,
+        "line": 2875
+      },
+      {
+        "head": "global_action",
+        "body": "x=loc(proofend)",
+        "inline": false,
+        "line": 2876
+      },
+      {
+        "head": "global_action",
+        "body": "PRINT p=print",
+        "inline": false,
+        "line": 2877
+      },
+      {
+        "head": "global_action",
+        "body": "SEARCH x=search+",
+        "inline": false,
+        "line": 2878
+      },
+      {
+        "head": "global_action",
+        "body": "LOCATE x=qident",
+        "inline": false,
+        "line": 2879
+      },
+      {
+        "head": "global_action",
+        "body": "WHY3 x=STRING",
+        "inline": false,
+        "line": 2881
+      },
+      {
+        "head": "global_action",
+        "body": "PRAGMA       x=pragma",
+        "inline": false,
+        "line": 2882
+      },
+      {
+        "head": "global_action",
+        "body": "PRAGMA PLUS  x=pragma",
+        "inline": false,
+        "line": 2883
+      },
+      {
+        "head": "global_action",
+        "body": "PRAGMA MINUS x=pragma",
+        "inline": false,
+        "line": 2885
+      },
+      {
+        "head": "global_action",
+        "body": "PRAGMA x=pragma EQ i=sword",
+        "inline": false,
+        "line": 2887
+      },
+      {
+        "head": "pragma_r",
+        "body": "x=plist1(_lident, COLON)",
+        "inline": false,
+        "line": 2891
+      },
+      {
+        "head": "pragma_r",
+        "body": "u=_uident COLON x=plist1(_lident, COLON)",
+        "inline": false,
+        "line": 2894
+      },
+      {
+        "head": "pragma",
+        "body": "x=loc(pragma_r)",
+        "inline": false,
+        "line": 2897
+      },
+      {
+        "head": "stop",
+        "body": "EOF",
+        "inline": false,
+        "line": 2899
+      },
+      {
+        "head": "stop",
+        "body": "DROP DOT",
+        "inline": false,
+        "line": 2901
+      },
+      {
+        "head": "global",
+        "body": "db=debug_global? fail=boption(FAIL) g=global_action ep=FINAL",
+        "inline": false,
+        "line": 2905
+      },
+      {
+        "head": "debug_global",
+        "body": "TIME",
+        "inline": false,
+        "line": 2907
+      },
+      {
+        "head": "debug_global",
+        "body": "DEBUG",
+        "inline": false,
+        "line": 2909
+      },
+      {
+        "head": "prog_r",
+        "body": "g=global",
+        "inline": false,
+        "line": 2911
+      },
+      {
+        "head": "prog_r",
+        "body": "stop",
+        "inline": false,
+        "line": 2913
+      },
+      {
+        "head": "prog_r",
+        "body": "UNDO d=word FINAL",
+        "inline": false,
+        "line": 2916
+      },
+      {
+        "head": "prog_r",
+        "body": "EXIT FINAL",
+        "inline": false,
+        "line": 2919
+      },
+      {
+        "head": "prog_r",
+        "body": "error",
+        "inline": false,
+        "line": 2922
+      },
+      {
+        "head": "prog",
+        "body": "x=loc(prog_r)",
+        "inline": false,
+        "line": 2926
+      },
+      {
+        "head": "plist0",
+        "body": "aout=separated_list(S, X)",
+        "inline": true,
+        "line": 2929
+      },
+      {
+        "head": "iplist1_r",
+        "body": "x=X",
+        "inline": false,
+        "line": 2931
+      },
+      {
+        "head": "iplist1_r",
+        "body": "xs=iplist1_r(X, S) S x=X",
+        "inline": false,
+        "line": 2933
+      },
+      {
+        "head": "iplist1",
+        "body": "xs=iplist1_r(X, S)",
+        "inline": true,
+        "line": 2936
+      },
+      {
+        "head": "plist1",
+        "body": "aout=separated_nonempty_list(S, X)",
+        "inline": true,
+        "line": 2939
+      },
+      {
+        "head": "plist2",
+        "body": "x=X S xs=plist1(X, S)",
+        "inline": true,
+        "line": 2942
+      },
+      {
+        "head": "list2",
+        "body": "x=X xs=X+",
+        "inline": true,
+        "line": 2945
+      },
+      {
+        "head": "empty",
+        "body": "/**/",
+        "inline": true,
+        "line": 2949
+      },
+      {
+        "head": "__rlist1",
+        "body": "x=X",
+        "inline": false,
+        "line": 2951
+      },
+      {
+        "head": "__rlist1",
+        "body": "xs=__rlist1(X, S) S x=X",
+        "inline": false,
+        "line": 2953
+      },
+      {
+        "head": "rlist0",
+        "body": "/* empty */",
+        "inline": true,
+        "line": 2955
+      },
+      {
+        "head": "rlist0",
+        "body": "xs=rlist1(X, S)",
+        "inline": true,
+        "line": 2957
+      },
+      {
+        "head": "rlist1",
+        "body": "xs=__rlist1(X, S)",
+        "inline": true,
+        "line": 2960
+      },
+      {
+        "head": "rlist2",
+        "body": "xs=__rlist1(X, S) S x=X",
+        "inline": true,
+        "line": 2964
+      },
+      {
+        "head": "paren",
+        "body": "LPAREN x=X RPAREN",
+        "inline": true,
+        "line": 2967
+      },
+      {
+        "head": "brace",
+        "body": "LBRACE x=X RBRACE",
+        "inline": true,
+        "line": 2970
+      },
+      {
+        "head": "bracket",
+        "body": "LBRACKET x=X RBRACKET",
+        "inline": true,
+        "line": 2974
+      },
+      {
+        "head": "seq",
+        "body": "x=X y=Y",
+        "inline": true,
+        "line": 2977
+      },
+      {
+        "head": "prefix",
+        "body": "S x=X",
+        "inline": true,
+        "line": 2980
+      },
+      {
+        "head": "postfix",
+        "body": "x=X S",
+        "inline": true,
+        "line": 2983
+      },
+      {
+        "head": "sep",
+        "body": "x=S1 X y=S2",
+        "inline": true,
+        "line": 2986
+      },
+      {
+        "head": "either",
+        "body": "X",
+        "inline": true,
+        "line": 2988
+      },
+      {
+        "head": "either",
+        "body": "Y",
+        "inline": true,
+        "line": 2991
+      },
+      {
+        "head": "or3",
+        "body": "x=X",
+        "inline": false,
+        "line": 2993
+      },
+      {
+        "head": "or3",
+        "body": "y=Y",
+        "inline": false,
+        "line": 2994
+      },
+      {
+        "head": "or3",
+        "body": "z=Z",
+        "inline": false,
+        "line": 2997
+      },
+      {
+        "head": "loc",
+        "body": "x=X",
+        "inline": true,
+        "line": 3001
+      },
+      {
+        "head": "iboption",
+        "body": "X",
+        "inline": true,
+        "line": 3003
+      },
+      {
+        "head": "uoption",
+        "body": "x=X",
+        "inline": true,
+        "line": 3007
+      },
+      {
+        "head": "uoption",
+        "body": "UNDERSCORE",
+        "inline": true,
+        "line": 3010
+      },
+      {
+        "head": "ior_",
+        "body": "x=X",
+        "inline": true,
+        "line": 3012
+      },
+      {
+        "head": "ior_",
+        "body": "y=Y",
+        "inline": true,
+        "line": 3015
+      },
+      {
+        "head": "ID",
+        "body": "x=X",
+        "inline": true,
+        "line": 3016
+      }
+    ]
+  }
+}

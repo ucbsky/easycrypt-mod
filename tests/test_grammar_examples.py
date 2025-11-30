@@ -16,6 +16,7 @@ import json
 import re
 import subprocess
 import sys
+import argparse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Sequence, Tuple
@@ -61,6 +62,23 @@ class TokenSpec:
     name: str
     regex: re.Pattern[str]
     is_literal: bool
+
+
+@dataclass(frozen=True)
+class TokenizationConfig:
+    restricted_expr_contexts: frozenset[str]
+    enforce_forbidden_tokens: bool = True
+    enforce_have_guard: bool = True
+    enforce_apply_with_guard: bool = True
+
+
+STRICT_TOKENIZATION = TokenizationConfig(frozenset({"CALL", "APPLY"}))
+CFG_COMPAT_TOKENIZATION = TokenizationConfig(
+    frozenset(),
+    enforce_forbidden_tokens=False,
+    enforce_have_guard=False,
+    enforce_apply_with_guard=False,
+)
 
 
 def build_token_specs(lexer_meta: Dict[str, Dict[str, object]]) -> List[TokenSpec]:
@@ -138,11 +156,16 @@ EXPR_START_TOKENS = {
     "BYPHOARE",
     "BYEHOARE",
     "MOVE",
+    "APPLY",
+    "EXACT",
+    "WHILE",
+    "ASYNC",
 }
 EXPR_END_TOKENS = {"DOT", "SEMICOLON", "CEQ", "COLON", "BY"}
 EXPR_BREAK_TOKENS = set()
 
 FORBIDDEN_EXPR_START_TOKENS = {
+    "SLASH",
     "SLASHSLASH",
     "SLASHSLASHEQ",
     "SLASHSLASHTILDEQ",
@@ -155,14 +178,12 @@ FORBIDDEN_EXPR_START_TOKENS = {
     "SLASHSLASHGT",
 }
 
-RESTRICTED_EXPR_CONTEXTS = {"CALL"}
-
-
 def tokenize_line(
     line: str,
     literal_specs: Sequence[TokenSpec],
     pattern_specs: Sequence[TokenSpec],
     structural_tokens: set[str],
+    config: TokenizationConfig,
 ) -> List[str]:
     raw_tokens: List[str] = []
     pos = 0
@@ -227,15 +248,16 @@ def tokenize_line(
         raw_tokens.append(best[1])
         pos += best[2]
 
-    arrow_tokens = {"RARROW", "LARROW", "LLARROW", "RRARROW"}
-    for idx, tok in enumerate(raw_tokens):
-        if tok != "HAVE":
-            continue
-        j = idx + 1
-        while j < len(raw_tokens) and raw_tokens[j] in arrow_tokens:
-            j += 1
-        if j < len(raw_tokens) and raw_tokens[j] == "CEQ":
-            raise TokenizationError("bare HAVE := without intro pattern is invalid")
+    if config.enforce_have_guard:
+        arrow_tokens = {"RARROW", "LARROW", "LLARROW", "RRARROW"}
+        for idx, tok in enumerate(raw_tokens):
+            if tok != "HAVE":
+                continue
+            j = idx + 1
+            while j < len(raw_tokens) and raw_tokens[j] in arrow_tokens:
+                j += 1
+            if j < len(raw_tokens) and raw_tokens[j] == "CEQ":
+                raise TokenizationError("bare HAVE := without intro pattern is invalid")
 
     normalized: List[str] = []
     expr_mode = False
@@ -254,18 +276,32 @@ def tokenize_line(
             expr_context = None
             expr_depth = 0
 
+        if (
+            config.enforce_apply_with_guard
+            and expr_context == "APPLY"
+            and token == "WITH"
+        ):
+            raise TokenizationError("WITH clause is not supported in APPLY contexts")
+
         should_collapse = expr_mode or token == RAW_FALLBACK or token not in structural_tokens
 
         if should_collapse:
-            if token == RAW_FALLBACK and expr_context in RESTRICTED_EXPR_CONTEXTS:
+            if (
+                config.enforce_forbidden_tokens
+                and token == RAW_FALLBACK
+                and expr_context in config.restricted_expr_contexts
+            ):
                 raise TokenizationError("unknown token encountered inside restricted expression")
             if (
-                expr_context in RESTRICTED_EXPR_CONTEXTS
+                config.enforce_forbidden_tokens
+                and expr_context in config.restricted_expr_contexts
                 and token in FORBIDDEN_EXPR_START_TOKENS
                 and not expr_active
             ):
                 raise TokenizationError(f"invalid expression start token: {token}")
             expr_active = True
+            if not expr_mode and (token == RAW_FALLBACK or token not in structural_tokens):
+                expr_mode = True
             if token in {"LPAREN", "LBRACE", "LBRACKET"}:
                 expr_depth += 1
             elif token in {"RPAREN", "RBRACE", "RBRACKET"} and expr_depth > 0:
@@ -386,6 +422,7 @@ def evaluate_file(
     literal_specs: Sequence[TokenSpec],
     pattern_specs: Sequence[TokenSpec],
     structural_tokens: set[str],
+    tokenizer_config: TokenizationConfig,
 ) -> Tuple[
     bool,
     List[Tuple[int, str]],
@@ -405,7 +442,9 @@ def evaluate_file(
             continue
         total += 1
         try:
-            tokens = tokenize_line(line, literal_specs, pattern_specs, structural_tokens)
+            tokens = tokenize_line(
+                line, literal_specs, pattern_specs, structural_tokens, tokenizer_config
+            )
         except TokenizationError as exc:
             errors.append((idx, line, f"lex: {exc}"))
             continue
@@ -420,7 +459,30 @@ def evaluate_file(
 
 
 def main() -> None:
-    ensure_grammar()
+    arg_parser = argparse.ArgumentParser(description="Validate reduced EasyCrypt grammar.")
+    arg_parser.add_argument(
+        "--mode",
+        choices=("strict", "cfg"),
+        default="strict",
+        help=(
+            "strict = tokenizer guards enabled (default); "
+            "cfg = grammar-only mode, emulating transformer decoders"
+        ),
+    )
+    arg_parser.add_argument(
+        "--skip-refresh",
+        action="store_true",
+        help="assume grammar artifacts are already up to date",
+    )
+    args = arg_parser.parse_args()
+
+    if not args.skip_refresh:
+        ensure_grammar()
+
+    tokenizer_config = (
+        STRICT_TOKENIZATION if args.mode == "strict" else CFG_COMPAT_TOKENIZATION
+    )
+    print(f"Tokenizer mode: {args.mode}")
 
     raw_meta = json.loads(RAW_GRAMMAR.read_text(encoding="utf-8"))
     lexer_meta = raw_meta.get("lexer", {})
@@ -440,21 +502,33 @@ def main() -> None:
     overall_ok = True
     for label, path, expect_success in scenarios:
         ok, errors, pass_lines, total, passed_lines, unexpected = evaluate_file(
-            path, parser, literal_specs, pattern_specs, structural_tokens
+            path,
+            parser,
+            literal_specs,
+            pattern_specs,
+            structural_tokens,
+            tokenizer_config,
         )
-        passed = ok if expect_success else not ok
-        overall_ok &= passed
-        status = "PASS" if passed else "FAIL"
+        behavioral_pass = ok if expect_success else not pass_lines
+        overall_ok &= behavioral_pass
+        status = "PASS" if behavioral_pass else "FAIL"
         print(f"[{status}] {label}: {path}")
         if total:
             print(f"    parsed {passed_lines}/{total} lines")
+            if expect_success:
+                failure_pct = ((total - passed_lines) / total) * 100.0
+                metric = "not-parsed"
+            else:
+                failure_pct = (len(pass_lines) / total) * 100.0
+                metric = "unexpectedly-parsed"
+            print(f"    failure probability ({metric}): {failure_pct:.2f}%")
         if expect_success:
             failing_lines = [lineno for lineno, _ in errors]
             if failing_lines:
-                print(f"    failing line numbers: {failing_lines}")
+                print(f"    wrongfully-rejected line numbers: {failing_lines}")
         else:
             if pass_lines:
-                print(f"    passing line numbers: {pass_lines}")
+                print(f"    unexpectedly-parsing line numbers: {pass_lines}")
 
     if not overall_ok:
         sys.exit(1)

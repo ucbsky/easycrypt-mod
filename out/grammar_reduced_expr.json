@@ -1,0 +1,7215 @@
+{
+  "Line": [
+    {
+      "body_symbols": [
+        "tactic",
+        "DOT"
+      ],
+      "raw_body": "tactic DOT"
+    },
+    {
+      "body_symbols": [
+        "tactics_or_prf",
+        "DOT"
+      ],
+      "raw_body": "tactics_or_prf DOT"
+    },
+    {
+      "body_symbols": [
+        "stmt",
+        "DOT"
+      ],
+      "raw_body": "stmt DOT"
+    },
+    {
+      "body_symbols": [
+        "stmt"
+      ],
+      "raw_body": "stmt"
+    },
+    {
+      "body_symbols": [
+        "QED",
+        "DOT"
+      ],
+      "raw_body": "QED DOT"
+    }
+  ],
+  "lpattern_u": [
+    {
+      "body_symbols": [
+        "ident"
+      ],
+      "raw_body": "x=ident"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "bdident",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN p=plist2(bdident, COMMA) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "LPBRACE",
+        "lp_field",
+        "RPBRACE"
+      ],
+      "raw_body": "LPBRACE fs=rlist1(lp_field, SEMICOLON) SEMICOLON? RPBRACE"
+    },
+    {
+      "body_symbols": [
+        "LPBRACE",
+        "lp_field",
+        "SEMICOLON",
+        "RPBRACE"
+      ],
+      "raw_body": "LPBRACE fs=rlist1(lp_field, SEMICOLON) SEMICOLON? RPBRACE"
+    }
+  ],
+  "uoption": [
+    {
+      "body_symbols": [
+        "X"
+      ],
+      "raw_body": "x=X"
+    },
+    {
+      "body_symbols": [
+        "UNDERSCORE"
+      ],
+      "raw_body": "UNDERSCORE"
+    }
+  ],
+  "pside_force": [
+    {
+      "body_symbols": [
+        "boption",
+        "pside_"
+      ],
+      "raw_body": "brace(b=boption(NOT) m=loc(pside_)  )"
+    }
+  ],
+  "rweqv_res": [
+    {
+      "body_symbols": [
+        "COLON",
+        "AT",
+        "EXPR"
+      ],
+      "raw_body": "COLON AT res=sexpr"
+    }
+  ],
+  "word": [
+    {
+      "body_symbols": [
+        "UINT"
+      ],
+      "raw_body": "n=loc(UINT)"
+    }
+  ],
+  "ipsubsttop": [
+    {
+      "body_symbols": [
+        "LTSTARGT"
+      ],
+      "raw_body": "LTSTARGT"
+    },
+    {
+      "body_symbols": [
+        "LTLTSTARGT"
+      ],
+      "raw_body": "LTLTSTARGT"
+    },
+    {
+      "body_symbols": [
+        "LTSTARGTGT"
+      ],
+      "raw_body": "LTSTARGTGT"
+    }
+  ],
+  "tactic_ip": [
+    {
+      "body_symbols": [
+        "tactic_core"
+      ],
+      "raw_body": "t=tactic_core %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "tactic_core",
+        "tactic_genip"
+      ],
+      "raw_body": "t=tactic_core ip=plist1(tactic_genip, empty)"
+    }
+  ],
+  "opptn": [
+    {
+      "body_symbols": [
+        "mcptn"
+      ],
+      "raw_body": "p=mcptn(sbinop)"
+    },
+    {
+      "body_symbols": [
+        "mcptn"
+      ],
+      "raw_body": "p=paren(mcptn(binop))"
+    }
+  ],
+  "interleave_info": [
+    {
+      "body_symbols": [
+        "interleavepos",
+        "interleavepos",
+        "word"
+      ],
+      "raw_body": "s=side? c1=interleavepos c2=interleavepos c3=interleavepos* k=word"
+    },
+    {
+      "body_symbols": [
+        "interleavepos",
+        "interleavepos",
+        "interleavepos",
+        "word"
+      ],
+      "raw_body": "s=side? c1=interleavepos c2=interleavepos c3=interleavepos* k=word"
+    },
+    {
+      "body_symbols": [
+        "side",
+        "interleavepos",
+        "interleavepos",
+        "word"
+      ],
+      "raw_body": "s=side? c1=interleavepos c2=interleavepos c3=interleavepos* k=word"
+    },
+    {
+      "body_symbols": [
+        "side",
+        "interleavepos",
+        "interleavepos",
+        "interleavepos",
+        "word"
+      ],
+      "raw_body": "s=side? c1=interleavepos c2=interleavepos c3=interleavepos* k=word"
+    }
+  ],
+  "im_range": [
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "empty"
+    },
+    {
+      "body_symbols": [
+        "word"
+      ],
+      "raw_body": "i=word"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "word",
+        "DOTDOT",
+        "word",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET n=word DOTDOT m=word RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "word",
+        "DOTDOT",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET n=word DOTDOT RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "DOTDOT",
+        "word",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET DOTDOT m=word RBRACKET"
+    }
+  ],
+  "instr": [
+    {
+      "body_symbols": [
+        "base_instr",
+        "SEMICOLON"
+      ],
+      "raw_body": "bi=base_instr SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "i=if_expr"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "LPAREN",
+        "EXPR",
+        "RPAREN",
+        "block"
+      ],
+      "raw_body": "WHILE LPAREN c=expr RPAREN b=block"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "EXPR",
+        "WITH",
+        "END",
+        "SEMICOLON"
+      ],
+      "raw_body": "MATCH e=expr WITH PIPE? bs=plist0(match_branch, PIPE) END SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "EXPR",
+        "WITH",
+        "match_branch",
+        "END",
+        "SEMICOLON"
+      ],
+      "raw_body": "MATCH e=expr WITH PIPE? bs=plist0(match_branch, PIPE) END SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "EXPR",
+        "WITH",
+        "PIPE",
+        "END",
+        "SEMICOLON"
+      ],
+      "raw_body": "MATCH e=expr WITH PIPE? bs=plist0(match_branch, PIPE) END SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "EXPR",
+        "WITH",
+        "PIPE",
+        "match_branch",
+        "END",
+        "SEMICOLON"
+      ],
+      "raw_body": "MATCH e=expr WITH PIPE? bs=plist0(match_branch, PIPE) END SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "IF",
+        "LPAREN",
+        "EXPR",
+        "IS",
+        "opptn",
+        "RPAREN",
+        "block",
+        "ELSE"
+      ],
+      "raw_body": "IF LPAREN e=expr IS c=opptn RPAREN b1=block b2=option(prefix(ELSE, block))"
+    },
+    {
+      "body_symbols": [
+        "IF",
+        "LPAREN",
+        "EXPR",
+        "IS",
+        "opptn",
+        "RPAREN",
+        "block",
+        "ELSE",
+        "block"
+      ],
+      "raw_body": "IF LPAREN e=expr IS c=opptn RPAREN b1=block b2=option(prefix(ELSE, block))"
+    }
+  ],
+  "tactics0": [
+    {
+      "body_symbols": [
+        "tactics"
+      ],
+      "raw_body": "ts=tactics"
+    },
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "x=loc(empty)"
+    }
+  ],
+  "rweqv_proc": [
+    {
+      "body_symbols": [],
+      "raw_body": "p=paren(args=loc(plist0(expr, COMMA)) res=rweqv_res?  )"
+    },
+    {
+      "body_symbols": [
+        "rweqv_res"
+      ],
+      "raw_body": "p=paren(args=loc(plist0(expr, COMMA)) res=rweqv_res?  )"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "p=paren(args=loc(plist0(expr, COMMA)) res=rweqv_res?  )"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "rweqv_res"
+      ],
+      "raw_body": "p=paren(args=loc(plist0(expr, COMMA)) res=rweqv_res?  )"
+    }
+  ],
+  "type_args": [
+    {
+      "body_symbols": [
+        "simpl_type_exp"
+      ],
+      "raw_body": "ty=loc(simpl_type_exp)"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "type_exp",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN tys=plist2(loc(type_exp), COMMA) RPAREN"
+    }
+  ],
+  "tcfc_1": [
+    {
+      "body_symbols": [
+        "sword"
+      ],
+      "raw_body": "i=loc(sword)"
+    }
+  ],
+  "iplist1_r": [
+    {
+      "body_symbols": [
+        "X"
+      ],
+      "raw_body": "x=X"
+    },
+    {
+      "body_symbols": [
+        "iplist1_r",
+        "S",
+        "S",
+        "X"
+      ],
+      "raw_body": "xs=iplist1_r(X, S) S x=X"
+    }
+  ],
+  "branch_select": [
+    {
+      "body_symbols": [
+        "SHARP",
+        "boident",
+        "DOT"
+      ],
+      "raw_body": "SHARP s=boident DOT"
+    },
+    {
+      "body_symbols": [
+        "DOT"
+      ],
+      "raw_body": "DOT"
+    },
+    {
+      "body_symbols": [
+        "QUESTION"
+      ],
+      "raw_body": "QUESTION"
+    }
+  ],
+  "memtype_decl": [
+    {
+      "body_symbols": [
+        "loc_decl_names",
+        "COLON",
+        "type_exp"
+      ],
+      "raw_body": "x=loc(loc_decl_names) COLON ty=loc(type_exp)"
+    }
+  ],
+  "subtactic": [
+    {
+      "body_symbols": [
+        "tactic_chain"
+      ],
+      "raw_body": "t=tactic_chain"
+    },
+    {
+      "body_symbols": [
+        "tactic"
+      ],
+      "raw_body": "t=tactic"
+    }
+  ],
+  "async_while_tac_info": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "EXPR",
+        "COMMA",
+        "EXPR",
+        "RBRACKET",
+        "LBRACKET",
+        "EXPR",
+        "COMMA",
+        "EXPR",
+        "RBRACKET",
+        "EXPR",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "LBRACKET t1=expr COMMA f1=form RBRACKET LBRACKET t2=expr COMMA f2=form RBRACKET p0=sform p1=sform COLON inv=sform"
+    }
+  ],
+  "numop": [
+    {
+      "body_symbols": [
+        "NUMOP"
+      ],
+      "raw_body": "op=NUMOP"
+    }
+  ],
+  "block": [
+    {
+      "body_symbols": [
+        "base_instr",
+        "SEMICOLON"
+      ],
+      "raw_body": "i=loc(base_instr) SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "stmt"
+      ],
+      "raw_body": "stmt=brace(stmt)"
+    }
+  ],
+  "trans_kind": [
+    {
+      "body_symbols": [
+        "side",
+        "stmt"
+      ],
+      "raw_body": "s=side c=brace(stmt)"
+    },
+    {
+      "body_symbols": [
+        "fident"
+      ],
+      "raw_body": "f=loc(fident)"
+    }
+  ],
+  "__rlist1": [
+    {
+      "body_symbols": [
+        "X"
+      ],
+      "raw_body": "x=X"
+    },
+    {
+      "body_symbols": [
+        "__rlist1",
+        "S",
+        "S",
+        "X"
+      ],
+      "raw_body": "xs=__rlist1(X, S) S x=X"
+    }
+  ],
+  "codepos1": [
+    {
+      "body_symbols": [
+        "codepos1_wo_off"
+      ],
+      "raw_body": "cp=codepos1_wo_off"
+    },
+    {
+      "body_symbols": [
+        "codepos1_wo_off",
+        "AMP",
+        "PLUS",
+        "word"
+      ],
+      "raw_body": "cp=codepos1_wo_off AMP PLUS  i=word"
+    },
+    {
+      "body_symbols": [
+        "codepos1_wo_off",
+        "AMP",
+        "MINUS",
+        "word"
+      ],
+      "raw_body": "cp=codepos1_wo_off AMP MINUS i=word"
+    }
+  ],
+  "tactics": [
+    {
+      "body_symbols": [
+        "tactic"
+      ],
+      "raw_body": "t=tactic %prec SEMICOLON"
+    },
+    {
+      "body_symbols": [
+        "tactic",
+        "SEMICOLON",
+        "subtactics"
+      ],
+      "raw_body": "t=tactic SEMICOLON ts=subtactics"
+    }
+  ],
+  "namespace": [
+    {
+      "body_symbols": [
+        "UIDENT"
+      ],
+      "raw_body": "nm=rlist1(UIDENT, DOT)"
+    },
+    {
+      "body_symbols": [
+        "TOP",
+        "DOT"
+      ],
+      "raw_body": "TOP nm=rlist0(prefix(DOT, UIDENT), empty)"
+    },
+    {
+      "body_symbols": [
+        "TOP",
+        "DOT",
+        "UIDENT"
+      ],
+      "raw_body": "TOP nm=rlist0(prefix(DOT, UIDENT), empty)"
+    },
+    {
+      "body_symbols": [
+        "SELF",
+        "DOT"
+      ],
+      "raw_body": "SELF nm=rlist0(prefix(DOT, UIDENT), empty)"
+    },
+    {
+      "body_symbols": [
+        "SELF",
+        "DOT",
+        "UIDENT"
+      ],
+      "raw_body": "SELF nm=rlist0(prefix(DOT, UIDENT), empty)"
+    }
+  ],
+  "binop": [
+    {
+      "body_symbols": [
+        "sbinop"
+      ],
+      "raw_body": "op=sbinop"
+    },
+    {
+      "body_symbols": [
+        "IMPL"
+      ],
+      "raw_body": "IMPL"
+    },
+    {
+      "body_symbols": [
+        "IFF"
+      ],
+      "raw_body": "IFF"
+    }
+  ],
+  "sbinop": [
+    {
+      "body_symbols": [
+        "EQ"
+      ],
+      "raw_body": "EQ"
+    },
+    {
+      "body_symbols": [
+        "NE"
+      ],
+      "raw_body": "NE"
+    },
+    {
+      "body_symbols": [
+        "PLUS"
+      ],
+      "raw_body": "PLUS"
+    },
+    {
+      "body_symbols": [
+        "MINUS"
+      ],
+      "raw_body": "MINUS"
+    },
+    {
+      "body_symbols": [
+        "STAR"
+      ],
+      "raw_body": "STAR"
+    },
+    {
+      "body_symbols": [
+        "SLASH"
+      ],
+      "raw_body": "SLASH"
+    },
+    {
+      "body_symbols": [
+        "AT"
+      ],
+      "raw_body": "AT"
+    },
+    {
+      "body_symbols": [
+        "OR"
+      ],
+      "raw_body": "OR"
+    },
+    {
+      "body_symbols": [
+        "ORA"
+      ],
+      "raw_body": "ORA"
+    },
+    {
+      "body_symbols": [
+        "AND"
+      ],
+      "raw_body": "AND"
+    },
+    {
+      "body_symbols": [
+        "ANDA"
+      ],
+      "raw_body": "ANDA"
+    },
+    {
+      "body_symbols": [
+        "AMP"
+      ],
+      "raw_body": "AMP"
+    },
+    {
+      "body_symbols": [
+        "HAT"
+      ],
+      "raw_body": "HAT"
+    },
+    {
+      "body_symbols": [
+        "BACKSLASH"
+      ],
+      "raw_body": "BACKSLASH"
+    },
+    {
+      "body_symbols": [
+        "LOP1",
+        "PIPE",
+        "LOP2",
+        "PIPE",
+        "LOP3",
+        "PIPE",
+        "LOP4"
+      ],
+      "raw_body": "x=LOP1 | x=LOP2 | x=LOP3 | x=LOP4"
+    },
+    {
+      "body_symbols": [
+        "ROP1",
+        "PIPE",
+        "ROP2",
+        "PIPE",
+        "ROP3",
+        "PIPE",
+        "ROP4"
+      ],
+      "raw_body": "x=ROP1 | x=ROP2 | x=ROP3 | x=ROP4"
+    },
+    {
+      "body_symbols": [
+        "NOP"
+      ],
+      "raw_body": "x=NOP"
+    }
+  ],
+  "lvalue": [
+    {
+      "body_symbols": [
+        "lvalue_u"
+      ],
+      "raw_body": "x=loc(lvalue_u)"
+    }
+  ],
+  "uint": [
+    {
+      "body_symbols": [
+        "UINT"
+      ],
+      "raw_body": "n=UINT"
+    }
+  ],
+  "mod_type_with_restr": [
+    {
+      "body_symbols": [
+        "x",
+        "EXPR"
+      ],
+      "raw_body": "x = qident"
+    },
+    {
+      "body_symbols": [
+        "x",
+        "EXPR",
+        "mod_restr"
+      ],
+      "raw_body": "x = qident mr=mod_restr"
+    }
+  ],
+  "loc_decl_names": [
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=plist1(lident, COMMA)"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "lident",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN x=plist2(lident, COMMA) RPAREN"
+    }
+  ],
+  "simplify": [
+    {
+      "body_symbols": [
+        "simplify_arg"
+      ],
+      "raw_body": "l=simplify_arg+"
+    },
+    {
+      "body_symbols": [
+        "SIMPLIFY"
+      ],
+      "raw_body": "SIMPLIFY"
+    },
+    {
+      "body_symbols": [
+        "SIMPLIFY",
+        "EXPR"
+      ],
+      "raw_body": "SIMPLIFY l=qoident+"
+    },
+    {
+      "body_symbols": [
+        "SIMPLIFY",
+        "DELTA"
+      ],
+      "raw_body": "SIMPLIFY DELTA"
+    }
+  ],
+  "im_block_end": [
+    {
+      "body_symbols": [
+        "RBRACE"
+      ],
+      "raw_body": "RBRACE"
+    },
+    {
+      "body_symbols": [
+        "RPBRACE"
+      ],
+      "raw_body": "RPBRACE"
+    }
+  ],
+  "iplist1": [
+    {
+      "body_symbols": [
+        "iplist1_r",
+        "S"
+      ],
+      "raw_body": "xs=iplist1_r(X, S)"
+    }
+  ],
+  "lp_field": [
+    {
+      "body_symbols": [
+        "EXPR",
+        "EQ",
+        "ident"
+      ],
+      "raw_body": "f=qident EQ x=ident"
+    }
+  ],
+  "tvars_app": [
+    {
+      "body_symbols": [
+        "LTCOLON",
+        "tyvar_annot",
+        "GT"
+      ],
+      "raw_body": "LTCOLON k=loc(tyvar_annot) GT"
+    }
+  ],
+  "pgoption": [
+    {
+      "body_symbols": [
+        "boption",
+        "DELTA"
+      ],
+      "raw_body": "b=boption(MINUS) DELTA"
+    },
+    {
+      "body_symbols": [
+        "boption",
+        "DELTA",
+        "COLON",
+        "SPLIT"
+      ],
+      "raw_body": "b=boption(MINUS) DELTA COLON SPLIT"
+    },
+    {
+      "body_symbols": [
+        "boption",
+        "DELTA",
+        "COLON",
+        "CASE"
+      ],
+      "raw_body": "b=boption(MINUS) DELTA COLON CASE"
+    },
+    {
+      "body_symbols": [
+        "boption",
+        "pgoptionkw"
+      ],
+      "raw_body": "b=boption(MINUS) x=pgoptionkw"
+    }
+  ],
+  "prover_kind1": [
+    {
+      "body_symbols": [
+        "STRING"
+      ],
+      "raw_body": "l=loc(STRING)"
+    },
+    {
+      "body_symbols": [
+        "PLUS",
+        "STRING"
+      ],
+      "raw_body": "PLUS  l=loc(STRING)"
+    },
+    {
+      "body_symbols": [
+        "MINUS",
+        "STRING"
+      ],
+      "raw_body": "MINUS l=loc(STRING)"
+    }
+  ],
+  "cqoption": [
+    {
+      "body_symbols": [
+        "boption",
+        "cqoptionkw"
+      ],
+      "raw_body": "b=boption(MINUS) x=cqoptionkw"
+    }
+  ],
+  "_oident": [
+    {
+      "body_symbols": [
+        "_boident"
+      ],
+      "raw_body": "x=_boident"
+    },
+    {
+      "body_symbols": [
+        "PUNIOP"
+      ],
+      "raw_body": "x=paren(PUNIOP)"
+    }
+  ],
+  "hoare_body": [
+    {
+      "body_symbols": [
+        "fident",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR"
+      ],
+      "raw_body": "mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)"
+    }
+  ],
+  "cqoptionkw": [
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=lident"
+    }
+  ],
+  "icodepos_r": [
+    {
+      "body_symbols": [
+        "IF"
+      ],
+      "raw_body": "IF"
+    },
+    {
+      "body_symbols": [
+        "WHILE"
+      ],
+      "raw_body": "WHILE"
+    },
+    {
+      "body_symbols": [
+        "MATCH"
+      ],
+      "raw_body": "MATCH"
+    },
+    {
+      "body_symbols": [
+        "lvmatch",
+        "LESAMPLE"
+      ],
+      "raw_body": "lvm=lvmatch LESAMPLE"
+    },
+    {
+      "body_symbols": [
+        "lvmatch",
+        "LEAT"
+      ],
+      "raw_body": "lvm=lvmatch LEAT"
+    },
+    {
+      "body_symbols": [
+        "lvmatch",
+        "LARROW"
+      ],
+      "raw_body": "lvm=lvmatch LARROW"
+    },
+    {
+      "body_symbols": [
+        "lvmatch",
+        "LARROW"
+      ],
+      "raw_body": "lvm=paren(lvmatch)  LARROW"
+    }
+  ],
+  "codepos_range": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "codepos",
+        "DOTDOT",
+        "codepos",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET cps=codepos DOTDOT cpe=codepos RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "codepos",
+        "MINUS",
+        "codepos1",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET cps=codepos MINUS cpe=codepos1 RBRACKET"
+    }
+  ],
+  "pgtybinding1": [
+    {
+      "body_symbols": [
+        "ptybinding1"
+      ],
+      "raw_body": "x=ptybinding1"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "uident",
+        "LTCOLON",
+        "mod_type_with_restr",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN x=uident LTCOLON mi=mod_type_with_restr RPAREN"
+    },
+    {
+      "body_symbols": [
+        "mident"
+      ],
+      "raw_body": "pn=mident"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "mident",
+        "COLON",
+        "memtype",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN pn=mident COLON mt=memtype RPAREN"
+    }
+  ],
+  "base_instr": [
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=lident"
+    },
+    {
+      "body_symbols": [
+        "lvalue",
+        "LESAMPLE",
+        "EXPR"
+      ],
+      "raw_body": "x=lvalue LESAMPLE  e=expr"
+    },
+    {
+      "body_symbols": [
+        "lvalue",
+        "LARROW",
+        "EXPR"
+      ],
+      "raw_body": "x=lvalue LARROW e=expr"
+    },
+    {
+      "body_symbols": [
+        "lvalue",
+        "LEAT",
+        "fident",
+        "LPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "x=lvalue LEAT f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "lvalue",
+        "LEAT",
+        "fident",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "x=lvalue LEAT f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "fident",
+        "LPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "fident",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "f=loc(fident) LPAREN es=loc(plist0(expr, COMMA)) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "ASSERT",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "ASSERT LPAREN c=expr RPAREN"
+    }
+  ],
+  "sep": [
+    {
+      "body_symbols": [
+        "S1",
+        "X",
+        "S2"
+      ],
+      "raw_body": "x=S1 X y=S2"
+    }
+  ],
+  "var_or_anon": [
+    {
+      "body_symbols": [
+        "UNDERSCORE"
+      ],
+      "raw_body": "x=loc(UNDERSCORE)"
+    },
+    {
+      "body_symbols": [
+        "ident"
+      ],
+      "raw_body": "x=ident"
+    }
+  ],
+  "boident": [
+    {
+      "body_symbols": [
+        "_boident"
+      ],
+      "raw_body": "x=loc(_boident)"
+    }
+  ],
+  "type_exp": [
+    {
+      "body_symbols": [
+        "simpl_type_exp"
+      ],
+      "raw_body": "ty=simpl_type_exp"
+    },
+    {
+      "body_symbols": [
+        "simpl_type_exp"
+      ],
+      "raw_body": "ty=plist2(loc(simpl_type_exp), STAR)"
+    },
+    {
+      "body_symbols": [
+        "type_exp",
+        "RARROW",
+        "type_exp"
+      ],
+      "raw_body": "ty1=loc(type_exp) RARROW ty2=loc(type_exp)"
+    }
+  ],
+  "eager_body": [
+    {
+      "body_symbols": [
+        "stmt",
+        "COMMA",
+        "fident",
+        "TILD",
+        "fident",
+        "COMMA",
+        "stmt",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR"
+      ],
+      "raw_body": "s1=stmt COMMA  mp1=loc(fident) TILD mp2=loc(fident) COMMA s2=stmt COLON pre=form_r(P) LONGARROW post=form_r(P)"
+    }
+  ],
+  "_tident": [
+    {
+      "body_symbols": [
+        "TIDENT"
+      ],
+      "raw_body": "x=TIDENT"
+    }
+  ],
+  "tcfc": [
+    {
+      "body_symbols": [
+        "tcfc_set"
+      ],
+      "raw_body": "s1=tcfc_set"
+    },
+    {
+      "body_symbols": [
+        "TILD",
+        "tcfc_set"
+      ],
+      "raw_body": "s1=tcfc_set? TILD s2=tcfc_set"
+    },
+    {
+      "body_symbols": [
+        "tcfc_set",
+        "TILD",
+        "tcfc_set"
+      ],
+      "raw_body": "s1=tcfc_set? TILD s2=tcfc_set"
+    }
+  ],
+  "tactic_core_r": [
+    {
+      "body_symbols": [
+        "IDTAC"
+      ],
+      "raw_body": "IDTAC"
+    },
+    {
+      "body_symbols": [
+        "IDTAC",
+        "STRING"
+      ],
+      "raw_body": "IDTAC s=STRING"
+    },
+    {
+      "body_symbols": [
+        "TRY",
+        "tactic_core"
+      ],
+      "raw_body": "TRY t=tactic_core"
+    },
+    {
+      "body_symbols": [
+        "TRY",
+        "NOT",
+        "tactic_core"
+      ],
+      "raw_body": "TRY NOT t=tactic_core"
+    },
+    {
+      "body_symbols": [
+        "BY",
+        "tactics"
+      ],
+      "raw_body": "BY t=tactics"
+    },
+    {
+      "body_symbols": [
+        "BY",
+        "empty",
+        "PIPE",
+        "DONE"
+      ],
+      "raw_body": "BY bracket(empty) | DONE"
+    },
+    {
+      "body_symbols": [
+        "SOLVE"
+      ],
+      "raw_body": "SOLVE dp=word? base=option(paren(plist1(lident, COMMA)))"
+    },
+    {
+      "body_symbols": [
+        "SOLVE",
+        "lident"
+      ],
+      "raw_body": "SOLVE dp=word? base=option(paren(plist1(lident, COMMA)))"
+    },
+    {
+      "body_symbols": [
+        "SOLVE",
+        "word"
+      ],
+      "raw_body": "SOLVE dp=word? base=option(paren(plist1(lident, COMMA)))"
+    },
+    {
+      "body_symbols": [
+        "SOLVE",
+        "word",
+        "lident"
+      ],
+      "raw_body": "SOLVE dp=word? base=option(paren(plist1(lident, COMMA)))"
+    },
+    {
+      "body_symbols": [
+        "DO",
+        "tactic_core"
+      ],
+      "raw_body": "DO r=do_repeat? t=tactic_core"
+    },
+    {
+      "body_symbols": [
+        "DO",
+        "do_repeat",
+        "tactic_core"
+      ],
+      "raw_body": "DO r=do_repeat? t=tactic_core"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "tactics",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN s=tactics RPAREN"
+    },
+    {
+      "body_symbols": [
+        "ADMIT"
+      ],
+      "raw_body": "ADMIT"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "SLASH",
+        "ioption",
+        "ioption",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "CASE vw=prefix(SLASH, pterm)* opts=ioption(caseoptions) eq=ioption(postfix(boption(UNDERSCORE), COLON)) gp=revert"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "SLASH",
+        "EXPR",
+        "ioption",
+        "ioption",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "CASE vw=prefix(SLASH, pterm)* opts=ioption(caseoptions) eq=ioption(postfix(boption(UNDERSCORE), COLON)) gp=revert"
+    },
+    {
+      "body_symbols": [
+        "PROGRESS"
+      ],
+      "raw_body": "PROGRESS opts=pgoptions? t=tactic_core?"
+    },
+    {
+      "body_symbols": [
+        "PROGRESS",
+        "tactic_core"
+      ],
+      "raw_body": "PROGRESS opts=pgoptions? t=tactic_core?"
+    },
+    {
+      "body_symbols": [
+        "PROGRESS",
+        "pgoptions"
+      ],
+      "raw_body": "PROGRESS opts=pgoptions? t=tactic_core?"
+    },
+    {
+      "body_symbols": [
+        "PROGRESS",
+        "pgoptions",
+        "tactic_core"
+      ],
+      "raw_body": "PROGRESS opts=pgoptions? t=tactic_core?"
+    },
+    {
+      "body_symbols": [
+        "logtactic"
+      ],
+      "raw_body": "x=logtactic"
+    },
+    {
+      "body_symbols": [
+        "phltactic"
+      ],
+      "raw_body": "x=phltactic"
+    },
+    {
+      "body_symbols": [
+        "BY",
+        "stmt"
+      ],
+      "raw_body": "[alias:outline_kind] BY s=brace(stmt)"
+    },
+    {
+      "body_symbols": [
+        "TILD",
+        "fident"
+      ],
+      "raw_body": "[alias:outline_kind] TILD f=loc(fident)"
+    },
+    {
+      "body_symbols": [
+        "fident",
+        "phltactic"
+      ],
+      "raw_body": "[alias:outline_kind] f=loc(fident) %public phltactic:"
+    },
+    {
+      "body_symbols": [
+        "PROC"
+      ],
+      "raw_body": "[alias:outline_kind] PROC"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC f=sform"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC bad=sform p=sform q=sform?"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC bad=sform p=sform q=sform?"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "STAR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC STAR"
+    },
+    {
+      "body_symbols": [
+        "SEQ",
+        "tac_dir",
+        "s_codepos1",
+        "COLON",
+        "EXPR",
+        "app_bd_info"
+      ],
+      "raw_body": "[alias:outline_kind] SEQ s=side? d=tac_dir pos=s_codepos1 COLON p=form_or_double_form f=app_bd_info"
+    },
+    {
+      "body_symbols": [
+        "SEQ",
+        "side",
+        "tac_dir",
+        "s_codepos1",
+        "COLON",
+        "EXPR",
+        "app_bd_info"
+      ],
+      "raw_body": "[alias:outline_kind] SEQ s=side? d=tac_dir pos=s_codepos1 COLON p=form_or_double_form f=app_bd_info"
+    },
+    {
+      "body_symbols": [
+        "WP"
+      ],
+      "raw_body": "[alias:outline_kind] WP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "WP",
+        "s_codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] WP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SP"
+      ],
+      "raw_body": "[alias:outline_kind] SP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SP",
+        "s_codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] SP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SKIP"
+      ],
+      "raw_body": "[alias:outline_kind] SKIP"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "while_tac_info"
+      ],
+      "raw_body": "[alias:outline_kind] WHILE s=side? info=while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "side",
+        "while_tac_info"
+      ],
+      "raw_body": "[alias:outline_kind] WHILE s=side? info=while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "ASYNC",
+        "WHILE",
+        "async_while_tac_info"
+      ],
+      "raw_body": "[alias:outline_kind] ASYNC WHILE info=async_while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CALL s=side? info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CALL s=side? info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "SLASH",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CALL SLASH fc=sform info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "RCONDT",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RCONDT s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDT",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RCONDT s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDF",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RCONDF s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDF",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RCONDF s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "oident",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] MATCH c=oident s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "oident",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] MATCH c=oident s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "IF",
+        "if_option"
+      ],
+      "raw_body": "[alias:outline_kind] IF opt=if_option"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "boption"
+      ],
+      "raw_body": "[alias:outline_kind] MATCH s=loc(side?) eq=boption(EQ)"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "side",
+        "boption"
+      ],
+      "raw_body": "[alias:outline_kind] MATCH s=loc(side?) eq=boption(EQ)"
+    },
+    {
+      "body_symbols": [
+        "INTERLEAVE",
+        "interleave_info"
+      ],
+      "raw_body": "[alias:outline_kind] INTERLEAVE info=loc(interleave_info)"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "codepos",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "side",
+        "codepos",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "EXPR",
+        "COLON"
+      ],
+      "raw_body": "[alias:outline_kind] RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "side",
+        "EXPR",
+        "COLON"
+      ],
+      "raw_body": "[alias:outline_kind] RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "side",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RNDSEM",
+        "boption",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RNDSEM red=boption(STAR) s=side? c=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RNDSEM",
+        "boption",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "[alias:outline_kind] RNDSEM red=boption(STAR) s=side? c=codepos1"
+    },
+    {
+      "body_symbols": [
+        "INLINE"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "OUTLINE",
+        "side",
+        "codepos_or_range",
+        "outline_kind"
+      ],
+      "raw_body": "[alias:outline_kind] OUTLINE s=side cpr=codepos_or_range k=outline_kind"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos",
+        "NOT",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos NOT n=word"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos",
+        "NOT",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos NOT n=word"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos",
+        "NOT",
+        "STAR"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos NOT STAR"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos",
+        "NOT",
+        "STAR"
+      ],
+      "raw_body": "[alias:outline_kind] KILL s=side? o=codepos NOT STAR"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "LARROW",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] CASE LARROW s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "LARROW",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] CASE LARROW s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos",
+        "WITH",
+        "lident"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos WITH x=lident"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos",
+        "WITH",
+        "lident"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos WITH x=lident"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos",
+        "lident",
+        "EQ",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos x=lident EQ e=expr"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos",
+        "lident",
+        "EQ",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? o=codepos x=lident EQ e=expr"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "lident",
+        "CEQ",
+        "EXPR",
+        "AT",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? x=lident CEQ p=sform_h AT o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "lident",
+        "CEQ",
+        "EXPR",
+        "AT",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] ALIAS s=side? x=lident CEQ p=sform_h AT o=codepos"
+    },
+    {
+      "body_symbols": [
+        "WEAKMEM",
+        "EXPR",
+        "param_decl"
+      ],
+      "raw_body": "[alias:outline_kind] WEAKMEM s=side? h=loc(ipcore_name) p=param_decl"
+    },
+    {
+      "body_symbols": [
+        "WEAKMEM",
+        "side",
+        "EXPR",
+        "param_decl"
+      ],
+      "raw_body": "[alias:outline_kind] WEAKMEM s=side? h=loc(ipcore_name) p=param_decl"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FISSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "side",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FISSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FISSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "side",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FISSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FUSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "side",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FUSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FUSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "side",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "[alias:outline_kind] FUSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "UNROLL",
+        "boption",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] UNROLL b=boption(FOR) s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "UNROLL",
+        "boption",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "[alias:outline_kind] UNROLL b=boption(FOR) s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "SPLITWHILE",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] SPLITWHILE s=side? o=codepos COLON c=expr %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "SPLITWHILE",
+        "side",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] SPLITWHILE s=side? o=codepos COLON c=expr %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "BYPHOARE"
+      ],
+      "raw_body": "[alias:outline_kind] BYPHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYPHOARE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYPHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEHOARE"
+      ],
+      "raw_body": "[alias:outline_kind] BYEHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEHOARE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYUPTO"
+      ],
+      "raw_body": "[alias:outline_kind] BYUPTO"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "SLASH",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ SLASH fc=sform info=gpterm(conseq)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cq=cqoptions? UNDERSCORE UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] CONSEQ cm=crushmode"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "STAR"
+      ],
+      "raw_body": "[alias:outline_kind] ELIM STAR"
+    },
+    {
+      "body_symbols": [
+        "ID",
+        "STAR",
+        "PIPE",
+        "EXLIM",
+        "iplist1",
+        "COMMA"
+      ],
+      "raw_body": "[alias:outline_kind] b=ID(EXIST STAR   | EXLIM  ) l=iplist1(sform, COMMA) %prec prec_below_comma"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "tvars_app"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "tvars_app",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "tvars_app"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "tvars_app",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "EXFALSO"
+      ],
+      "raw_body": "[alias:outline_kind] EXFALSO"
+    },
+    {
+      "body_symbols": [
+        "BYPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYPR"
+    },
+    {
+      "body_symbols": [
+        "BYPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] BYPR f1=sform f2=sform"
+    },
+    {
+      "body_symbols": [
+        "FEL",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] FEL at_pos=codepos1 cntr=sform delta=sform q=sform f_event=sform some_p=fel_pred_specs inv=sform?"
+    },
+    {
+      "body_symbols": [
+        "FEL",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] FEL at_pos=codepos1 cntr=sform delta=sform q=sform f_event=sform some_p=fel_pred_specs inv=sform?"
+    },
+    {
+      "body_symbols": [
+        "SIM",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] SIM cm=crushmode? info=eqobs_in"
+    },
+    {
+      "body_symbols": [
+        "SIM",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] SIM cm=crushmode? info=eqobs_in"
+    },
+    {
+      "body_symbols": [
+        "REPLACE",
+        "repl_kind",
+        "repl_hyp",
+        "repl_hyp"
+      ],
+      "raw_body": "[alias:outline_kind] REPLACE rk=repl_kind h1=repl_hyp h2=repl_hyp"
+    },
+    {
+      "body_symbols": [
+        "REPLACE",
+        "STAR",
+        "repl_kind"
+      ],
+      "raw_body": "[alias:outline_kind] REPLACE STAR rk=repl_kind"
+    },
+    {
+      "body_symbols": [
+        "TRANSITIVITY",
+        "trans_kind",
+        "trans_hyp",
+        "trans_hyp"
+      ],
+      "raw_body": "[alias:outline_kind] TRANSITIVITY tk=trans_kind h1=trans_hyp h2=trans_hyp"
+    },
+    {
+      "body_symbols": [
+        "TRANSITIVITY",
+        "STAR",
+        "trans_kind"
+      ],
+      "raw_body": "[alias:outline_kind] TRANSITIVITY STAR tk=trans_kind"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EQUIV",
+        "LBRACKET",
+        "side",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "[alias:outline_kind] REWRITE EQUIV LBRACKET s=side cp=codepos1 rws=rwside x=pterm proc=rweqv_proc? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EQUIV",
+        "LBRACKET",
+        "side",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "rweqv_proc",
+        "RBRACKET"
+      ],
+      "raw_body": "[alias:outline_kind] REWRITE EQUIV LBRACKET s=side cp=codepos1 rws=rwside x=pterm proc=rweqv_proc? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "SYMMETRY"
+      ],
+      "raw_body": "[alias:outline_kind] SYMMETRY"
+    },
+    {
+      "body_symbols": [
+        "EAGER",
+        "eager_tac"
+      ],
+      "raw_body": "[alias:outline_kind] EAGER t=eager_tac"
+    },
+    {
+      "body_symbols": [
+        "HOARE"
+      ],
+      "raw_body": "[alias:outline_kind] HOARE"
+    },
+    {
+      "body_symbols": [
+        "PRBOUNDED"
+      ],
+      "raw_body": "[alias:outline_kind] PRBOUNDED"
+    },
+    {
+      "body_symbols": [
+        "PHOARE",
+        "SPLIT",
+        "bdhoare_split"
+      ],
+      "raw_body": "[alias:outline_kind] PHOARE SPLIT i=bdhoare_split"
+    },
+    {
+      "body_symbols": [
+        "PHOARE",
+        "EQUIV",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PHOARE EQUIV s=side pr=sform po=sform"
+    },
+    {
+      "body_symbols": [
+        "AUTO"
+      ],
+      "raw_body": "[alias:outline_kind] AUTO"
+    },
+    {
+      "body_symbols": [
+        "LOSSLESS"
+      ],
+      "raw_body": "[alias:outline_kind] LOSSLESS"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "CHANGE",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC CHANGE side=side? pos=codepos COLON f=sexpr"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "CHANGE",
+        "side",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC CHANGE side=side? pos=codepos COLON f=sexpr"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "codepos",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC REWRITE side=side? pos=codepos f=pterm"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "side",
+        "codepos",
+        "EXPR"
+      ],
+      "raw_body": "[alias:outline_kind] PROC REWRITE side=side? pos=codepos f=pterm"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "codepos",
+        "SLASHEQ"
+      ],
+      "raw_body": "[alias:outline_kind] PROC REWRITE side=side? pos=codepos SLASHEQ"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "side",
+        "codepos",
+        "SLASHEQ"
+      ],
+      "raw_body": "[alias:outline_kind] PROC REWRITE side=side? pos=codepos SLASHEQ"
+    },
+    {
+      "body_symbols": [
+        "RND"
+      ],
+      "raw_body": "[synthetic] RND (no info)"
+    },
+    {
+      "body_symbols": [
+        "SIM"
+      ],
+      "raw_body": "[synthetic] SIM (no info)"
+    },
+    {
+      "body_symbols": [
+        "MOVE",
+        "EXPR"
+      ],
+      "raw_body": "[synthetic] MOVE intro"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "EXPR"
+      ],
+      "raw_body": "[synthetic] RND expr"
+    }
+  ],
+  "lpattern": [
+    {
+      "body_symbols": [
+        "lpattern_u"
+      ],
+      "raw_body": "x=loc(lpattern_u)"
+    }
+  ],
+  "uniop": [
+    {
+      "body_symbols": [
+        "NOP"
+      ],
+      "raw_body": "x=NOP"
+    },
+    {
+      "body_symbols": [
+        "NOT"
+      ],
+      "raw_body": "NOT"
+    },
+    {
+      "body_symbols": [
+        "PLUS"
+      ],
+      "raw_body": "PLUS"
+    },
+    {
+      "body_symbols": [
+        "MINUS"
+      ],
+      "raw_body": "MINUS"
+    }
+  ],
+  "icasemode_full_opt": [
+    {
+      "body_symbols": [
+        "iboption",
+        "iboption"
+      ],
+      "raw_body": "h=iboption(TILD) d=iboption(SLASH)"
+    }
+  ],
+  "_mident": [
+    {
+      "body_symbols": [
+        "MIDENT"
+      ],
+      "raw_body": "x=MIDENT"
+    }
+  ],
+  "tcfc_set": [
+    {
+      "body_symbols": [
+        "tcfc_rg"
+      ],
+      "raw_body": "xs=plist1(tcfc_rg, COMMA)"
+    }
+  ],
+  "tactic": [
+    {
+      "body_symbols": [
+        "tactic_ip"
+      ],
+      "raw_body": "t=tactic_ip %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "tactic_ip",
+        "ORA",
+        "tactic"
+      ],
+      "raw_body": "t1=tactic_ip ORA t2=tactic"
+    }
+  ],
+  "tac_dir": [
+    {
+      "body_symbols": [
+        "BACKS"
+      ],
+      "raw_body": "BACKS"
+    },
+    {
+      "body_symbols": [
+        "FWDS"
+      ],
+      "raw_body": "FWDS"
+    },
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "empty"
+    }
+  ],
+  "tyvar_annot": [
+    {
+      "body_symbols": [
+        "lt",
+        "type_exp"
+      ],
+      "raw_body": "lt = plist1(loc(type_exp), COMMA)"
+    },
+    {
+      "body_symbols": [
+        "lt",
+        "tyvar_byname1"
+      ],
+      "raw_body": "lt = plist1(tyvar_byname1, COMMA)"
+    }
+  ],
+  "_boident": [
+    {
+      "body_symbols": [
+        "_lident"
+      ],
+      "raw_body": "x=_lident"
+    },
+    {
+      "body_symbols": [
+        "_uident"
+      ],
+      "raw_body": "x=_uident"
+    },
+    {
+      "body_symbols": [
+        "PUNIOP"
+      ],
+      "raw_body": "x=PUNIOP"
+    },
+    {
+      "body_symbols": [
+        "PBINOP"
+      ],
+      "raw_body": "x=PBINOP"
+    },
+    {
+      "body_symbols": [
+        "PNUMOP"
+      ],
+      "raw_body": "x=PNUMOP"
+    },
+    {
+      "body_symbols": [
+        "PPSTOP"
+      ],
+      "raw_body": "x=PPSTOP"
+    },
+    {
+      "body_symbols": [
+        "STRING"
+      ],
+      "raw_body": "x=loc(STRING)"
+    }
+  ],
+  "sharp": [
+    {
+      "body_symbols": [
+        "SHARP"
+      ],
+      "raw_body": "SHARP"
+    },
+    {
+      "body_symbols": [
+        "SHARPPIPE"
+      ],
+      "raw_body": "SHARPPIPE"
+    }
+  ],
+  "interleavepos": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "word",
+        "COLON",
+        "word",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET c=word COLON n=word RBRACKET"
+    }
+  ],
+  "typed_vars_or_anons": [
+    {
+      "body_symbols": [
+        "var_or_anon",
+        "COLON",
+        "type_exp"
+      ],
+      "raw_body": "xs=var_or_anon+ COLON ty=loc(type_exp)"
+    },
+    {
+      "body_symbols": [
+        "var_or_anon"
+      ],
+      "raw_body": "xs=var_or_anon+"
+    }
+  ],
+  "tactic_chain_r": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "tactics0",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET ts=plist1(loc(tactics0), PIPE) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "sep",
+        "COLON",
+        "tactics",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET ts=plist1(sep(tcfc, COLON, loc(tactics)), PIPE) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "sep",
+        "COLON",
+        "tactics",
+        "ELSE",
+        "tactics",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET ts=plist1(sep(tcfc, COLON, loc(tactics)), PIPE) ELSE t=loc(tactics) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "FIRST",
+        "tactics"
+      ],
+      "raw_body": "FIRST t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "LAST",
+        "tactics"
+      ],
+      "raw_body": "LAST  t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "FIRST",
+        "word",
+        "tactics"
+      ],
+      "raw_body": "FIRST n=word t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "LAST",
+        "word",
+        "tactics"
+      ],
+      "raw_body": "LAST  n=word t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "FIRST",
+        "LAST"
+      ],
+      "raw_body": "FIRST LAST"
+    },
+    {
+      "body_symbols": [
+        "LAST",
+        "FIRST"
+      ],
+      "raw_body": "LAST  FIRST"
+    },
+    {
+      "body_symbols": [
+        "FIRST",
+        "word",
+        "LAST"
+      ],
+      "raw_body": "FIRST n=word LAST"
+    },
+    {
+      "body_symbols": [
+        "LAST",
+        "word",
+        "FIRST"
+      ],
+      "raw_body": "LAST  n=word FIRST"
+    },
+    {
+      "body_symbols": [
+        "EXPECT",
+        "word"
+      ],
+      "raw_body": "EXPECT n=word"
+    },
+    {
+      "body_symbols": [
+        "EXPECT",
+        "word",
+        "tactics"
+      ],
+      "raw_body": "EXPECT n=word t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "EXPECT",
+        "word",
+        "tactic_chain_r"
+      ],
+      "raw_body": "EXPECT n=word t=loc(paren(rlist1(tactic_chain_r, SEMICOLON)))"
+    },
+    {
+      "body_symbols": [
+        "tcfc",
+        "COLON",
+        "tactic"
+      ],
+      "raw_body": "fc=tcfc COLON t=tactic"
+    }
+  ],
+  "ptybindings": [
+    {
+      "body_symbols": [
+        "ptybinding1"
+      ],
+      "raw_body": "x=ptybinding1+"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "COLON",
+        "type_exp"
+      ],
+      "raw_body": "x=bdident+ COLON ty=loc(type_exp)"
+    }
+  ],
+  "mcptn": [
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "c=qoident tvi=tvars_app? ps=bdident*"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "bdident"
+      ],
+      "raw_body": "c=qoident tvi=tvars_app? ps=bdident*"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "tvars_app"
+      ],
+      "raw_body": "c=qoident tvi=tvars_app? ps=bdident*"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "tvars_app",
+        "bdident"
+      ],
+      "raw_body": "c=qoident tvi=tvars_app? ps=bdident*"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET tvi=tvars_app? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "tvars_app",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET tvi=tvars_app? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "uniop"
+      ],
+      "raw_body": "op=loc(uniop) tvi=tvars_app?"
+    },
+    {
+      "body_symbols": [
+        "uniop",
+        "tvars_app"
+      ],
+      "raw_body": "op=loc(uniop) tvi=tvars_app?"
+    },
+    {
+      "body_symbols": [
+        "uniop",
+        "bdident"
+      ],
+      "raw_body": "op=loc(uniop) tvi=tvars_app? x=bdident"
+    },
+    {
+      "body_symbols": [
+        "uniop",
+        "tvars_app",
+        "bdident"
+      ],
+      "raw_body": "op=loc(uniop) tvi=tvars_app? x=bdident"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "BOP",
+        "bdident"
+      ],
+      "raw_body": "x1=bdident op=loc(BOP) tvi=tvars_app? x2=bdident"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "BOP",
+        "tvars_app",
+        "bdident"
+      ],
+      "raw_body": "x1=bdident op=loc(BOP) tvi=tvars_app? x2=bdident"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "ordering_op",
+        "bdident"
+      ],
+      "raw_body": "x1=bdident op=loc(ordering_op) tvi=tvars_app? x2=bdident"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "ordering_op",
+        "tvars_app",
+        "bdident"
+      ],
+      "raw_body": "x1=bdident op=loc(ordering_op) tvi=tvars_app? x2=bdident"
+    }
+  ],
+  "ptybinding1": [
+    {
+      "body_symbols": [
+        "LPAREN",
+        "pty_varty",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN bds=plist1(pty_varty, COMMA) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "bdident"
+      ],
+      "raw_body": "x=loc(bdident)"
+    }
+  ],
+  "nm1_codepos": [
+    {
+      "body_symbols": [
+        "codepos1",
+        "branch_select"
+      ],
+      "raw_body": "i=codepos1 bs=branch_select"
+    }
+  ],
+  "tcfc_rg": [
+    {
+      "body_symbols": [
+        "tcfc_1"
+      ],
+      "raw_body": "i1=tcfc_1"
+    },
+    {
+      "body_symbols": [
+        "tcfc_1",
+        "DOTDOT",
+        "tcfc_1"
+      ],
+      "raw_body": "i1=tcfc_1 DOTDOT i2=tcfc_1"
+    },
+    {
+      "body_symbols": [
+        "tcfc_1",
+        "DOTDOT"
+      ],
+      "raw_body": "i1=tcfc_1 DOTDOT"
+    },
+    {
+      "body_symbols": [
+        "DOTDOT",
+        "tcfc_1"
+      ],
+      "raw_body": "DOTDOT i2=tcfc_1"
+    }
+  ],
+  "memtype": [
+    {
+      "body_symbols": [
+        "LBRACE",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE m=rlist0(memtype_decl,COMMA) RBRACE"
+    },
+    {
+      "body_symbols": [
+        "LBRACE",
+        "memtype_decl",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE m=rlist0(memtype_decl,COMMA) RBRACE"
+    }
+  ],
+  "none": [
+    {
+      "body_symbols": [
+        "IMPOSSIBLE"
+      ],
+      "raw_body": "IMPOSSIBLE"
+    }
+  ],
+  "ID": [
+    {
+      "body_symbols": [
+        "X"
+      ],
+      "raw_body": "x=X"
+    }
+  ],
+  "if_option": [
+    {
+      "body_symbols": [],
+      "raw_body": "s=option(side)"
+    },
+    {
+      "body_symbols": [
+        "side"
+      ],
+      "raw_body": "s=option(side)"
+    },
+    {
+      "body_symbols": [
+        "o_codepos1",
+        "o_codepos1",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "s=option(side) i1=o_codepos1 i2=o_codepos1 COLON f=sform"
+    },
+    {
+      "body_symbols": [
+        "side",
+        "o_codepos1",
+        "o_codepos1",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "s=option(side) i1=o_codepos1 i2=o_codepos1 COLON f=sform"
+    },
+    {
+      "body_symbols": [
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "CEQ f=sform"
+    },
+    {
+      "body_symbols": [
+        "COLON",
+        "LPAREN",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "s=option(side) i=codepos1? COLON LPAREN UNDERSCORE COLON f1=form LONGARROW f2=form RPAREN"
+    },
+    {
+      "body_symbols": [
+        "codepos1",
+        "COLON",
+        "LPAREN",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "s=option(side) i=codepos1? COLON LPAREN UNDERSCORE COLON f1=form LONGARROW f2=form RPAREN"
+    },
+    {
+      "body_symbols": [
+        "side",
+        "COLON",
+        "LPAREN",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "s=option(side) i=codepos1? COLON LPAREN UNDERSCORE COLON f1=form LONGARROW f2=form RPAREN"
+    },
+    {
+      "body_symbols": [
+        "side",
+        "codepos1",
+        "COLON",
+        "LPAREN",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "s=option(side) i=codepos1? COLON LPAREN UNDERSCORE COLON f1=form LONGARROW f2=form RPAREN"
+    }
+  ],
+  "coq_info": [
+    {
+      "body_symbols": [
+        "CHECK"
+      ],
+      "raw_body": "CHECK"
+    },
+    {
+      "body_symbols": [
+        "EDIT"
+      ],
+      "raw_body": "EDIT"
+    },
+    {
+      "body_symbols": [
+        "FIX"
+      ],
+      "raw_body": "FIX"
+    }
+  ],
+  "tyvar_byname1": [
+    {
+      "body_symbols": [
+        "tident",
+        "EQ",
+        "type_exp"
+      ],
+      "raw_body": "x=tident EQ ty=loc(type_exp)"
+    }
+  ],
+  "mem_restr_el": [
+    {
+      "body_symbols": [
+        "PIPE",
+        "PLUS",
+        "f_or_mod_ident",
+        "PIPE",
+        "MINUS",
+        "f_or_mod_ident",
+        "PIPE",
+        "f_or_mod_ident"
+      ],
+      "raw_body": "| PLUS  el=f_or_mod_ident | MINUS el=f_or_mod_ident |       el=f_or_mod_ident"
+    }
+  ],
+  "logtactic": [
+    {
+      "body_symbols": [
+        "REFLEX"
+      ],
+      "raw_body": "REFLEX"
+    },
+    {
+      "body_symbols": [
+        "ASSUMPTION"
+      ],
+      "raw_body": "ASSUMPTION"
+    },
+    {
+      "body_symbols": [
+        "MOVE",
+        "SLASH",
+        "COLON"
+      ],
+      "raw_body": "MOVE vw=prefix(SLASH, pterm)* gp=prefix(COLON, revert)?"
+    },
+    {
+      "body_symbols": [
+        "MOVE",
+        "SLASH",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "MOVE vw=prefix(SLASH, pterm)* gp=prefix(COLON, revert)?"
+    },
+    {
+      "body_symbols": [
+        "MOVE",
+        "SLASH",
+        "EXPR",
+        "COLON"
+      ],
+      "raw_body": "MOVE vw=prefix(SLASH, pterm)* gp=prefix(COLON, revert)?"
+    },
+    {
+      "body_symbols": [
+        "MOVE",
+        "SLASH",
+        "EXPR",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "MOVE vw=prefix(SLASH, pterm)* gp=prefix(COLON, revert)?"
+    },
+    {
+      "body_symbols": [
+        "CLEAR"
+      ],
+      "raw_body": "CLEAR"
+    },
+    {
+      "body_symbols": [
+        "CLEAR",
+        "MINUS",
+        "EXPR"
+      ],
+      "raw_body": "CLEAR MINUS l=loc(ipcore_name)+"
+    },
+    {
+      "body_symbols": [
+        "CLEAR",
+        "EXPR"
+      ],
+      "raw_body": "CLEAR l=loc(ipcore_name)+"
+    },
+    {
+      "body_symbols": [
+        "CONGR"
+      ],
+      "raw_body": "CONGR"
+    },
+    {
+      "body_symbols": [
+        "TRIVIAL"
+      ],
+      "raw_body": "TRIVIAL"
+    },
+    {
+      "body_symbols": [
+        "SMT",
+        "EXPR"
+      ],
+      "raw_body": "SMT pi=smt_info"
+    },
+    {
+      "body_symbols": [
+        "COQ",
+        "coq_info",
+        "STRING",
+        "LPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "COQ mode=coq_info name=loc(STRING) LPAREN dbmap=dbmap1* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "COQ",
+        "coq_info",
+        "STRING",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "COQ mode=coq_info name=loc(STRING) LPAREN dbmap=dbmap1* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "SMT",
+        "LPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "SMT LPAREN dbmap=dbmap1* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "SMT",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "SMT LPAREN dbmap=dbmap1* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "SPLIT"
+      ],
+      "raw_body": "SPLIT i=word?"
+    },
+    {
+      "body_symbols": [
+        "SPLIT",
+        "word"
+      ],
+      "raw_body": "SPLIT i=word?"
+    },
+    {
+      "body_symbols": [
+        "FIELD"
+      ],
+      "raw_body": "FIELD eqs=ident*"
+    },
+    {
+      "body_symbols": [
+        "FIELD",
+        "ident"
+      ],
+      "raw_body": "FIELD eqs=ident*"
+    },
+    {
+      "body_symbols": [
+        "RING"
+      ],
+      "raw_body": "RING eqs=ident*"
+    },
+    {
+      "body_symbols": [
+        "RING",
+        "ident"
+      ],
+      "raw_body": "RING eqs=ident*"
+    },
+    {
+      "body_symbols": [
+        "ALGNORM"
+      ],
+      "raw_body": "ALGNORM"
+    },
+    {
+      "body_symbols": [
+        "EXIST",
+        "iplist1",
+        "empty"
+      ],
+      "raw_body": "EXIST a=iplist1(loc(gpterm_arg), empty)"
+    },
+    {
+      "body_symbols": [
+        "LEFT"
+      ],
+      "raw_body": "LEFT"
+    },
+    {
+      "body_symbols": [
+        "RIGHT"
+      ],
+      "raw_body": "RIGHT"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "revert"
+      ],
+      "raw_body": "ELIM COLON? e=revert"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "ELIM COLON? e=revert"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "SLASH",
+        "EXPR",
+        "revert"
+      ],
+      "raw_body": "ELIM SLASH p=qident COLON? e=revert"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "SLASH",
+        "EXPR",
+        "COLON",
+        "revert"
+      ],
+      "raw_body": "ELIM SLASH p=qident COLON? e=revert"
+    },
+    {
+      "body_symbols": [
+        "APPLY"
+      ],
+      "raw_body": "APPLY"
+    },
+    {
+      "body_symbols": [
+        "APPLY",
+        "EXPR"
+      ],
+      "raw_body": "APPLY e=pterm"
+    },
+    {
+      "body_symbols": [
+        "APPLY",
+        "COLON",
+        "EXPR",
+        "revert"
+      ],
+      "raw_body": "APPLY COLON e=pterm rv=revert"
+    },
+    {
+      "body_symbols": [
+        "APPLY",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "APPLY es=prefix(SLASH, pterm)+"
+    },
+    {
+      "body_symbols": [
+        "APPLY",
+        "EXPR",
+        "IN",
+        "ident"
+      ],
+      "raw_body": "APPLY e=pterm IN x=ident"
+    },
+    {
+      "body_symbols": [
+        "APPLY",
+        "COLON",
+        "EXPR",
+        "revert",
+        "IN",
+        "ident"
+      ],
+      "raw_body": "APPLY COLON e=pterm rv=revert IN x=ident"
+    },
+    {
+      "body_symbols": [
+        "EXACT"
+      ],
+      "raw_body": "EXACT"
+    },
+    {
+      "body_symbols": [
+        "EXACT",
+        "EXPR"
+      ],
+      "raw_body": "EXACT e=pterm"
+    },
+    {
+      "body_symbols": [
+        "EXACT",
+        "COLON",
+        "EXPR",
+        "revert"
+      ],
+      "raw_body": "EXACT COLON e=pterm rv=revert"
+    },
+    {
+      "body_symbols": [
+        "EXACT",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "EXACT es=prefix(SLASH, pterm)+"
+    },
+    {
+      "body_symbols": [
+        "simplify"
+      ],
+      "raw_body": "l=simplify"
+    },
+    {
+      "body_symbols": [
+        "cbv"
+      ],
+      "raw_body": "l=cbv"
+    },
+    {
+      "body_symbols": [
+        "CHANGE",
+        "EXPR"
+      ],
+      "raw_body": "CHANGE f=sform"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EXPR"
+      ],
+      "raw_body": "REWRITE a=rwarg+"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EXPR",
+        "IN",
+        "ident"
+      ],
+      "raw_body": "REWRITE a=rwarg+ IN x=ident"
+    },
+    {
+      "body_symbols": [
+        "RWNORMAL",
+        "EXPR",
+        "WITH",
+        "EXPR"
+      ],
+      "raw_body": "RWNORMAL f=sform WITH ps=qident+"
+    },
+    {
+      "body_symbols": [
+        "SUBST"
+      ],
+      "raw_body": "SUBST l=sform*"
+    },
+    {
+      "body_symbols": [
+        "SUBST",
+        "EXPR"
+      ],
+      "raw_body": "SUBST l=sform*"
+    },
+    {
+      "body_symbols": [
+        "have_or_suff",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "have_or_suff",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "have_or_suff",
+        "COLON",
+        "EXPR",
+        "BY",
+        "tactics"
+      ],
+      "raw_body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form BY t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "have_or_suff",
+        "EXPR",
+        "COLON",
+        "EXPR",
+        "BY",
+        "tactics"
+      ],
+      "raw_body": "m=have_or_suff ip=loc(intro_pattern)* COLON p=form BY t=loc(tactics)"
+    },
+    {
+      "body_symbols": [
+        "GEN",
+        "HAVE",
+        "EXPR",
+        "COMMA",
+        "COLON",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "GEN HAVE x=loc(ipcore_name) ip=prefix(COMMA, loc(intro_pattern)*)? COLON ids=loc(ipcore_name)* SLASH f=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "GEN",
+        "HAVE",
+        "EXPR",
+        "COMMA",
+        "COLON",
+        "EXPR",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "GEN HAVE x=loc(ipcore_name) ip=prefix(COMMA, loc(intro_pattern)*)? COLON ids=loc(ipcore_name)* SLASH f=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "GEN",
+        "HAVE",
+        "EXPR",
+        "COMMA",
+        "EXPR",
+        "COLON",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "GEN HAVE x=loc(ipcore_name) ip=prefix(COMMA, loc(intro_pattern)*)? COLON ids=loc(ipcore_name)* SLASH f=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "GEN",
+        "HAVE",
+        "EXPR",
+        "COMMA",
+        "EXPR",
+        "COLON",
+        "EXPR",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "GEN HAVE x=loc(ipcore_name) ip=prefix(COMMA, loc(intro_pattern)*)? COLON ids=loc(ipcore_name)* SLASH f=form %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "HAVE",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "HAVE ip=loc(intro_pattern)* CEQ fp=pcutdef"
+    },
+    {
+      "body_symbols": [
+        "HAVE",
+        "EXPR",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "HAVE ip=loc(intro_pattern)* CEQ fp=pcutdef"
+    },
+    {
+      "body_symbols": [
+        "POSE",
+        "ident",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "POSE o=rwocc? x=ident xs=ptybindings? CEQ p=form_h %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "POSE",
+        "ident",
+        "ptybindings",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "POSE o=rwocc? x=ident xs=ptybindings? CEQ p=form_h %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "POSE",
+        "EXPR",
+        "ident",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "POSE o=rwocc? x=ident xs=ptybindings? CEQ p=form_h %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "POSE",
+        "EXPR",
+        "ident",
+        "ptybindings",
+        "CEQ",
+        "EXPR"
+      ],
+      "raw_body": "POSE o=rwocc? x=ident xs=ptybindings? CEQ p=form_h %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "POSE",
+        "mident"
+      ],
+      "raw_body": "POSE x=mident"
+    },
+    {
+      "body_symbols": [
+        "WLOG",
+        "boption",
+        "COLON",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "WLOG b=boption(SUFF) COLON ids=loc(ipcore_name)* SLASH f=form"
+    },
+    {
+      "body_symbols": [
+        "WLOG",
+        "boption",
+        "COLON",
+        "EXPR",
+        "SLASH",
+        "EXPR"
+      ],
+      "raw_body": "WLOG b=boption(SUFF) COLON ids=loc(ipcore_name)* SLASH f=form"
+    }
+  ],
+  "proofend": [
+    {
+      "body_symbols": [
+        "QED"
+      ],
+      "raw_body": "QED"
+    },
+    {
+      "body_symbols": [
+        "ADMITTED"
+      ],
+      "raw_body": "ADMITTED"
+    },
+    {
+      "body_symbols": [
+        "ABORT"
+      ],
+      "raw_body": "ABORT"
+    }
+  ],
+  "empty": [
+    {
+      "body_symbols": [],
+      "raw_body": "/**/"
+    }
+  ],
+  "lident": [
+    {
+      "body_symbols": [
+        "_lident"
+      ],
+      "raw_body": "x=loc(_lident)"
+    }
+  ],
+  "f_or_mod_ident": [
+    {
+      "body_symbols": [
+        "EXPR",
+        "DOT",
+        "lident"
+      ],
+      "raw_body": "nm=mod_qident DOT x=lident"
+    },
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=lident"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "m=loc(mod_qident)"
+    }
+  ],
+  "lvmatch": [
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "empty"
+    },
+    {
+      "body_symbols": [
+        "lvalue_var"
+      ],
+      "raw_body": "x=lvalue_var"
+    }
+  ],
+  "have_or_suff": [
+    {
+      "body_symbols": [
+        "HAVE"
+      ],
+      "raw_body": "HAVE"
+    },
+    {
+      "body_symbols": [
+        "SUFF"
+      ],
+      "raw_body": "SUFF"
+    }
+  ],
+  "_ident": [
+    {
+      "body_symbols": [
+        "_lident"
+      ],
+      "raw_body": "x=_lident"
+    },
+    {
+      "body_symbols": [
+        "_uident"
+      ],
+      "raw_body": "x=_uident"
+    }
+  ],
+  "tactic_dump": [
+    {
+      "body_symbols": [
+        "DUMP",
+        "STRING",
+        "tcd_toptactic"
+      ],
+      "raw_body": "DUMP aout=STRING wd=word? t=paren(tcd_toptactic)"
+    },
+    {
+      "body_symbols": [
+        "DUMP",
+        "STRING",
+        "word",
+        "tcd_toptactic"
+      ],
+      "raw_body": "DUMP aout=STRING wd=word? t=paren(tcd_toptactic)"
+    }
+  ],
+  "stmt": [
+    {
+      "body_symbols": [],
+      "raw_body": "aout=loc(instr)*"
+    },
+    {
+      "body_symbols": [
+        "instr"
+      ],
+      "raw_body": "aout=loc(instr)*"
+    }
+  ],
+  "pty_varty": [
+    {
+      "body_symbols": [
+        "bdident"
+      ],
+      "raw_body": "x=loc(bdident+)"
+    },
+    {
+      "body_symbols": [
+        "bdident",
+        "COLON",
+        "type_exp"
+      ],
+      "raw_body": "x=bdident+ COLON ty=loc(type_exp)"
+    }
+  ],
+  "tactics_or_prf": [
+    {
+      "body_symbols": [
+        "toptactic"
+      ],
+      "raw_body": "t=toptactic"
+    },
+    {
+      "body_symbols": [
+        "PROOF"
+      ],
+      "raw_body": "PROOF"
+    }
+  ],
+  "bdident": [
+    {
+      "body_symbols": [
+        "bdident_"
+      ],
+      "raw_body": "x=loc(bdident_)"
+    }
+  ],
+  "tactic_genip": [
+    {
+      "body_symbols": [
+        "IMPL",
+        "EXPR"
+      ],
+      "raw_body": "IMPL ip=loc(intro_pattern)+"
+    },
+    {
+      "body_symbols": [
+        "LEAT",
+        "revert"
+      ],
+      "raw_body": "LEAT gn=revert"
+    }
+  ],
+  "genpattern": [
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "l=sform_h %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "o=rwocc l=sform_h %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "iboption",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN exp=iboption(AT) UNDERSCORE COLON f=form RPAREN"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "LPAREN",
+        "iboption",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "RPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN LPAREN exp=iboption(AT) UNDERSCORE COLON f=form RPAREN args=loc(gpterm_arg)* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "LPAREN",
+        "iboption",
+        "UNDERSCORE",
+        "COLON",
+        "EXPR",
+        "RPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN LPAREN exp=iboption(AT) UNDERSCORE COLON f=form RPAREN args=loc(gpterm_arg)* RPAREN"
+    },
+    {
+      "body_symbols": [
+        "AT",
+        "ident"
+      ],
+      "raw_body": "AT x=ident"
+    }
+  ],
+  "lvalue_var": [
+    {
+      "body_symbols": [
+        "fident"
+      ],
+      "raw_body": "x=loc(fident)"
+    }
+  ],
+  "_lident": [
+    {
+      "body_symbols": [
+        "LIDENT"
+      ],
+      "raw_body": "x=LIDENT"
+    },
+    {
+      "body_symbols": [
+        "ABORT"
+      ],
+      "raw_body": "ABORT"
+    },
+    {
+      "body_symbols": [
+        "ADMITTED"
+      ],
+      "raw_body": "ADMITTED"
+    },
+    {
+      "body_symbols": [
+        "ASYNC"
+      ],
+      "raw_body": "ASYNC"
+    },
+    {
+      "body_symbols": [
+        "DEBUG"
+      ],
+      "raw_body": "DEBUG"
+    },
+    {
+      "body_symbols": [
+        "DUMP"
+      ],
+      "raw_body": "DUMP"
+    },
+    {
+      "body_symbols": [
+        "EXPECT"
+      ],
+      "raw_body": "EXPECT"
+    },
+    {
+      "body_symbols": [
+        "FIRST"
+      ],
+      "raw_body": "FIRST"
+    },
+    {
+      "body_symbols": [
+        "GEN"
+      ],
+      "raw_body": "GEN"
+    },
+    {
+      "body_symbols": [
+        "INTERLEAVE"
+      ],
+      "raw_body": "INTERLEAVE"
+    },
+    {
+      "body_symbols": [
+        "LAST"
+      ],
+      "raw_body": "LAST"
+    },
+    {
+      "body_symbols": [
+        "LEFT"
+      ],
+      "raw_body": "LEFT"
+    },
+    {
+      "body_symbols": [
+        "RIGHT"
+      ],
+      "raw_body": "RIGHT"
+    },
+    {
+      "body_symbols": [
+        "SOLVE"
+      ],
+      "raw_body": "SOLVE"
+    },
+    {
+      "body_symbols": [
+        "WLOG"
+      ],
+      "raw_body": "WLOG"
+    },
+    {
+      "body_symbols": [
+        "EXLIM"
+      ],
+      "raw_body": "EXLIM"
+    },
+    {
+      "body_symbols": [
+        "ECALL"
+      ],
+      "raw_body": "ECALL"
+    },
+    {
+      "body_symbols": [
+        "FROM"
+      ],
+      "raw_body": "FROM"
+    },
+    {
+      "body_symbols": [
+        "EXIT"
+      ],
+      "raw_body": "EXIT"
+    },
+    {
+      "body_symbols": [
+        "CHECK"
+      ],
+      "raw_body": "CHECK"
+    },
+    {
+      "body_symbols": [
+        "EDIT"
+      ],
+      "raw_body": "EDIT"
+    },
+    {
+      "body_symbols": [
+        "FIX"
+      ],
+      "raw_body": "FIX"
+    },
+    {
+      "body_symbols": [
+        "GLOBAL"
+      ],
+      "raw_body": "GLOBAL"
+    },
+    {
+      "body_symbols": [
+        "RING"
+      ],
+      "raw_body": "x=RING"
+    },
+    {
+      "body_symbols": [
+        "FIELD"
+      ],
+      "raw_body": "x=FIELD"
+    }
+  ],
+  "im_block": [
+    {
+      "body_symbols": [
+        "im_block_start",
+        "EXPR",
+        "im_block_end"
+      ],
+      "raw_body": "a1=im_block_start s=im_stmt a2=im_block_end"
+    }
+  ],
+  "equiv_body": [
+    {
+      "body_symbols": [
+        "fident",
+        "TILD",
+        "fident",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR"
+      ],
+      "raw_body": "mp1=loc(fident) TILD mp2=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)"
+    }
+  ],
+  "pside": [
+    {
+      "body_symbols": [
+        "pside_"
+      ],
+      "raw_body": "x=brace(pside_)"
+    }
+  ],
+  "pgtybindings": [
+    {
+      "body_symbols": [
+        "pgtybinding1"
+      ],
+      "raw_body": "x=pgtybinding1+"
+    }
+  ],
+  "trans_hyp": [
+    {
+      "body_symbols": [
+        "LPAREN",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN p=form LONGARROW q=form RPAREN"
+    }
+  ],
+  "while_tac_info": [
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "inv=sform"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "inv=sform vrnt=sform"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "inv=sform vrnt=sform k=sform eps=sform"
+    }
+  ],
+  "ordering_op": [
+    {
+      "body_symbols": [
+        "GT"
+      ],
+      "raw_body": "GT"
+    },
+    {
+      "body_symbols": [
+        "LT"
+      ],
+      "raw_body": "LT"
+    },
+    {
+      "body_symbols": [
+        "GE"
+      ],
+      "raw_body": "GE"
+    },
+    {
+      "body_symbols": [
+        "LE"
+      ],
+      "raw_body": "LE"
+    }
+  ],
+  "pside_": [
+    {
+      "body_symbols": [
+        "_lident"
+      ],
+      "raw_body": "x=_lident"
+    },
+    {
+      "body_symbols": [
+        "word"
+      ],
+      "raw_body": "x=word"
+    }
+  ],
+  "simpl_type_exp": [
+    {
+      "body_symbols": [
+        "UNDERSCORE"
+      ],
+      "raw_body": "UNDERSCORE"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "x=qident"
+    },
+    {
+      "body_symbols": [
+        "tident"
+      ],
+      "raw_body": "x=tident"
+    },
+    {
+      "body_symbols": [
+        "type_args",
+        "EXPR"
+      ],
+      "raw_body": "tya=type_args x=qident"
+    },
+    {
+      "body_symbols": [
+        "GLOB",
+        "EXPR"
+      ],
+      "raw_body": "GLOB m=loc(mod_qident)"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "type_exp",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN ty=type_exp RPAREN"
+    }
+  ],
+  "mident": [
+    {
+      "body_symbols": [
+        "_mident"
+      ],
+      "raw_body": "x=loc(_mident)"
+    }
+  ],
+  "uident": [
+    {
+      "body_symbols": [
+        "_uident"
+      ],
+      "raw_body": "x=loc(_uident)"
+    }
+  ],
+  "codepos_or_range": [
+    {
+      "body_symbols": [
+        "codepos"
+      ],
+      "raw_body": "cp=codepos"
+    },
+    {
+      "body_symbols": [
+        "codepos_range"
+      ],
+      "raw_body": "cpr=codepos_range"
+    }
+  ],
+  "s_codepos1": [
+    {
+      "body_symbols": [
+        "codepos1"
+      ],
+      "raw_body": "n=codepos1"
+    },
+    {
+      "body_symbols": [
+        "codepos1",
+        "codepos1"
+      ],
+      "raw_body": "n1=codepos1 n2=codepos1"
+    }
+  ],
+  "pffilter": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "COLON",
+        "PIPE",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "COLON",
+        "PIPE",
+        "pfpos",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "COLON",
+        "pfpos",
+        "PIPE",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "COLON",
+        "pfpos",
+        "PIPE",
+        "pfpos",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "pfpos",
+        "COLON",
+        "PIPE",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "pfpos",
+        "COLON",
+        "PIPE",
+        "pfpos",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "pfpos",
+        "COLON",
+        "pfpos",
+        "PIPE",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "iboption",
+        "pfpos",
+        "COLON",
+        "pfpos",
+        "PIPE",
+        "pfpos",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET flat=iboption(SLASH) rg=plist0( i=pfpos? COLON j=pfpos? | i=pfpos  , COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LPBRACE",
+        "iboption",
+        "ident",
+        "IN",
+        "EXPR",
+        "RPBRACE"
+      ],
+      "raw_body": "LPBRACE flat=iboption(SLASH) x=ident IN h=form_h RPBRACE"
+    },
+    {
+      "body_symbols": [
+        "LPBRACE",
+        "iboption",
+        "EXPR",
+        "FOR",
+        "ident",
+        "IN",
+        "EXPR",
+        "RPBRACE"
+      ],
+      "raw_body": "LPBRACE flat=iboption(SLASH) f=form FOR xs=plist1(ident, COMMA) IN h=form_h RPBRACE"
+    },
+    {
+      "body_symbols": [
+        "LBRACE",
+        "iboption",
+        "iboption",
+        "iboption",
+        "pffilter_pattern",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE flat=iboption(SLASH) exclude=iboption(TILD) rooted=iboption(HAT) h=pffilter_pattern RBRACE"
+    }
+  ],
+  "im_range_question": [
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "empty"
+    },
+    {
+      "body_symbols": [
+        "word"
+      ],
+      "raw_body": "i=word"
+    }
+  ],
+  "side": [
+    {
+      "body_symbols": [
+        "LBRACE",
+        "word",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE n=word RBRACE"
+    }
+  ],
+  "param_decl": [
+    {
+      "body_symbols": [
+        "LPAREN",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN aout=plist0(typed_vars_or_anons, COMMA) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "typed_vars_or_anons",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN aout=plist0(typed_vars_or_anons, COMMA) RPAREN"
+    }
+  ],
+  "hoare_bd_cmp": [
+    {
+      "body_symbols": [
+        "LE"
+      ],
+      "raw_body": "LE"
+    },
+    {
+      "body_symbols": [
+        "EQ"
+      ],
+      "raw_body": "EQ"
+    },
+    {
+      "body_symbols": [
+        "GE"
+      ],
+      "raw_body": "GE"
+    }
+  ],
+  "mod_restr": [
+    {
+      "body_symbols": [
+        "PIPE",
+        "LBRACE",
+        "mem_restr",
+        "RBRACE"
+      ],
+      "raw_body": "| LBRACE mr=mem_restr RBRACE"
+    }
+  ],
+  "ehoare_body": [
+    {
+      "body_symbols": [
+        "fident",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR"
+      ],
+      "raw_body": "mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P)"
+    }
+  ],
+  "pgoptionkw": [
+    {
+      "body_symbols": [
+        "SPLIT"
+      ],
+      "raw_body": "x=loc(SPLIT)"
+    },
+    {
+      "body_symbols": [
+        "SUBST"
+      ],
+      "raw_body": "x=loc(SUBST)"
+    },
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=lident"
+    }
+  ],
+  "byequivopt": [
+    {
+      "body_symbols": [
+        "boption",
+        "lident"
+      ],
+      "raw_body": "b=boption(MINUS) x=lident"
+    }
+  ],
+  "codepos1_wo_off": [
+    {
+      "body_symbols": [
+        "sword"
+      ],
+      "raw_body": "i=sword"
+    },
+    {
+      "body_symbols": [
+        "icodepos"
+      ],
+      "raw_body": "k=icodepos i=option(brace(sword))"
+    },
+    {
+      "body_symbols": [
+        "icodepos",
+        "sword"
+      ],
+      "raw_body": "k=icodepos i=option(brace(sword))"
+    }
+  ],
+  "mod_ident1": [
+    {
+      "body_symbols": [
+        "uident"
+      ],
+      "raw_body": "x=uident"
+    },
+    {
+      "body_symbols": [
+        "uident",
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "x=uident LPAREN args=plist1(loc(mod_qident), COMMA) RPAREN"
+    }
+  ],
+  "match_branch": [
+    {
+      "body_symbols": [
+        "opptn",
+        "IMPL",
+        "block"
+      ],
+      "raw_body": "c=opptn IMPL b=block"
+    }
+  ],
+  "bdhoare_split": [
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "b1=sform b2=sform b3=sform?"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "b1=sform b2=sform b3=sform?"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "b1=sform b2=sform COLON f=sform"
+    },
+    {
+      "body_symbols": [
+        "NOT",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "NOT b1=sform b2=sform"
+    }
+  ],
+  "im_block_start": [
+    {
+      "body_symbols": [
+        "LBRACE"
+      ],
+      "raw_body": "LBRACE"
+    },
+    {
+      "body_symbols": [
+        "LPBRACE"
+      ],
+      "raw_body": "LPBRACE"
+    }
+  ],
+  "mem_restr": [
+    {
+      "body_symbols": [
+        "PIPE"
+      ],
+      "raw_body": "| ol=rlist0(mem_restr_el,COMMA)"
+    },
+    {
+      "body_symbols": [
+        "PIPE",
+        "mem_restr_el"
+      ],
+      "raw_body": "| ol=rlist0(mem_restr_el,COMMA)"
+    }
+  ],
+  "pfpos": [
+    {
+      "body_symbols": [
+        "sword"
+      ],
+      "raw_body": "i=sword"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "f=bracket(form_h) off=pfoffset?"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "pfoffset"
+      ],
+      "raw_body": "f=bracket(form_h) off=pfoffset?"
+    }
+  ],
+  "o_codepos1": [
+    {
+      "body_symbols": [
+        "UNDERSCORE"
+      ],
+      "raw_body": "UNDERSCORE"
+    },
+    {
+      "body_symbols": [
+        "codepos1"
+      ],
+      "raw_body": "i=codepos1"
+    }
+  ],
+  "repl_hyp": [
+    {
+      "body_symbols": [
+        "trans_hyp"
+      ],
+      "raw_body": "h=trans_hyp"
+    }
+  ],
+  "prover_kind": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET lp=prover_kind1* RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "prover_kind1",
+        "RBRACKET"
+      ],
+      "raw_body": "LBRACKET lp=prover_kind1* RBRACKET"
+    }
+  ],
+  "oident": [
+    {
+      "body_symbols": [
+        "_oident"
+      ],
+      "raw_body": "x=loc( _oident)"
+    }
+  ],
+  "bdident_": [
+    {
+      "body_symbols": [
+        "ident"
+      ],
+      "raw_body": "x=ident"
+    },
+    {
+      "body_symbols": [
+        "UNDERSCORE"
+      ],
+      "raw_body": "UNDERSCORE"
+    }
+  ],
+  "tident": [
+    {
+      "body_symbols": [
+        "_tident"
+      ],
+      "raw_body": "x=loc(_tident)"
+    }
+  ],
+  "app_bd_info": [
+    {
+      "body_symbols": [
+        "empty"
+      ],
+      "raw_body": "empty"
+    },
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "f=sform"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "f=prod_form g=prod_form s=sform?"
+    },
+    {
+      "body_symbols": [
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "f=prod_form g=prod_form s=sform?"
+    }
+  ],
+  "tactic_core": [
+    {
+      "body_symbols": [
+        "tactic_core_r"
+      ],
+      "raw_body": "x=loc(tactic_core_r)"
+    }
+  ],
+  "eager_info": [
+    {
+      "body_symbols": [
+        "ident"
+      ],
+      "raw_body": "h=ident"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "ident",
+        "COLON",
+        "stmt",
+        "TILD",
+        "stmt",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN h=ident COLON s1=stmt TILD s2=stmt COLON pr=form LONGARROW po=form RPAREN"
+    }
+  ],
+  "cbv": [
+    {
+      "body_symbols": [
+        "CBV"
+      ],
+      "raw_body": "CBV"
+    },
+    {
+      "body_symbols": [
+        "CBV",
+        "EXPR"
+      ],
+      "raw_body": "CBV l=qoident+"
+    },
+    {
+      "body_symbols": [
+        "CBV",
+        "DELTA"
+      ],
+      "raw_body": "CBV DELTA"
+    }
+  ],
+  "pgoptions": [
+    {
+      "body_symbols": [
+        "pgoption"
+      ],
+      "raw_body": "AT? xs=bracket(pgoption+)"
+    },
+    {
+      "body_symbols": [
+        "AT",
+        "pgoption"
+      ],
+      "raw_body": "AT? xs=bracket(pgoption+)"
+    }
+  ],
+  "codepos": [
+    {
+      "body_symbols": [
+        "codepos1"
+      ],
+      "raw_body": "nm=rlist0(nm1_codepos, empty) i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "nm1_codepos",
+        "codepos1"
+      ],
+      "raw_body": "nm=rlist0(nm1_codepos, empty) i=codepos1"
+    }
+  ],
+  "icasemode": [
+    {
+      "body_symbols": [],
+      "raw_body": "/* empty */"
+    },
+    {
+      "body_symbols": [
+        "icasemode_full_opt",
+        "sharp"
+      ],
+      "raw_body": "opt=icasemode_full_opt wb=sharp"
+    },
+    {
+      "body_symbols": [
+        "word",
+        "NOT",
+        "icasemode_full_opt",
+        "sharp"
+      ],
+      "raw_body": "i=word NOT opt=icasemode_full_opt wb=sharp"
+    },
+    {
+      "body_symbols": [
+        "NOT",
+        "icasemode_full_opt",
+        "sharp"
+      ],
+      "raw_body": "NOT opt=icasemode_full_opt wb=sharp"
+    }
+  ],
+  "im_base_repeat_mark": [
+    {
+      "body_symbols": [
+        "im_range",
+        "NOT"
+      ],
+      "raw_body": "x=im_range NOT"
+    },
+    {
+      "body_symbols": [
+        "im_range_question",
+        "QUESTION"
+      ],
+      "raw_body": "x=im_range_question QUESTION"
+    }
+  ],
+  "outline_kind": [
+    {
+      "body_symbols": [
+        "BY",
+        "stmt"
+      ],
+      "raw_body": "BY s=brace(stmt)"
+    },
+    {
+      "body_symbols": [
+        "TILD",
+        "fident"
+      ],
+      "raw_body": "TILD f=loc(fident)"
+    },
+    {
+      "body_symbols": [
+        "fident",
+        "phltactic"
+      ],
+      "raw_body": "f=loc(fident) %public phltactic:"
+    },
+    {
+      "body_symbols": [
+        "PROC"
+      ],
+      "raw_body": "PROC"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR"
+      ],
+      "raw_body": "PROC f=sform"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "PROC bad=sform p=sform q=sform?"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "PROC bad=sform p=sform q=sform?"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "STAR"
+      ],
+      "raw_body": "PROC STAR"
+    },
+    {
+      "body_symbols": [
+        "SEQ",
+        "tac_dir",
+        "s_codepos1",
+        "COLON",
+        "EXPR",
+        "app_bd_info"
+      ],
+      "raw_body": "SEQ s=side? d=tac_dir pos=s_codepos1 COLON p=form_or_double_form f=app_bd_info"
+    },
+    {
+      "body_symbols": [
+        "SEQ",
+        "side",
+        "tac_dir",
+        "s_codepos1",
+        "COLON",
+        "EXPR",
+        "app_bd_info"
+      ],
+      "raw_body": "SEQ s=side? d=tac_dir pos=s_codepos1 COLON p=form_or_double_form f=app_bd_info"
+    },
+    {
+      "body_symbols": [
+        "WP"
+      ],
+      "raw_body": "WP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "WP",
+        "s_codepos1"
+      ],
+      "raw_body": "WP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SP"
+      ],
+      "raw_body": "SP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SP",
+        "s_codepos1"
+      ],
+      "raw_body": "SP n=s_codepos1?"
+    },
+    {
+      "body_symbols": [
+        "SKIP"
+      ],
+      "raw_body": "SKIP"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "while_tac_info"
+      ],
+      "raw_body": "WHILE s=side? info=while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "side",
+        "while_tac_info"
+      ],
+      "raw_body": "WHILE s=side? info=while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "ASYNC",
+        "WHILE",
+        "async_while_tac_info"
+      ],
+      "raw_body": "ASYNC WHILE info=async_while_tac_info"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "EXPR"
+      ],
+      "raw_body": "CALL s=side? info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "CALL s=side? info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "SLASH",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CALL SLASH fc=sform info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "RCONDT",
+        "codepos1"
+      ],
+      "raw_body": "RCONDT s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDT",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "RCONDT s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDF",
+        "codepos1"
+      ],
+      "raw_body": "RCONDF s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RCONDF",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "RCONDF s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "oident",
+        "codepos1"
+      ],
+      "raw_body": "MATCH c=oident s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "oident",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "MATCH c=oident s=side? i=codepos1"
+    },
+    {
+      "body_symbols": [
+        "IF",
+        "if_option"
+      ],
+      "raw_body": "IF opt=if_option"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "boption"
+      ],
+      "raw_body": "MATCH s=loc(side?) eq=boption(EQ)"
+    },
+    {
+      "body_symbols": [
+        "MATCH",
+        "side",
+        "boption"
+      ],
+      "raw_body": "MATCH s=loc(side?) eq=boption(EQ)"
+    },
+    {
+      "body_symbols": [
+        "INTERLEAVE",
+        "interleave_info"
+      ],
+      "raw_body": "INTERLEAVE info=loc(interleave_info)"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "codepos"
+      ],
+      "raw_body": "CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "codepos",
+        "word"
+      ],
+      "raw_body": "CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "CFOLD",
+        "side",
+        "codepos",
+        "word"
+      ],
+      "raw_body": "CFOLD s=side? c=codepos n=word?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "EXPR",
+        "COLON"
+      ],
+      "raw_body": "RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "side",
+        "EXPR",
+        "COLON"
+      ],
+      "raw_body": "RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RND",
+        "side",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "RND s=side? info=rnd_info c=prefix(COLON, semrndpos)?"
+    },
+    {
+      "body_symbols": [
+        "RNDSEM",
+        "boption",
+        "codepos1"
+      ],
+      "raw_body": "RNDSEM red=boption(STAR) s=side? c=codepos1"
+    },
+    {
+      "body_symbols": [
+        "RNDSEM",
+        "boption",
+        "side",
+        "codepos1"
+      ],
+      "raw_body": "RNDSEM red=boption(STAR) s=side? c=codepos1"
+    },
+    {
+      "body_symbols": [
+        "INLINE"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences?"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? o=occurences? f1=inlinepat1 f=plist0(inlinepat, empty)"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "codepos"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "EXPR",
+        "codepos"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "INLINE",
+        "side",
+        "EXPR",
+        "codepos"
+      ],
+      "raw_body": "INLINE s=side? u=inlineopt? p=codepos"
+    },
+    {
+      "body_symbols": [
+        "OUTLINE",
+        "side",
+        "codepos_or_range",
+        "outline_kind"
+      ],
+      "raw_body": "OUTLINE s=side cpr=codepos_or_range k=outline_kind"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos"
+      ],
+      "raw_body": "KILL s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "KILL s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos",
+        "NOT",
+        "word"
+      ],
+      "raw_body": "KILL s=side? o=codepos NOT n=word"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos",
+        "NOT",
+        "word"
+      ],
+      "raw_body": "KILL s=side? o=codepos NOT n=word"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "codepos",
+        "NOT",
+        "STAR"
+      ],
+      "raw_body": "KILL s=side? o=codepos NOT STAR"
+    },
+    {
+      "body_symbols": [
+        "KILL",
+        "side",
+        "codepos",
+        "NOT",
+        "STAR"
+      ],
+      "raw_body": "KILL s=side? o=codepos NOT STAR"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "LARROW",
+        "codepos"
+      ],
+      "raw_body": "CASE LARROW s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "CASE",
+        "LARROW",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "CASE LARROW s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos",
+        "WITH",
+        "lident"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos WITH x=lident"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos",
+        "WITH",
+        "lident"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos WITH x=lident"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "codepos",
+        "lident",
+        "EQ",
+        "EXPR"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos x=lident EQ e=expr"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "codepos",
+        "lident",
+        "EQ",
+        "EXPR"
+      ],
+      "raw_body": "ALIAS s=side? o=codepos x=lident EQ e=expr"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "lident",
+        "CEQ",
+        "EXPR",
+        "AT",
+        "codepos"
+      ],
+      "raw_body": "ALIAS s=side? x=lident CEQ p=sform_h AT o=codepos"
+    },
+    {
+      "body_symbols": [
+        "ALIAS",
+        "side",
+        "lident",
+        "CEQ",
+        "EXPR",
+        "AT",
+        "codepos"
+      ],
+      "raw_body": "ALIAS s=side? x=lident CEQ p=sform_h AT o=codepos"
+    },
+    {
+      "body_symbols": [
+        "WEAKMEM",
+        "EXPR",
+        "param_decl"
+      ],
+      "raw_body": "WEAKMEM s=side? h=loc(ipcore_name) p=param_decl"
+    },
+    {
+      "body_symbols": [
+        "WEAKMEM",
+        "side",
+        "EXPR",
+        "param_decl"
+      ],
+      "raw_body": "WEAKMEM s=side? h=loc(ipcore_name) p=param_decl"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FISSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "side",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FISSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FISSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FISSION",
+        "side",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FISSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FUSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "side",
+        "codepos",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FUSION s=side? o=codepos AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FUSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "FUSION",
+        "side",
+        "codepos",
+        "NOT",
+        "word",
+        "AT",
+        "word",
+        "COMMA",
+        "word"
+      ],
+      "raw_body": "FUSION s=side? o=codepos NOT i=word AT d1=word COMMA d2=word"
+    },
+    {
+      "body_symbols": [
+        "UNROLL",
+        "boption",
+        "codepos"
+      ],
+      "raw_body": "UNROLL b=boption(FOR) s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "UNROLL",
+        "boption",
+        "side",
+        "codepos"
+      ],
+      "raw_body": "UNROLL b=boption(FOR) s=side? o=codepos"
+    },
+    {
+      "body_symbols": [
+        "SPLITWHILE",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "SPLITWHILE s=side? o=codepos COLON c=expr %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "SPLITWHILE",
+        "side",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "SPLITWHILE s=side? o=codepos COLON c=expr %prec prec_tactic"
+    },
+    {
+      "body_symbols": [
+        "BYPHOARE"
+      ],
+      "raw_body": "BYPHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYPHOARE",
+        "EXPR"
+      ],
+      "raw_body": "BYPHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEHOARE"
+      ],
+      "raw_body": "BYEHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEHOARE",
+        "EXPR"
+      ],
+      "raw_body": "BYEHOARE info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)?"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYEQUIV",
+        "byequivopt",
+        "EXPR",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "BYEQUIV eq=bracket(byequivopt)? info=gpterm(conseq)? COLON bad1=sform"
+    },
+    {
+      "body_symbols": [
+        "BYUPTO"
+      ],
+      "raw_body": "BYUPTO"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "SLASH",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ SLASH fc=sform info=gpterm(conseq)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? info1=gpterm(conseq_xt) info2=gpterm(conseq_xt) info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "EXPR",
+        "UNDERSCORE"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE info2=gpterm(conseq_xt) UNDERSCORE?"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "UNDERSCORE",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "cqoptions",
+        "UNDERSCORE",
+        "UNDERSCORE",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cq=cqoptions? UNDERSCORE UNDERSCORE info3=gpterm(conseq_xt)"
+    },
+    {
+      "body_symbols": [
+        "CONSEQ",
+        "EXPR"
+      ],
+      "raw_body": "CONSEQ cm=crushmode"
+    },
+    {
+      "body_symbols": [
+        "ELIM",
+        "STAR"
+      ],
+      "raw_body": "ELIM STAR"
+    },
+    {
+      "body_symbols": [
+        "ID",
+        "STAR",
+        "PIPE",
+        "EXLIM",
+        "iplist1",
+        "COMMA"
+      ],
+      "raw_body": "b=ID(EXIST STAR   | EXLIM  ) l=iplist1(sform, COMMA) %prec prec_below_comma"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "tvars_app"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "EXPR",
+        "tvars_app",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "tvars_app"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "ECALL",
+        "side",
+        "EXPR",
+        "tvars_app",
+        "EXPR"
+      ],
+      "raw_body": "ECALL s=side? x=paren(p=qident tvi=tvars_app? fs=sform*  )"
+    },
+    {
+      "body_symbols": [
+        "EXFALSO"
+      ],
+      "raw_body": "EXFALSO"
+    },
+    {
+      "body_symbols": [
+        "BYPR"
+      ],
+      "raw_body": "BYPR"
+    },
+    {
+      "body_symbols": [
+        "BYPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "BYPR f1=sform f2=sform"
+    },
+    {
+      "body_symbols": [
+        "FEL",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "FEL at_pos=codepos1 cntr=sform delta=sform q=sform f_event=sform some_p=fel_pred_specs inv=sform?"
+    },
+    {
+      "body_symbols": [
+        "FEL",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "FEL at_pos=codepos1 cntr=sform delta=sform q=sform f_event=sform some_p=fel_pred_specs inv=sform?"
+    },
+    {
+      "body_symbols": [
+        "SIM",
+        "EXPR"
+      ],
+      "raw_body": "SIM cm=crushmode? info=eqobs_in"
+    },
+    {
+      "body_symbols": [
+        "SIM",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "SIM cm=crushmode? info=eqobs_in"
+    },
+    {
+      "body_symbols": [
+        "REPLACE",
+        "repl_kind",
+        "repl_hyp",
+        "repl_hyp"
+      ],
+      "raw_body": "REPLACE rk=repl_kind h1=repl_hyp h2=repl_hyp"
+    },
+    {
+      "body_symbols": [
+        "REPLACE",
+        "STAR",
+        "repl_kind"
+      ],
+      "raw_body": "REPLACE STAR rk=repl_kind"
+    },
+    {
+      "body_symbols": [
+        "TRANSITIVITY",
+        "trans_kind",
+        "trans_hyp",
+        "trans_hyp"
+      ],
+      "raw_body": "TRANSITIVITY tk=trans_kind h1=trans_hyp h2=trans_hyp"
+    },
+    {
+      "body_symbols": [
+        "TRANSITIVITY",
+        "STAR",
+        "trans_kind"
+      ],
+      "raw_body": "TRANSITIVITY STAR tk=trans_kind"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EQUIV",
+        "LBRACKET",
+        "side",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "REWRITE EQUIV LBRACKET s=side cp=codepos1 rws=rwside x=pterm proc=rweqv_proc? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "REWRITE",
+        "EQUIV",
+        "LBRACKET",
+        "side",
+        "codepos1",
+        "EXPR",
+        "EXPR",
+        "rweqv_proc",
+        "RBRACKET"
+      ],
+      "raw_body": "REWRITE EQUIV LBRACKET s=side cp=codepos1 rws=rwside x=pterm proc=rweqv_proc? RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "SYMMETRY"
+      ],
+      "raw_body": "SYMMETRY"
+    },
+    {
+      "body_symbols": [
+        "EAGER",
+        "eager_tac"
+      ],
+      "raw_body": "EAGER t=eager_tac"
+    },
+    {
+      "body_symbols": [
+        "HOARE"
+      ],
+      "raw_body": "HOARE"
+    },
+    {
+      "body_symbols": [
+        "PRBOUNDED"
+      ],
+      "raw_body": "PRBOUNDED"
+    },
+    {
+      "body_symbols": [
+        "PHOARE",
+        "SPLIT",
+        "bdhoare_split"
+      ],
+      "raw_body": "PHOARE SPLIT i=bdhoare_split"
+    },
+    {
+      "body_symbols": [
+        "PHOARE",
+        "EQUIV",
+        "side",
+        "EXPR",
+        "EXPR"
+      ],
+      "raw_body": "PHOARE EQUIV s=side pr=sform po=sform"
+    },
+    {
+      "body_symbols": [
+        "AUTO"
+      ],
+      "raw_body": "AUTO"
+    },
+    {
+      "body_symbols": [
+        "LOSSLESS"
+      ],
+      "raw_body": "LOSSLESS"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "CHANGE",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "PROC CHANGE side=side? pos=codepos COLON f=sexpr"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "CHANGE",
+        "side",
+        "codepos",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "PROC CHANGE side=side? pos=codepos COLON f=sexpr"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "codepos",
+        "EXPR"
+      ],
+      "raw_body": "PROC REWRITE side=side? pos=codepos f=pterm"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "side",
+        "codepos",
+        "EXPR"
+      ],
+      "raw_body": "PROC REWRITE side=side? pos=codepos f=pterm"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "codepos",
+        "SLASHEQ"
+      ],
+      "raw_body": "PROC REWRITE side=side? pos=codepos SLASHEQ"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "REWRITE",
+        "side",
+        "codepos",
+        "SLASHEQ"
+      ],
+      "raw_body": "PROC REWRITE side=side? pos=codepos SLASHEQ"
+    }
+  ],
+  "tcd_toptactic": [
+    {
+      "body_symbols": [
+        "toptactic"
+      ],
+      "raw_body": "t=toptactic"
+    }
+  ],
+  "_uident": [
+    {
+      "body_symbols": [
+        "UIDENT"
+      ],
+      "raw_body": "x=UIDENT"
+    }
+  ],
+  "im_repeat_mark": [
+    {
+      "body_symbols": [
+        "boption",
+        "im_base_repeat_mark"
+      ],
+      "raw_body": "b=boption(TILD) x=im_base_repeat_mark"
+    }
+  ],
+  "revert": [
+    {
+      "body_symbols": [
+        "ioption"
+      ],
+      "raw_body": "cl=ioption(brace(loc(ipcore_name)+)) gp=genpattern*"
+    },
+    {
+      "body_symbols": [
+        "ioption",
+        "genpattern"
+      ],
+      "raw_body": "cl=ioption(brace(loc(ipcore_name)+)) gp=genpattern*"
+    }
+  ],
+  "toptactic": [
+    {
+      "body_symbols": [
+        "PLUS",
+        "tactics"
+      ],
+      "raw_body": "PLUS  t=tactics"
+    },
+    {
+      "body_symbols": [
+        "STAR",
+        "tactics"
+      ],
+      "raw_body": "STAR  t=tactics"
+    },
+    {
+      "body_symbols": [
+        "MINUS",
+        "tactics"
+      ],
+      "raw_body": "MINUS t=tactics"
+    },
+    {
+      "body_symbols": [
+        "tactics"
+      ],
+      "raw_body": "t=tactics"
+    }
+  ],
+  "repl_kind": [
+    {
+      "body_symbols": [
+        "side",
+        "im_block",
+        "BY",
+        "stmt"
+      ],
+      "raw_body": "s=side p=im_block BY c=brace(stmt)"
+    }
+  ],
+  "sword": [
+    {
+      "body_symbols": [
+        "word"
+      ],
+      "raw_body": "n=word"
+    },
+    {
+      "body_symbols": [
+        "MINUS",
+        "word"
+      ],
+      "raw_body": "MINUS n=word"
+    }
+  ],
+  "subtactics": [
+    {
+      "body_symbols": [
+        "subtactic"
+      ],
+      "raw_body": "x=rlist1(subtactic, SEMICOLON)"
+    },
+    {
+      "body_symbols": [
+        "subtactic",
+        "SEMICOLON",
+        "subtactics"
+      ],
+      "raw_body": "[synthetic:list] subtactics -> subtactic SEMICOLON subtactics"
+    }
+  ],
+  "eager_tac": [
+    {
+      "body_symbols": [
+        "SEQ",
+        "codepos1",
+        "codepos1",
+        "eager_info",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "SEQ n1=codepos1 n2=codepos1 i=eager_info COLON p=sform"
+    },
+    {
+      "body_symbols": [
+        "IF"
+      ],
+      "raw_body": "IF"
+    },
+    {
+      "body_symbols": [
+        "WHILE",
+        "eager_info"
+      ],
+      "raw_body": "WHILE i=eager_info"
+    },
+    {
+      "body_symbols": [
+        "PROC"
+      ],
+      "raw_body": "PROC"
+    },
+    {
+      "body_symbols": [
+        "PROC",
+        "eager_info",
+        "EXPR"
+      ],
+      "raw_body": "PROC i=eager_info f=sform"
+    },
+    {
+      "body_symbols": [
+        "CALL",
+        "EXPR"
+      ],
+      "raw_body": "CALL info=gpterm(call_info)"
+    },
+    {
+      "body_symbols": [
+        "eager_info",
+        "COLON",
+        "EXPR"
+      ],
+      "raw_body": "info=eager_info COLON p=sform"
+    }
+  ],
+  "pffilter_pattern": [
+    {
+      "body_symbols": [
+        "EXPR"
+      ],
+      "raw_body": "f=form_h"
+    },
+    {
+      "body_symbols": [
+        "LBRACE",
+        "EXPR",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE xs=plist0(x=qoident s=loc(pside)?  , COMMA) RBRACE"
+    },
+    {
+      "body_symbols": [
+        "LBRACE",
+        "EXPR",
+        "pside",
+        "RBRACE"
+      ],
+      "raw_body": "LBRACE xs=plist0(x=qoident s=loc(pside)?  , COMMA) RBRACE"
+    }
+  ],
+  "pfoffset": [
+    {
+      "body_symbols": [
+        "PLUS",
+        "word"
+      ],
+      "raw_body": "PLUS  w=word"
+    },
+    {
+      "body_symbols": [
+        "MINUS",
+        "word"
+      ],
+      "raw_body": "MINUS w=word"
+    }
+  ],
+  "cqoptions": [
+    {
+      "body_symbols": [
+        "cqoption"
+      ],
+      "raw_body": "xs=bracket(cqoption+)"
+    }
+  ],
+  "do_repeat": [
+    {
+      "body_symbols": [
+        "NOT"
+      ],
+      "raw_body": "n=word? NOT"
+    },
+    {
+      "body_symbols": [
+        "word",
+        "NOT"
+      ],
+      "raw_body": "n=word? NOT"
+    },
+    {
+      "body_symbols": [
+        "QUESTION"
+      ],
+      "raw_body": "n=word? QUESTION"
+    },
+    {
+      "body_symbols": [
+        "word",
+        "QUESTION"
+      ],
+      "raw_body": "n=word? QUESTION"
+    }
+  ],
+  "phoare_body": [
+    {
+      "body_symbols": [
+        "LBRACKET",
+        "fident",
+        "COLON",
+        "EXPR",
+        "LONGARROW",
+        "EXPR",
+        "RBRACKET",
+        "hoare_bd_cmp",
+        "EXPR"
+      ],
+      "raw_body": "LBRACKET mp=loc(fident) COLON pre=form_r(P) LONGARROW post=form_r(P) RBRACKET cmp=hoare_bd_cmp bd=sform_r(P)"
+    }
+  ],
+  "ident": [
+    {
+      "body_symbols": [
+        "_ident"
+      ],
+      "raw_body": "x=loc(_ident)"
+    }
+  ],
+  "lvalue_u": [
+    {
+      "body_symbols": [
+        "lvalue_var"
+      ],
+      "raw_body": "x=lvalue_var"
+    },
+    {
+      "body_symbols": [
+        "LPAREN",
+        "EXPR",
+        "RPAREN"
+      ],
+      "raw_body": "LPAREN p=plist2(qident, COMMA) RPAREN"
+    },
+    {
+      "body_symbols": [
+        "lvalue_var",
+        "DLBRACKET",
+        "COLON",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "x=lvalue_var DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=plist1(expr, COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "lvalue_var",
+        "DLBRACKET",
+        "COLON",
+        "type_exp",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "x=lvalue_var DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=plist1(expr, COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "lvalue_var",
+        "DLBRACKET",
+        "tvars_app",
+        "COLON",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "x=lvalue_var DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=plist1(expr, COMMA) RBRACKET"
+    },
+    {
+      "body_symbols": [
+        "lvalue_var",
+        "DLBRACKET",
+        "tvars_app",
+        "COLON",
+        "type_exp",
+        "EXPR",
+        "RBRACKET"
+      ],
+      "raw_body": "x=lvalue_var DLBRACKET ti=tvars_app? codom=prefix(COLON, paren(loc(type_exp)))? e=plist1(expr, COMMA) RBRACKET"
+    }
+  ],
+  "fident": [
+    {
+      "body_symbols": [
+        "EXPR",
+        "DOT",
+        "lident"
+      ],
+      "raw_body": "nm=mod_qident DOT x=lident"
+    },
+    {
+      "body_symbols": [
+        "lident"
+      ],
+      "raw_body": "x=lident"
+    }
+  ],
+  "tactic_chain": [
+    {
+      "body_symbols": [
+        "tactic_chain_r"
+      ],
+      "raw_body": "t=loc(tactic_chain_r) %prec prec_below_IMPL"
+    },
+    {
+      "body_symbols": [
+        "tactic_chain_r",
+        "tactic_genip"
+      ],
+      "raw_body": "t=loc(tactic_chain_r) ip=plist1(tactic_genip, empty)"
+    }
+  ],
+  "iboption": [
+    {
+      "body_symbols": [
+        "X"
+      ],
+      "raw_body": "X"
+    }
+  ],
+  "icodepos": [
+    {
+      "body_symbols": [
+        "PIPE",
+        "HAT",
+        "icodepos_r"
+      ],
+      "raw_body": "| HAT x=icodepos_r"
+    }
+  ],
+  "rlist2": [
+    {
+      "body_symbols": [
+        "__rlist1",
+        "S",
+        "S",
+        "X"
+      ],
+      "raw_body": "xs=__rlist1(X, S) S x=X"
+    }
+  ],
+  "simplify_arg": [
+    {
+      "body_symbols": [
+        "DELTA"
+      ],
+      "raw_body": "DELTA l=qoident*"
+    },
+    {
+      "body_symbols": [
+        "DELTA",
+        "EXPR"
+      ],
+      "raw_body": "DELTA l=qoident*"
+    },
+    {
+      "body_symbols": [
+        "ZETA"
+      ],
+      "raw_body": "ZETA"
+    },
+    {
+      "body_symbols": [
+        "IOTA"
+      ],
+      "raw_body": "IOTA"
+    },
+    {
+      "body_symbols": [
+        "BETA"
+      ],
+      "raw_body": "BETA"
+    },
+    {
+      "body_symbols": [
+        "ETA"
+      ],
+      "raw_body": "ETA"
+    },
+    {
+      "body_symbols": [
+        "LOGIC"
+      ],
+      "raw_body": "LOGIC"
+    },
+    {
+      "body_symbols": [
+        "MODPATH"
+      ],
+      "raw_body": "MODPATH"
+    }
+  ]
+}
