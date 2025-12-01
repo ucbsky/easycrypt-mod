@@ -16,6 +16,19 @@
 - Script supports `--mode strict` (default) and `--mode cfg`. CFG mode disables the bespoke tokenizer so you can see the raw CFG acceptance (103/103 good lines pass; 6/23 bad lines slip through).
 - `build_productions` + `EarleyParser` sit in the same file; if structure is missing, fix the generator rather than the parser.
 
+### Literal EBNF export
+- Command: `python3 out/emit_literal_grammar.py`
+- Generates `out/grammar_reduced_expr_literals.ebnf`, where every token name has a real terminal rule so `transformers-cfg` can expand beyond EOS.
+- Pulls literal/pattern data from `grammar_raw.json`; punctuation tokens are injected via overrides inside the script, and we inject `WS_OPT ::= (WS_CHAR)*` so arbitrary indentation matches without help from the Menhir lexer.
+- `EXPR` now expands via `EXPR_CHAR ::= [^\r\n]` so the CFG no longer relies on an opaque dangling symbol.
+- Tokens that still lack literal coverage fall back to placeholders `__token__`; rerun with `--strict` to make the script fail instead (useful once you start desugaring identifier/number classes properly).
+
+### Literal CFG sanity test
+- Command: `python3 tests/test_cfg_strings.py`
+- Regenerates the grammar artifacts (including the literal EBNF) unless `--skip-refresh` is passed.
+- Builds `transformers-cfg`'s `StringRecognizer` directly from `grammar_reduced_expr_literals.ebnf` and parses every line of `good.ec` / `bad.ec` without using our bespoke tokenizer.
+- Mirrors the reporting style of `tests/test_grammar_examples.py`: good lines must all succeed; bad lines currently show which entries still sneak through when lexical policing is disabled (expected to fail until we desugar more structure).
+
 ## 2. Debug Workflow
 
 ### When a valid line fails

@@ -21,3 +21,8 @@ have -> := (@bigID _ [predC iotaQ]).
 have->:=@bigid _.
 by congr (_ + \\big[_/_]_)_^_.
 congr (\\big[+%R/(Pr[IRunner(I, F, FRO).run() @ &m : success res.`1]))_(arg | true)).
+apply/(@bigID['a])=> //.
+by rewrite.
+by.
+rewrite /.
+

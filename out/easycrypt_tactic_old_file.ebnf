@@ -1,0 +1,545 @@
+Line ::= tactic "."
+
+_boident ::= 
+   _lident
+  | _uident
+  | PUNIOP
+  | PBINOP
+  | PNUMOP
+  | PPSTOP
+  | STRING
+
+_ident ::= 
+   _lident
+  | _uident
+
+_lident ::= 
+   LIDENT
+  | ABORT
+  | ADMITTED
+  | ASYNC
+  | DEBUG
+  | DUMP
+  | EXPECT
+  | FIRST
+  | GEN
+  | INTERLEAVE
+  | LAST
+  | LEFT
+  | RIGHT
+  | SOLVE
+  | WLOG
+  | EXLIM
+  | ECALL
+  | FROM
+  | EXIT
+  | CHECK
+  | EDIT
+  | FIX
+  | GLOBAL
+  | RING
+  | FIELD
+
+_mident ::= 
+   MIDENT
+
+_oident ::= 
+   _boident
+  | ("(" PUNIOP ")")
+
+_uident ::= 
+   UIDENT
+
+boident ::= 
+   _boident
+
+caseoption ::= 
+   (MINUS)? lident
+
+caseoptions ::= 
+   AT ("[" caseoption+ "]")
+
+cbv ::= 
+   CBV
+  | CBV qoident+
+  | CBV DELTA
+
+coq_info ::= 
+   CHECK
+  | EDIT
+  | FIX
+
+crushmode ::= 
+   PIPEGT
+  | SLASHGT
+  | PIPEPIPEGT
+  | SLASHSLASHGT
+
+dbhint ::= 
+   dbmap1
+  | ("(" dbmap1* ")")
+
+dbmap1 ::= 
+   dbmap_flag? dbmap_target
+
+dbmap_flag ::= 
+   PLUS
+  | MINUS
+
+dbmap_target ::= 
+   AT uqident
+  | qident
+
+do_repeat ::= 
+   word? NOT
+  | word? QUESTION
+
+empty ::= 
+   /**/
+
+genpattern ::= 
+   sform_h
+  | TERM_TERM sform_h
+  | LPAREN? UNDERSCORE COLON FORM_TERM RPAREN
+  | LPAREN LPAREN? UNDERSCORE COLON FORM_TERM RPAREN TERM_TERM* RPAREN
+  | AT ident
+
+have_or_suff ::= 
+   HAVE
+  | SUFF
+
+hole ::= 
+   UNDERSCORE
+
+icasemode ::= 
+   /* empty */
+  | icasemode_full_opt sharp
+  | word NOT icasemode_full_opt sharp
+  | NOT icasemode_full_opt sharp
+
+icasemode_full_opt ::= 
+   (TILD)? (SLASH)?
+
+ident ::= 
+   _ident
+
+intro_pattern ::= 
+   ipcore
+  | HAT
+  | LBRACKET icasemode RBRACKET
+  | LBRACKET icasemode intro_pattern+ RBRACKET
+  | LBRACKET icasemode intro_pattern* PIPE intro_pattern* (PIPE intro_pattern*)* RBRACKET
+  | (ip_repeat)? TERM_TERM? RARROW
+  | (ip_repeat)? TERM_TERM? LARROW
+  | (ip_repeat)? RRARROW
+  | (ip_repeat)? LLARROW
+  | LBRACE ipcore_name+ RBRACE
+  | SLASHSLASH
+  | SLASHSLASHEQ
+  | SLASHSLASHTILDEQ
+  | SLASHSHARP
+  | SLASHSLASHSHARP
+  | SLASHEQ
+  | SLASHTILDEQ
+  | SLASH pterm
+  | AT TERM_TERM TERM_TERM? SLASH sform_h
+  | ipsubsttop
+  | word NOT ipsubsttop
+  | MINUS
+  | crushmode
+
+ip_repeat ::= 
+   (word)? NOT
+  | word
+
+ipcore ::= 
+   PLUS
+  | UNDERSCORE
+  | QUESTION
+  | word QUESTION
+  | STAR
+  | ipcore_name
+
+ipcore_name ::= 
+   _lident
+  | _uident
+  | _mident
+
+ipsubsttop ::= 
+   LTSTARGT
+  | LTLTSTARGT
+  | LTSTARGTGT
+
+lident ::= 
+   _lident
+
+logtactic ::= 
+   REFLEX
+  | ASSUMPTION
+  | MOVE SLASH pterm* COLON revert?
+  | CLEAR
+  | CLEAR MINUS ipcore_name+
+  | CLEAR ipcore_name+
+  | CONGR
+  | TRIVIAL
+  | SMT smt_info
+  | COQ coq_info STRING LPAREN dbmap1* RPAREN
+  | SMT LPAREN dbmap1* RPAREN
+  | SPLIT word?
+  | FIELD ident*
+  | RING ident*
+  | ALGNORM
+  | EXIST TERM_TERM (empty TERM_TERM)*
+  | LEFT
+  | RIGHT
+  | ELIM COLON? revert
+  | ELIM SLASH qident COLON? revert
+  | APPLY
+  | APPLY pterm
+  | APPLY COLON pterm revert
+  | APPLY SLASH pterm+
+  | APPLY pterm IN ident
+  | APPLY COLON pterm revert IN ident
+  | EXACT
+  | EXACT pterm
+  | EXACT COLON pterm revert
+  | EXACT SLASH pterm+
+  | simplify
+  | cbv
+  | CHANGE FORM_TERM
+  | REWRITE rwarg+
+  | REWRITE rwarg+ IN ident
+  | RWNORMAL FORM_TERM WITH qident+
+  | SUBST FORM_TERM*
+  | have_or_suff intro_pattern* COLON FORM_TERM
+  | have_or_suff intro_pattern* COLON FORM_TERM BY tactics
+  | GEN HAVE ipcore_name COMMA intro_pattern*? COLON ipcore_name* SLASH FORM_TERM
+  | HAVE intro_pattern* CEQ FORM_TERM
+  | POSE TERM_TERM? ident BIND_TERM? CEQ FORM_TERM
+  | POSE mident
+  | WLOG? COLON ipcore_name* SLASH FORM_TERM
+
+mident ::= 
+   _mident
+
+oident ::= 
+   _oident
+
+pgoption ::= 
+   (MINUS)? DELTA
+  | (MINUS)? DELTA COLON SPLIT
+  | (MINUS)? DELTA COLON CASE
+  | (MINUS)? pgoptionkw
+
+pgoptionkw ::= 
+   SPLIT
+  | SUBST
+  | lident
+
+pgoptions ::= 
+   AT? ("[" pgoption+ "]")
+
+prover_kind ::= 
+   LBRACKET prover_kind1* RBRACKET
+
+prover_kind1 ::= 
+   STRING
+  | PLUS STRING
+  | MINUS STRING
+
+pterm ::= 
+   TERM_TERM
+
+qident ::= 
+   QIDENT_TERM
+
+qoident ::= 
+   boident
+  | QIDENT_TERM DOT oident
+  | QIDENT_TERM DOT NOP
+
+revert ::= 
+   (("{" ipcore_name+ "}"))? genpattern*
+
+rwarg ::= 
+   rwarg1
+  | tcfc COLON rwarg1
+
+rwarg1 ::= 
+   SLASHSLASH
+  | SLASHSLASHEQ
+  | SLASHSLASHTILDEQ
+  | SLASHSHARP
+  | SLASHSLASHSHARP
+  | SLASHEQ
+  | SLASHTILDEQ
+  | TERM_TERM TERM_TERM? TERM_TERM? ("[" FORM_TERM "]")? TERM_TERM
+  | TERM_TERM TERM_TERM? TERM_TERM? SLASH sform_h
+  | PR ("[" TERM_TERM "]")
+  | AMP pterm
+  | SHARP SMT
+  | SHARP SMT COLON ("[" smt_info "]")
+  | SHARP SMT COLON ("(" dbmap1* ")")
+  | SHARP ident
+
+sform_h ::= 
+   FORM_TERM
+
+sharp ::= 
+   SHARP
+  | SHARPPIPE
+
+simplify ::= 
+   simplify_arg+
+  | SIMPLIFY
+  | SIMPLIFY qoident+
+  | SIMPLIFY DELTA
+
+simplify_arg ::= 
+   DELTA qoident*
+  | ZETA
+  | IOTA
+  | BETA
+  | ETA
+  | LOGIC
+  | MODPATH
+
+smt_info ::= 
+   smt_info1*
+
+smt_info1 ::= 
+   word
+  | TIMEOUT EQ word
+  | prover_kind
+  | PROVER EQ prover_kind
+  | DUMP IN EQ STRING
+  | lident EQ smt_option?
+
+smt_option ::= 
+   word
+  | dbhint
+  | prover_kind
+
+subtactic ::= 
+   tactic_chain
+  | tactic
+
+subtactics ::= 
+   subtactic (SEMICOLON subtactic)*
+
+sword ::= 
+   word
+  | MINUS word
+
+tactic ::= 
+   tactic_ip
+  | tactic_ip ORA tactic
+
+tactic_chain ::= 
+   tactic_chain_r
+  | tactic_chain_r tactic_genip (empty tactic_genip)*
+
+tactic_chain_r ::= 
+   LBRACKET tactics0 (PIPE tactics0)* RBRACKET
+  | LBRACKET tcfc COLON tactics (PIPE tcfc COLON tactics)* RBRACKET
+  | LBRACKET tcfc COLON tactics (PIPE tcfc COLON tactics)* ELSE tactics RBRACKET
+  | FIRST tactics
+  | LAST tactics
+  | FIRST word tactics
+  | LAST word tactics
+  | FIRST LAST
+  | LAST FIRST
+  | FIRST word LAST
+  | LAST word FIRST
+  | EXPECT word
+  | EXPECT word tactics
+  | EXPECT word ("(" tactic_chain_r (SEMICOLON tactic_chain_r)* ")")
+  | tcfc COLON tactic
+
+tactic_core ::= 
+   tactic_core_r
+
+tactic_core_r ::= 
+   IDTAC
+  | IDTAC STRING
+  | TRY tactic_core
+  | TRY NOT tactic_core
+  | BY tactics
+  | BY ("[" empty "]")
+  | DONE
+  | SOLVE word? (("(" lident (COMMA lident)* ")"))?
+  | DO do_repeat? tactic_core
+  | LPAREN tactics RPAREN
+  | ADMIT
+  | CASE SLASH pterm* (caseoptions)? ((UNDERSCORE)? COLON)? revert
+  | PROGRESS pgoptions? tactic_core?
+  | logtactic
+  | phltactic
+
+tactic_genip ::= 
+   IMPL intro_pattern+
+  | LEAT revert
+
+tactic_ip ::= 
+   tactic_core
+  | tactic_core tactic_genip (empty tactic_genip)*
+
+tactics ::= 
+   tactic
+  | tactic SEMICOLON subtactics
+
+tactics0 ::= 
+   tactics
+  | empty
+
+tcfc ::= 
+   tcfc_set
+  | tcfc_set? TILD tcfc_set
+
+tcfc_1 ::= 
+   sword
+
+tcfc_rg ::= 
+   tcfc_1
+  | tcfc_1 DOTDOT tcfc_1
+  | tcfc_1 DOTDOT
+  | DOTDOT tcfc_1
+
+tcfc_set ::= 
+   tcfc_rg (COMMA tcfc_rg)*
+
+uqident ::= 
+   QIDENT_TERM
+
+word ::= 
+   UINT
+
+Terminals:
+  ABORT ::= "abort"
+  ADMIT ::= "admit"
+  ADMITTED ::= "admitted"
+  ALGNORM ::= "algebra"
+  AMP ::= "&"
+  APPLY ::= "apply"
+  ASSUMPTION ::= "assumption"
+  ASYNC ::= "async"
+  AT ::= /* literal unknown */
+  BETA ::= "beta"
+  BIND_TERM ::= /.+/
+  BY ::= "by"
+  CASE ::= "case"
+  CBV ::= "cbv"
+  CEQ ::= ":="
+  CHANGE ::= "change"
+  CHECK ::= "check"
+  CLEAR ::= "clear"
+  COLON ::= ":"
+  COMMA ::= /* literal unknown */
+  CONGR ::= "congr"
+  COQ ::= "coq"
+  DEBUG ::= "debug"
+  DELTA ::= "delta"
+  DO ::= "do"
+  DONE ::= "done"
+  DOT ::= /* literal unknown */
+  DOTDOT ::= /* literal unknown */
+  DUMP ::= "dump"
+  ECALL ::= "ecall"
+  EDIT ::= "edit"
+  ELIM ::= "elim"
+  ELSE ::= "else"
+  EQ ::= "="
+  ETA ::= "eta"
+  EXACT ::= "exact"
+  EXIST ::= "exists"
+  EXIT ::= "exit"
+  EXLIM ::= "exlim"
+  EXPECT ::= "expect"
+  FIRST ::= "first"
+  FIX ::= "fix"
+  FORM_TERM ::= /.+/
+  FROM ::= "from"
+  GEN ::= "gen"
+  GLOBAL ::= "global"
+  HAT ::= "^"
+  HAVE ::= "have"
+  IDTAC ::= "idtac"
+  IMPL ::= "=>"
+  IN ::= "in"
+  INTERLEAVE ::= "interleave"
+  IOTA ::= "iota"
+  LARROW ::= "<-"
+  LAST ::= "last"
+  LBRACE ::= /* literal unknown */
+  LBRACKET ::= /* literal unknown */
+  LEAT ::= /* literal unknown */
+  LEFT ::= "left"
+  LIDENT ::= /[a-z_][A-Za-z0-9_']*/
+  LLARROW ::= "<<-"
+  LOGIC ::= "logic"
+  LPAREN ::= /* literal unknown */
+  LTLTSTARGT ::= "<<*>"
+  LTSTARGT ::= "<*>"
+  LTSTARGTGT ::= "<*>>"
+  MIDENT ::= /[A-Za-z0-9_.]+/
+  MINUS ::= "-"
+  MODPATH ::= "modpath"
+  MOVE ::= "move"
+  NOP ::= /* literal unknown */
+  NOT ::= "!"
+  ORA ::= "||"
+  PBINOP ::= /* literal unknown */
+  PIPE ::= "|"
+  PIPEGT ::= "|>"
+  PIPEPIPEGT ::= "||>"
+  PLUS ::= "+"
+  PNUMOP ::= /* literal unknown */
+  POSE ::= "pose"
+  PPSTOP ::= /* literal unknown */
+  PR ::= "Pr"
+  PROGRESS ::= "progress"
+  PROVER ::= "prover"
+  PUNIOP ::= /* literal unknown */
+  QIDENT_TERM ::= /.+/
+  QUESTION ::= /* literal unknown */
+  RARROW ::= "->"
+  RBRACE ::= /* literal unknown */
+  RBRACKET ::= /* literal unknown */
+  REFLEX ::= "reflexivity"
+  REWRITE ::= "rewrite"
+  RIGHT ::= "right"
+  RPAREN ::= /* literal unknown */
+  RRARROW ::= "->>"
+  RWNORMAL ::= "rwnormal"
+  SEMICOLON ::= /* literal unknown */
+  SHARP ::= "#"
+  SHARPPIPE ::= "#|"
+  SIMPLIFY ::= "simplify"
+  SLASH ::= "/"
+  SLASHEQ ::= "/="
+  SLASHGT ::= "/>"
+  SLASHSHARP ::= "/#"
+  SLASHSLASH ::= "//"
+  SLASHSLASHEQ ::= "//="
+  SLASHSLASHGT ::= "//>"
+  SLASHSLASHSHARP ::= "//#"
+  SLASHSLASHTILDEQ ::= /* literal unknown */
+  SLASHTILDEQ ::= /* literal unknown */
+  SMT ::= "smt"
+  SOLVE ::= "solve"
+  SPLIT ::= "split"
+  STAR ::= "*"
+  STRING ::= /"([^"\\]|\\.)*"/
+  SUBST ::= "subst"
+  SUFF ::= "suff"
+  TERM_TERM ::= /.+/
+  TILD ::= /* literal unknown */
+  TIMEOUT ::= "timeout"
+  TRIVIAL ::= "trivial"
+  TRY ::= "try"
+  UIDENT ::= /[A-Z][A-Za-z0-9_']*/
+  UINT ::= /[0-9]+/
+  UNDERSCORE ::= /* literal unknown */
+  WITH ::= "with"
+  WLOG ::= "wlog"
+  ZETA ::= "zeta"
