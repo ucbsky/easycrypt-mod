@@ -78,17 +78,56 @@ EXTRA_GRAMMAR_RULES = [
     "EXPR_CHAR ::= [^\\r\\n]",
     "EXPR_BODY ::= EXPR_CHAR EXPR_BODY | EXPR_CHAR",
     "EXPR ::= EXPR_BODY | ε",
+    "NONEMPTY_EXPR ::= EXPR_BODY",
+    "SAFE_EXPR ::= SAFE_EXPR_START | SAFE_EXPR_START EXPR_BODY",
+    "SAFE_EXPR_START ::= [^/:=*\\r\\n]",
 ]
 
 # Heads whose literal-level fallback productions collapse to bare EXPR,
 # letting arbitrary text pass through without structural tokens. Dropping
 # those bodies keeps the literal grammar closer to what the strict
 # tokenizer enforces without requiring a huge expression expansion.
-UNSTRUCTURED_FALLBACKS: Dict[str, Set[Tuple[str, ...]]] = {
+REMOVED_PRODUCTIONS: Dict[str, Set[Tuple[str, ...]]] = {
     "instr": {("EXPR",)},
+    "tactic_core_r": {
+        ("BY", "stmt"),
+        ("CALL", "SLASH", "EXPR", "EXPR"),
+    },
+    "outline_kind": {
+        ("CALL", "SLASH", "EXPR", "EXPR"),
+    },
+    "logtactic": {
+        ("APPLY", "SLASH", "EXPR"),
+        ("HAVE", "CEQ", "EXPR"),
+        ("HAVE", "EXPR", "CEQ", "EXPR"),
+    },
+}
+
+BODY_REWRITES: Dict[Tuple[str, Tuple[str, ...]], Tuple[str, ...]] = {
+    ("tactic_core_r", ("BY", "stmt")): ("BY", "stmt_nonempty"),
+    ("logtactic", ("REWRITE", "EXPR")): ("REWRITE", "NONEMPTY_EXPR"),
+    ("logtactic", ("REWRITE", "EXPR", "IN", "ident")): ("REWRITE", "NONEMPTY_EXPR", "IN", "ident"),
+    ("logtactic", ("APPLY", "EXPR")): ("APPLY", "SAFE_EXPR"),
+    ("logtactic", ("APPLY", "EXPR", "IN", "ident")): ("APPLY", "SAFE_EXPR", "IN", "ident"),
+    ("logtactic", ("APPLY", "COLON", "EXPR", "revert")): ("APPLY", "COLON", "SAFE_EXPR", "revert"),
+    ("logtactic", ("APPLY", "COLON", "EXPR", "revert", "IN", "ident")): (
+        "APPLY",
+        "COLON",
+        "SAFE_EXPR",
+        "revert",
+        "IN",
+        "ident",
+    ),
+    ("tactic_core_r", ("CALL", "EXPR")): ("CALL", "SAFE_EXPR"),
+    ("tactic_core_r", ("CALL", "side", "EXPR")): ("CALL", "side", "SAFE_EXPR"),
+    ("outline_kind", ("CALL", "EXPR")): ("CALL", "SAFE_EXPR"),
+    ("outline_kind", ("CALL", "side", "EXPR")): ("CALL", "side", "SAFE_EXPR"),
 }
 
 MANUAL_HEADS: Dict[str, List[Tuple[str, ...]]] = {
+    "stmt_nonempty": [
+        ("instr",),
+    ],
     # phltactic productions collapse away during expression pruning, but the
     # literal CFG still needs the SWAP anchor so lines like `swap 3 3.` don't
     # devolve entirely into EXPR. Accept either a structured iplist1 tail (if
@@ -151,9 +190,9 @@ def inject_manual_heads(grammar: Grammar) -> None:
             grammar[head].append({"body_symbols": list(body), "raw_body": "[synthetic] manual"})
 
 
-def prune_unstructured(grammar: Grammar) -> int:
+def prune_productions(grammar: Grammar) -> int:
     removed = 0
-    for head, forbidden in UNSTRUCTURED_FALLBACKS.items():
+    for head, forbidden in REMOVED_PRODUCTIONS.items():
         productions = grammar.get(head)
         if not productions:
             continue
@@ -166,6 +205,19 @@ def prune_unstructured(grammar: Grammar) -> int:
             kept.append(prod)
         grammar[head] = kept
     return removed
+
+
+def rewrite_bodies(grammar: Grammar) -> int:
+    rewrites = 0
+    for head, prods in grammar.items():
+        for prod in prods:
+            body = tuple(prod.get("body_symbols") or [])
+            new_body = BODY_REWRITES.get((head, body))
+            if new_body is None:
+                continue
+            prod["body_symbols"] = list(new_body)
+            rewrites += 1
+    return rewrites
 
 
 def collect_terminals(grammar: Grammar) -> Set[str]:
@@ -244,9 +296,12 @@ def decorate_body_symbols(body: Sequence[str]) -> str:
     if not body:
         return "ε"
     decorated: List[str] = ["WS_OPT"]
-    for symbol in body:
+    for idx, symbol in enumerate(body):
         decorated.append(symbol)
-        decorated.append("WS_OPT")
+        is_last = idx == len(body) - 1
+        suppress_ws = is_last and symbol == "DOT"
+        if not suppress_ws:
+            decorated.append("WS_OPT")
     return " ".join(decorated)
 
 
@@ -292,12 +347,13 @@ def main() -> None:
     grammar = load_json(args.grammar)
     ensure_alias(grammar, "X", ["EXPR"])
     inject_manual_heads(grammar)
-    removed = prune_unstructured(grammar)
+    removed = prune_productions(grammar)
+    rewrites = rewrite_bodies(grammar)
 
     lexer_meta = load_json(args.lexer).get("lexer", {})
 
     terminals = collect_terminals(grammar)
-    for synthetic in {"EXPR", "EXPR_BODY", "EXPR_CHAR", "WS_OPT"}:
+    for synthetic in {"EXPR", "EXPR_BODY", "EXPR_CHAR", "WS_OPT", "NONEMPTY_EXPR", "SAFE_EXPR", "SAFE_EXPR_START"}:
         terminals.discard(synthetic)
     placeholders: Dict[str, str] = {}
 
@@ -321,6 +377,8 @@ def main() -> None:
     print(f"Wrote literal-friendly EBNF to {args.output}")
     if removed:
         print(f"Pruned {removed} unstructured fallback production(s) before emission.")
+    if rewrites:
+        print(f"Rewrote {rewrites} production(s) for safer BY patterns.")
     if placeholders:
         print(
             f"Warning: {len(placeholders)} tokens used placeholders "

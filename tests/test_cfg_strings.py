@@ -14,8 +14,8 @@ import sys
 from pathlib import Path
 from typing import Iterable, List, Sequence, Tuple
 
-from transformers_cfg.parser import parse_ebnf  # type: ignore[import]
-from transformers_cfg.recognizer import StringRecognizer  # type: ignore[import]
+from transformers import AutoTokenizer  # type: ignore[import]
+from transformers_cfg.grammar_utils import IncrementalGrammarConstraint  # type: ignore[import]
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = PROJECT_ROOT / "out"
@@ -38,14 +38,15 @@ def ensure_artifacts(skip_refresh: bool) -> None:
     )
 
 
-def load_recognizer() -> Tuple[StringRecognizer, int]:
+def load_constraint() -> Tuple[IncrementalGrammarConstraint, AutoTokenizer]:
     grammar_str = LITERAL_EBNF.read_text(encoding="utf-8")
-    state = parse_ebnf(grammar_str)
-    start_rule_id = state.symbol_table.get("Line")
-    if start_rule_id is None:
-        raise RuntimeError("EBNF is missing a 'Line' start rule.")
-    recognizer = StringRecognizer(state.grammar_encoding, start_rule_id)
-    return recognizer, start_rule_id
+    tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    constraint = IncrementalGrammarConstraint(
+        grammar_str=grammar_str,
+        start_rule_name="Line",
+        tokenizer=tokenizer,
+    )
+    return constraint, tokenizer
 
 
 def iter_lines(path: Path) -> Iterable[Tuple[int, str]]:
@@ -58,14 +59,15 @@ def iter_lines(path: Path) -> Iterable[Tuple[int, str]]:
 
 
 def evaluate(
-    recognizer: StringRecognizer,
+    constraint: IncrementalGrammarConstraint,
     lines: Sequence[Tuple[int, str]],
     expect_success: bool,
 ) -> Tuple[bool, List[int]]:
     offending: List[int] = []
     for lineno, text in lines:
+        state = constraint.string_recognizer.get_initial_parsing_state()
         try:
-            accepted = recognizer._accept_string(text)
+            accepted = constraint.string_recognizer._accept_string(text, state)
         except RecursionError:
             accepted = False
         if expect_success and not accepted:
@@ -87,7 +89,7 @@ def main() -> None:
     args = parser.parse_args()
 
     ensure_artifacts(args.skip_refresh)
-    recognizer, _ = load_recognizer()
+    constraint, tokenizer = load_constraint()
 
     scenarios = [
         ("good", GOOD_CASE, True),
@@ -97,7 +99,7 @@ def main() -> None:
 
     for label, path, expect_success in scenarios:
         lines = list(iter_lines(path))
-        ok, offending = evaluate(recognizer, lines, expect_success)
+        ok, offending = evaluate(constraint, lines, expect_success)
         overall_ok &= ok
         status = "PASS" if ok else "FAIL"
         print(f"[{status}] {label}: {path}")
