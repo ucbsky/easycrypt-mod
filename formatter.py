@@ -561,6 +561,10 @@ def traverse_goal_graph(goal_consumers: Dict[int, List[TacticOccurrence]]) -> Li
 
 
 def build_tactic_sequence(lemma: dict) -> List[str]:
+    """
+    Build a linearized list of tactic strings for a lemma based on its
+    serialized goal graph.
+    """
     consumers = collect_goal_occurrences(lemma, lemma.get("name"))
     ordered = traverse_goal_graph(consumers)
     return [occ.text for occ in ordered if occ.text]
@@ -633,6 +637,7 @@ def rewrite_file(
     path: Path,
     updates: Sequence[Tuple[str, List[str]]],
     available_lemmas: Sequence[str],
+    suppress_mismatch_warnings: bool = False,
 ) -> Tuple[str, List[str]]:
     try:
         parsed = parse_easycrypt.parse_easycrypt_file(path)
@@ -675,28 +680,29 @@ def rewrite_file(
         else:
             chunks.append(render_existing_lemma(statement, proof, indent))
 
-    missing_in_ast = sorted(name for name in parsed_lemmas if name not in available)
-    if missing_in_ast:
-        print(
-            "[formatter] Warning: lemmas missing from AST: "
-            + ", ".join(missing_in_ast),
-            file=sys.stderr,
-        )
+    if not suppress_mismatch_warnings:
+        missing_in_ast = sorted(name for name in parsed_lemmas if name not in available)
+        if missing_in_ast:
+            print(
+                "[formatter] Warning: lemmas missing from AST: "
+                + ", ".join(missing_in_ast),
+                file=sys.stderr,
+            )
 
-    missing_in_parser = sorted(name for name in available if name not in parsed_lemmas)
-    if missing_in_parser:
-        print(
-            "[formatter] Warning: lemmas present in AST but not parser output: "
-            + ", ".join(missing_in_parser),
-            file=sys.stderr,
-        )
+        missing_in_parser = sorted(name for name in available if name not in parsed_lemmas)
+        if missing_in_parser:
+            print(
+                "[formatter] Warning: lemmas present in AST but not parser output: "
+                + ", ".join(missing_in_parser),
+                file=sys.stderr,
+            )
 
-    missing = sorted(name for name in update_map if name not in applied)
-    for name in missing:
-        print(
-            f"[formatter] Warning: lemma '{name}' not found in {path}; keeping existing proof",
-            file=sys.stderr,
-        )
+        missing = sorted(name for name in update_map if name not in applied)
+        for name in missing:
+            print(
+                f"[formatter] Warning: lemma '{name}' not found in {path}; keeping existing proof",
+                file=sys.stderr,
+            )
 
     text = "".join(ensure_newline(chunk) for chunk in chunks)
     if not text.endswith("\n"):
@@ -704,31 +710,47 @@ def rewrite_file(
     return text, applied
 
 
-def main() -> None:
-    args = parse_args()
-    ec_path = Path(args.easycrypt_file)
-    ast_path = Path(args.ast_file)
+def format_lemmas(
+    easycrypt_file: str | Path,
+    ast_file: str | Path,
+    lemma_names: Sequence[str] | None = None,
+    suppress_mismatch_warnings: bool = False,
+) -> Tuple[Path, Dict[str, int]]:
+    """
+    Format one or more lemmas in `easycrypt_file` using the proof AST in
+    `ast_file`.
+
+    Returns:
+        (formatted_file_path, {lemma_name: tactic_count_after_formatting})
+    """
+    ec_path = Path(easycrypt_file)
+    ast_path = Path(ast_file)
 
     lemmas, lemma_order = load_ast(ast_path)
     if not lemmas:
         raise SystemExit("No lemmas found in AST.")
 
-    targets = set(args.lemmas) if args.lemmas else set(lemmas.keys())
+    targets = set(lemma_names) if lemma_names else set(lemmas.keys())
     unknown = targets - set(lemmas.keys())
     if unknown:
         raise SystemExit(f"Lemmas not found in AST: {', '.join(sorted(unknown))}")
 
     ordered_targets = [name for name in lemma_order if name in targets]
+
     updates: List[Tuple[str, List[str]]] = []
+    tactic_counts: Dict[str, int] = {}
     for name in ordered_targets:
-        tactics = build_tactic_sequence(lemmas[name])
-        if tactics:
-            updates.append((name, tactics))
+        seq = build_tactic_sequence(lemmas[name])
+        tactic_counts[name] = len(seq)
+        if seq:
+            updates.append((name, seq))
 
     if not updates:
         raise SystemExit("No tactic sequences produced; nothing to do.")
 
-    formatted_text, applied = rewrite_file(ec_path, updates, lemmas.keys())
+    formatted_text, applied = rewrite_file(
+        ec_path, updates, lemmas.keys(), suppress_mismatch_warnings=suppress_mismatch_warnings
+    )
     if not applied:
         raise SystemExit("No lemmas were updated; aborting to avoid writing output.")
 
@@ -738,7 +760,31 @@ def main() -> None:
     except OSError as err:
         raise SystemExit(f"Failed to write formatted file {output_path}: {err}") from err
 
+    return output_path, {name: tactic_counts.get(name) for name in applied}
+
+
+def main() -> None:
+    """CLI entrypoint; preserved for backwards compatibility."""
+    args = parse_args()
+    try:
+        output_path, tactic_counts = format_lemmas(
+            args.easycrypt_file, args.ast_file, args.lemmas
+        )
+    except SystemExit as err:
+        # Re-raise SystemExit so CLI exit codes remain meaningful.
+        raise
+    except Exception as err:  # pragma: no cover - passthrough for unexpected errors
+        raise SystemExit(f"Formatter failed: {err}") from err
+
+    if not tactic_counts:
+        raise SystemExit("No lemmas were updated; aborting to avoid writing output.")
+
+    applied = sorted(tactic_counts.keys())
     print(f"[formatter] Updated lemmas: {', '.join(applied)}")
+    print(
+        "[formatter] Tactics per lemma: "
+        + ", ".join(f"{name}={tactic_counts[name]}" for name in applied)
+    )
     print(f"[formatter] Wrote {output_path}")
 
 
