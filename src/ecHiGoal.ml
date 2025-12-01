@@ -1270,7 +1270,7 @@ exception IntroCollect of [
 exception CollectBreak
 exception CollectCore of ipcore located
 
-let rec process_mintros_1 ?(cf = true) ttenv pis gs =
+let rec process_mintros_1 ?(cf = true) ?log_elem ttenv pis gs =
   let module ST = IntroState in
 
   let mk_intro ids (hyps, form) =
@@ -1350,6 +1350,42 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
     in (List.rev torev, ids)
   in
 
+  let intropattern_of_token (token : EcProofAst.intro_token located) =
+    match token.pl_desc with
+    | `Core cores ->
+        List.map
+          (fun ip -> mk_loc ip.pl_loc (IPCore (unloc ip)))
+          cores
+    | `Dup ->
+        [mk_loc token.pl_loc IPDup]
+    | `Done mode ->
+        [mk_loc token.pl_loc (IPDone mode)]
+    | `Smt info ->
+        [mk_loc token.pl_loc (IPSmt info)]
+    | `Clear xs ->
+        [mk_loc token.pl_loc (IPClear xs)]
+    | `Case (mode, branches) ->
+        [mk_loc token.pl_loc (IPCase (mode, branches))]
+    | `Rw args ->
+        [mk_loc token.pl_loc (IPRw args)]
+    | `Delta args ->
+        [mk_loc token.pl_loc (IPDelta args)]
+    | `View pe ->
+        [mk_loc token.pl_loc (IPView pe)]
+    | `Subst args ->
+        [mk_loc token.pl_loc (IPSubst args)]
+    | `SubstTop args ->
+        [mk_loc token.pl_loc (IPSubstTop args)]
+    | `Simpl mode ->
+        [mk_loc token.pl_loc (IPSimplify mode)]
+    | `Crush cm ->
+        [mk_loc token.pl_loc (IPCrush cm)]
+  in
+
+  let tokens_to_pattern tokens =
+    List.flatten (List.map intropattern_of_token tokens)
+  in
+
   let rec collect intl acc core pis =
     let maybe_core () =
       let loc = EcLocation.mergeall (List.map loc core) in
@@ -1381,7 +1417,10 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
           | IPCrush    x -> `Crush x
 
           | IPCase (mode, x) ->
-              let subcollect = List.rev -| fst -| collect true [] [] in
+              let subcollect tokens =
+                let tokens, _ = collect true [] [] tokens in
+                tokens_to_pattern (List.rev tokens)
+              in
               `Case (mode, List.map subcollect x)
 
           | IPSubstTop x -> `SubstTop x
@@ -1428,13 +1467,19 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
     process_clear (`Include xs) tc
 
   and intro1_case (st : ST.state) nointro pis gs =
+    let branch_logger =
+      match pis with
+      | [_] -> None
+      | _ -> log_elem
+    in
+
     let onsub gs =
       if List.is_empty pis then gs else begin
         if FApi.tc_count gs <> List.length pis then
           tc_error !$gs
             "not the right number of intro-patterns (got %d, expecting %d)"
             (List.length pis) (FApi.tc_count gs);
-        t_sub (List.map (dointro1 st false) pis) gs
+        t_sub (List.map (dointro1 branch_logger st false) pis) gs
         end
     in
 
@@ -1446,10 +1491,23 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
           tc_error !!g "invalid intro-pattern: nothing to eliminate"
     in
 
+    let apply_case_all state =
+      match log_elem with
+      | None -> t_onall tc state
+      | Some log ->
+          let before = FApi.tc_opened state in
+          let state' = t_onall tc state in
+          let after = FApi.tc_opened state' in
+          if before <> after then log EcProofAst.IEBridge before after;
+          state'
+    in
+
     if nointro && not cf then onsub gs else begin
       match pis with
-      | [] -> t_onall tc gs
-      | _  -> t_onall (fun gs -> onsub (tc gs)) gs
+      | [] -> apply_case_all gs
+      | _  ->
+          let eliminated = apply_case_all gs in
+          t_onall (fun goal -> onsub (FApi.tcenv_of_tcenv1 goal)) eliminated
     end
 
   and intro1_full_case (st : ST.state)
@@ -1476,7 +1534,7 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
           tc_error !$gs
             "not the right number of intro-patterns (got %d, expecting %d)"
             (List.length pis) (FApi.tc_count gs);
-        t_sub (List.map (dointro1 st false) pis) gs
+        t_sub (List.map (dointro1 log_elem st false) pis) gs
         end
     in
 
@@ -1510,7 +1568,21 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
       | `AsMuch     -> aux None tc
     in
 
-    if List.is_empty pis then doit tc else onsub (doit tc)
+    let run_with_bridge_tcenv1 :
+        (tcenv1 -> tcenv) -> tcenv1 -> tcenv =
+      fun action tc ->
+        match log_elem with
+        | None -> action tc
+        | Some log ->
+            let before = FApi.tc_opened (FApi.tcenv_of_tcenv1 tc) in
+            let tc' = action tc in
+            let after = FApi.tc_opened tc' in
+            if before <> after then log EcProofAst.IEBridge before after;
+            tc'
+    in
+
+    if List.is_empty pis then run_with_bridge_tcenv1 doit tc
+    else onsub (run_with_bridge_tcenv1 doit tc)
 
   and intro1_rw (_ : ST.state) (o, s) tc =
     let h = EcIdent.create "_" in
@@ -1572,84 +1644,112 @@ let rec process_mintros_1 ?(cf = true) ttenv pis gs =
       (EcLowGoal.t_crush ~delta ?tsolve)
       gs
 
-  and dointro (st : ST.state) nointro pis (gs : tcenv) =
+  and dointro (logger : (EcProofAst.intro_element -> handle list -> handle list -> unit) option)
+      (st : ST.state) nointro pis (gs : tcenv) =
     match pis with [] -> gs | { pl_desc = pi; pl_loc = ploc } :: pis ->
+      let rl x = EcCoreGoal.reloc ploc x in
+      let located : EcProofAst.intro_token EcLocation.located = mk_loc ploc pi in
+      let exec action =
+        match logger with
+        | None -> action gs
+        | Some log ->
+            let before = FApi.tc_opened gs in
+            let gs' = action gs in
+            let after = FApi.tc_opened gs' in
+            log (EcProofAst.IEPattern located) before after;
+            gs'
+      in
       let nointro, gs =
-        let rl x = EcCoreGoal.reloc ploc x in
-
         match pi with
         | `Core ids ->
-            (false, rl (t_onall (intro1_core st ids)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_core st ids)) state))
 
         | `Dup ->
-            (false, rl (t_onall (intro1_dup st)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_dup st)) state))
 
         | `Done b ->
-            (nointro, rl (t_onall (intro1_done st b)) gs)
+            (nointro, exec (fun state -> rl (t_onall (intro1_done st b)) state))
 
         | `Smt (b, pi) ->
-            (nointro, rl (t_onall (intro1_smt st b pi)) gs)
+            (nointro, exec (fun state -> rl (t_onall (intro1_smt st b pi)) state))
 
         | `Simpl b ->
-            (nointro, rl (t_onall (intro1_simplify st b)) gs)
+            (nointro, exec (fun state -> rl (t_onall (intro1_simplify st b)) state))
 
         | `Clear xs ->
-            (nointro, rl (t_onall (intro1_clear st xs)) gs)
+            (nointro, exec (fun state -> rl (t_onall (intro1_clear st xs)) state))
 
         | `Case (`One, pis) ->
-            (false, rl (intro1_case st nointro pis) gs)
+            (false, exec (fun state -> rl (intro1_case st nointro pis) state))
 
         | `Case (`Full x, pis) ->
-            (false, rl (t_onall (intro1_full_case st x pis)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_full_case st x pis)) state))
 
         | `Rw (o, s, None) ->
-            (false, rl (t_onall (intro1_rw st (o, s))) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_rw st (o, s))) state))
 
         | `Rw (o, s, Some i) ->
-            (false, rl (t_onall (t_do `All i (intro1_rw st (o, s)))) gs)
+            (false, exec (fun state -> rl (t_onall (t_do `All i (intro1_rw st (o, s)))) state))
 
         | `Delta ((o, s), p) ->
-            (nointro, rl (t_onall (intro1_unfold st (o, s) p)) gs)
+            (nointro, exec (fun state -> rl (t_onall (intro1_unfold st (o, s) p)) state))
 
         | `View pe ->
-            (false, rl (t_onall (intro1_view st pe)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_view st pe)) state))
 
         | `Subst (d, None) ->
-            (false, rl (t_onall (intro1_subst st d)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_subst st d)) state))
 
         | `Subst (d, Some i) ->
-            (false, rl (t_onall (t_do `All i (intro1_subst st d))) gs)
+            (false, exec (fun state -> rl (t_onall (t_do `All i (intro1_subst st d))) state))
 
         | `SubstTop d ->
-            (false, rl (t_onall (intro1_subst_top st d)) gs)
+            (false, exec (fun state -> rl (t_onall (intro1_subst_top st d)) state))
 
         | `Crush d ->
-           (false, rl (t_onall (intro1_crush st d)) gs)
+           (false, exec (fun state -> rl (t_onall (intro1_crush st d)) state))
 
-      in dointro st nointro pis gs
+      in dointro logger st nointro pis gs
 
-  and dointro1 st nointro pis tc =
-    dointro st nointro pis (FApi.tcenv_of_tcenv1 tc) in
+  and dointro1 logger st nointro pis tc =
+    let cmds, _ = collect pis in
+    dointro logger st nointro (List.rev cmds) (FApi.tcenv_of_tcenv1 tc) in
 
   try
     let st = ST.create () in
     let ip, pis = collect pis in
-    let gs = dointro st true (List.rev ip) gs in
+    let gs = dointro log_elem st true (List.rev ip) gs in
     let gs =
       let ls = ST.listing st in
       let gn = List.pmap (function (`Gen x, y) -> Some (x, y) | _ -> None) ls in
       let cl = List.pmap (function (`Clear, y) -> Some y | _ -> None) ls in
-
-      t_onall (fun tc ->
-        t_generalize_hyps_x
-          ~missing:true ~naming:(ST.naming st)
-           gn tc)
-        (t_onall (t_clears cl) gs)
+      let apply_cleanup gs =
+        let gs = t_onall (t_clears cl) gs in
+        t_onall
+          (fun tc ->
+            t_generalize_hyps_x
+              ~missing:true
+              ~naming:(ST.naming st)
+              gn tc)
+          gs
+      in
+      let needs_bridge = not (List.is_empty gn) || not (List.is_empty cl) in
+      if not needs_bridge then
+        apply_cleanup gs
+      else
+        match log_elem with
+        | Some log ->
+            let before = FApi.tc_opened gs in
+            let gs' = apply_cleanup gs in
+            let after = FApi.tc_opened gs' in
+            log EcProofAst.IEBridge before after;
+            gs'
+        | None -> apply_cleanup gs
     in
 
     if List.is_empty pis then gs else
       gs |> t_onall (fun tc ->
-        process_mintros_1 ~cf:true ttenv pis (FApi.tcenv_of_tcenv1 tc))
+        process_mintros_1 ~cf:true ?log_elem ttenv pis (FApi.tcenv_of_tcenv1 tc))
 
   with IntroCollect e -> begin
     match e with
@@ -1830,22 +1930,57 @@ let process_generalize ?(doeq = false) patterns (tc : tcenv1) =
     tc_error_exn !!tc err
 
 (* -------------------------------------------------------------------- *)
-let rec process_mgenintros ?cf ttenv pis tc =
-  match pis with [] -> tc | pi :: pis ->
-    let tc =
-      match pi with
-      | `Ip  pi -> process_mintros_1 ?cf ttenv pi tc
-      | `Gen gn ->
-         t_onall (
-           t_seqs [
-               process_clear (`Include gn.pr_clear);
-               process_generalize gn.pr_genp
-           ]) tc
-    in process_mgenintros ~cf:false ttenv pis tc
+let rec process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
+  let rec aux idx cf_opt tc = function
+    | [] -> tc
+    | pi :: rest ->
+        let before =
+          match log_intro with
+          | Some _ -> Some (FApi.tc_opened tc)
+          | None -> None
+        in
+        let elem_logger =
+          match log_intro_elem with
+          | Some log -> Some (log idx)
+          | None -> None
+        in
+        let tc =
+          match pi with
+          | `Ip pi ->
+              process_mintros_1 ?cf:cf_opt ?log_elem:elem_logger ttenv pi tc
+          | `Gen gn ->
+              let elem_before =
+                match elem_logger with
+                | Some _ -> Some (FApi.tc_opened tc)
+                | None -> None
+              in
+              let tc =
+                t_onall (
+                  t_seqs [
+                      process_clear (`Include gn.pr_clear);
+                      process_generalize gn.pr_genp
+                  ]) tc
+              in
+              (match elem_logger, elem_before with
+               | Some log, Some b ->
+                   let after = FApi.tc_opened tc in
+                   log (EcProofAst.IEGen gn) b after
+               | _ -> ());
+              tc
+        in
+        (match log_intro, before with
+         | Some log, Some b ->
+             let after = FApi.tc_opened tc in
+             log pi b after
+         | _ -> ());
+        aux (idx + 1) (Some false) tc rest
+  in
+  let initial_cf = match cf with Some v -> Some v | None -> None in
+  aux 0 initial_cf tc pis
 
 (* -------------------------------------------------------------------- *)
-let process_genintros ?cf ttenv pis tc =
-  process_mgenintros ?cf ttenv pis (FApi.tcenv_of_tcenv1 tc)
+let process_genintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
+  process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis (FApi.tcenv_of_tcenv1 tc)
 
 (* -------------------------------------------------------------------- *)
 let process_move ?doeq views pr (tc : tcenv1) =

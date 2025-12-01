@@ -43,6 +43,10 @@ end
 
 (* -------------------------------------------------------------------- *)
 let sites : (module Sites) =
-  if   eclocal
-  then (module LocalSites ())
-  else (module DuneSites ())
+  (* NOTE:
+   * We intentionally ignore [DuneSites] and always use local paths.
+   * dune-site is still in an alpha state and can misconfigure theory
+   * locations (e.g., failing to locate the [Pervasive] theory).
+   * For the workbook use-case, relying on the checked-out source
+   * tree for [theories] is more robust. *)
+  (module LocalSites ())

@@ -392,6 +392,7 @@ let main () =
       interactive : bool;
       eco         : bool;
       gccompact   : int option;
+      dump_proof_ast : bool;
     }
   end in
 
@@ -446,7 +447,8 @@ let main () =
         ; terminal    = terminal
         ; interactive = true
         ; eco         = false
-        ; gccompact   = None }
+        ; gccompact   = None
+        ; dump_proof_ast = false }
 
     end
 
@@ -473,7 +475,8 @@ let main () =
         ; terminal    = terminal
         ; interactive = false
         ; eco         = cmpopts.cmpo_noeco
-        ; gccompact   = cmpopts.cmpo_compact }
+        ; gccompact   = cmpopts.cmpo_compact
+        ; dump_proof_ast = cmpopts.cmpo_dump_proof_ast }
 
       end
 
@@ -488,6 +491,9 @@ let main () =
        match relocdir with
        | None     -> EcCommands.addidir Filename.current_dir_name
        | Some pwd -> EcCommands.addidir pwd);
+
+  if state.dump_proof_ast then
+    state.input |> oiter (fun input -> EcProofAst.enable ~source:input);
 
   (* Check if the .eco is up-to-date and exit if so *)
   oiter
@@ -592,6 +598,9 @@ let main () =
              with EcCommands.InvalidPragma x ->
                EcScope.hierror "invalid pragma: `%s'\n%!" x);
 
+            if state.dump_proof_ast then
+              EcProofAst.reset_run ();
+
             let notifier (lvl : EcGState.loglevel) (lazy msg) =
               T.notice ~immediate:true lvl msg terminal
             in
@@ -666,6 +675,8 @@ let main () =
 
         if !terminate then begin
             T.finalize terminal;
+            if state.dump_proof_ast then
+              EcProofAst.finalize ();
             if not state.eco then
               finalize_input state.input (EcCommands.current ());
             exit 0

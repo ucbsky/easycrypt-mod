@@ -20,6 +20,7 @@ and cmp_option = {
   cmpo_tstats  : string option;
   cmpo_noeco   : bool;
   cmpo_script  : bool;
+  cmpo_dump_proof_ast : bool;
 }
 
 and cli_option = {

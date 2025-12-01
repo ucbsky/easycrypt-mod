@@ -67,8 +67,16 @@ val process_reflexivity : backward
 val process_assumption  : backward
 val process_mintros     : ?cf:bool -> ttenv -> intropattern list -> tactical
 val process_intros      : ?cf:bool -> ttenv -> intropattern list -> backward
-val process_mgenintros  : ?cf:bool -> ttenv -> introgenpattern list -> tactical
-val process_genintros   : ?cf:bool -> ttenv -> introgenpattern list -> backward
+val process_mgenintros  :
+  ?cf:bool ->
+  ?log_intro:(introgenpattern -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  ?log_intro_elem:(int -> EcProofAst.intro_element -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  ttenv -> introgenpattern list -> tactical
+val process_genintros   :
+  ?cf:bool ->
+  ?log_intro:(introgenpattern -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  ?log_intro_elem:(int -> EcProofAst.intro_element -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  ttenv -> introgenpattern list -> backward
 val process_generalize  : ?doeq:bool -> genpattern list -> backward
 val process_move        : ?doeq:bool -> ppterm list -> prevert -> backward
 val process_clear       : clear_info -> backward

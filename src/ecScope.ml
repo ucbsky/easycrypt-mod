@@ -745,16 +745,40 @@ module Tactics = struct
           EcHiGoal.tt_redlogic   = Options.get_redlogic scope;
           EcHiGoal.tt_und_delta  = Options.get_und_delta scope; } in
 
+        EcProofAst.begin_tactic_trace ();
         let (hds, juc) =
-          try  TTC.process ttenv tac juc
-          with EcCoreGoal.TcError tcerror ->
-            let tcerror =
-              ofold
-                (fun reloc error ->
-                  { error with EcCoreGoal.tc_reloced = Some (reloc, true) })
-                tcerror reloc
-            in raise (EcCoreGoal.TcError tcerror)
+          try
+            let res = TTC.process ttenv tac juc in
+            EcProofAst.end_tactic_trace ~success:true;
+            res
+          with
+          | EcCoreGoal.TcError tcerror ->
+              EcProofAst.end_tactic_trace ~success:false;
+              let tcerror =
+                ofold
+                  (fun reloc error ->
+                     { error with EcCoreGoal.tc_reloced = Some (reloc, true) })
+                  tcerror reloc
+              in raise (EcCoreGoal.TcError tcerror)
+          | exn ->
+              EcProofAst.end_tactic_trace ~success:false;
+              raise exn
         in
+
+        if EcProofAst.is_enabled () then begin
+          let theory = EcPath.tostring (path scope) in
+          let lemma_path =
+            match pac.puc_name with
+            | None -> theory
+            | Some name ->
+                if theory = "" then name else theory ^ "." ^ name
+          in
+          EcProofAst.record_block
+            ~lemma:pac.puc_crt
+            ~lemma_name:pac.puc_name
+            ~lemma_path
+            ~tactics:tac
+        end;
 
         let penv = EcCoreGoal.proofenv_of_proof juc in
 
@@ -974,6 +998,27 @@ module Ax = struct
       | [] -> { scope with sc_pr_uc = None; }
       | _  -> scope
     in
+
+    if EcProofAst.is_enabled () then begin
+      let theory = EcPath.tostring (path scope) in
+      let lemma_path =
+        match pac.puc_name with
+        | None -> theory
+        | Some name ->
+            if theory = "" then name else theory ^ "." ^ name
+      in
+      let status =
+        match mode with
+        | `Save  -> `Qed
+        | `Admit -> `Admitted
+        | `Abort -> `Aborted
+      in
+      EcProofAst.mark_status
+        ~lemma:pac.puc_crt
+        ~lemma_name:pac.puc_name
+        ~lemma_path
+        ~status
+    end;
 
     match mode with
     | `Save | `Admit ->

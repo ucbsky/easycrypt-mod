@@ -24,6 +24,7 @@ and cmp_option = {
   cmpo_tstats  : string option;
   cmpo_noeco   : bool;
   cmpo_script  : bool;
+  cmpo_dump_proof_ast : bool;
 }
 
 and cli_option = {
@@ -341,6 +342,7 @@ let specs = {
       `Spec  ("tstats" , `String, "Save timing statistics to <file>");
       `Spec  ("script" , `Flag  , "Computer-friendly output");
       `Spec  ("no-eco" , `Flag  , "Do not cache verification results");
+      `Spec  ("dump-proof-ast", `Flag, "Dump proof tactic AST next to the input file");
       `Spec  ("compact", `Int   , "<internal>")]);
 
     ("cli", "Run EasyCrypt top-level", [
@@ -506,7 +508,8 @@ let cmp_options_of_values ini values input =
     cmpo_compact = get_int "compact" values;
     cmpo_tstats  = get_string "tstats" values;
     cmpo_noeco   = get_flag "no-eco" values;
-    cmpo_script  = get_flag "script" values; }
+    cmpo_script  = get_flag "script" values;
+    cmpo_dump_proof_ast = get_flag "dump-proof-ast" values; }
 
 let runtest_options_of_values ini values (input, scenarios) =
   { runo_input     = input;

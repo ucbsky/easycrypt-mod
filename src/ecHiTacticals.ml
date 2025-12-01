@@ -107,10 +107,11 @@ and process1_progress (ttenv : ttenv) options t (tc : tcenv1) =
 and process1_seq (ttenv : ttenv) (ts : ptactic list) (tc : tcenv1) =
   let rec aux ts (tc : tcenv) : tcenv =
     match ts with
-    | []      -> tc
-    | t :: ts -> aux ts (process ttenv t tc)
+    | [] -> tc
+    | t :: ts ->
+        let tc' = process ttenv t tc in
+        aux ts tc'
   in
-
   aux ts (tcenv_of_tcenv1 tc)
 
 (* -------------------------------------------------------------------- *)
@@ -327,16 +328,36 @@ and process_core (ttenv : ttenv) ({ pl_loc = loc } as t : ptactic_core) (tc : tc
 
 (* -------------------------------------------------------------------- *)
 and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
+  let before = FApi.tc_opened tc in
   let cf =
     match unloc t.pt_core with
     | Plogic (Pmove _)
     | Pidtac _ -> true
     | _ -> false
   in
-
   let tc = process_core ttenv t.pt_core tc in
-  let tc = EcHiGoal.process_mgenintros ~cf ttenv t.pt_intros tc in
-    tc
+  let after_core = FApi.tc_opened tc in
+  EcProofAst.update_active_goals after_core;
+  EcProofAst.log_tactic_application t before after_core;
+  let logging_intros = EcProofAst.is_enabled () && not (List.is_empty t.pt_intros) in
+  let log_intro, log_intro_elem =
+    if logging_intros then
+      let counter = ref 0 in
+      let log_intro _intro intro_before intro_after =
+        let index = !counter in
+        incr counter;
+        EcProofAst.log_intro_application t index intro_before intro_after
+      in
+      let log_elem idx element elem_before elem_after =
+        EcProofAst.log_intro_element t idx element elem_before elem_after
+      in
+      (Some log_intro, Some log_elem)
+    else (None, None)
+  in
+  let tc = EcHiGoal.process_mgenintros ~cf ?log_intro ?log_intro_elem ttenv t.pt_intros tc in
+  let after = FApi.tc_opened tc in
+  EcProofAst.update_active_goals after;
+  tc
 
 (* -------------------------------------------------------------------- *)
 and process1_core (ttenv : ttenv) (t : ptactic_core) (tc : tcenv1) =
