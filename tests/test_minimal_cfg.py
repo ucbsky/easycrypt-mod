@@ -134,9 +134,13 @@ def list_ec_files(path: Path) -> List[Path]:
 def extract_proof_lines(
     ec_path: Path,
     parser_module,
-) -> List[Tuple[int, str]]:
-    parsed = parser_module.parse_easycrypt_file(ec_path)
-    lines: List[Tuple[int, str]] = []
+) -> List[Tuple[str, str]]:
+    try:
+        parsed = parser_module.parse_easycrypt_file(ec_path)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[warning] skipping proofs in {ec_path}: {exc}")
+        return []
+    lines: List[Tuple[str, str]] = []
     for item in parsed.get("content", []):
         if item.get("type") != "lemma":
             continue
@@ -200,25 +204,29 @@ def main() -> None:
         )
 
     failures: List[str] = []
+    has_proof = bool(proof_lines)
 
     for variant, cfg in GRAMMAR_VARIANTS.items():
         print(f"\n=== {variant.upper()} grammar ===")
         constraint = load_constraint(variant)
 
         good_ok, good_fail = evaluate(constraint, good_lines)
-        summarize(f"{variant}:good", good_ok, good_fail)
+        if not has_proof:
+            summarize(f"{variant}:good", good_ok, good_fail)
 
         bad_ok, bad_fail = evaluate(constraint, bad_lines)
-        summarize(f"{variant}:bad", bad_ok, bad_fail)
-
-        print(
-            f"[{variant} stats] good success={rate(len(good_ok), len(good_lines)):.1f}% "
-            f"(accepted {len(good_ok)}/{len(good_lines)})"
-        )
-        print(
-            f"[{variant} stats] bad success={rate(len(bad_fail), len(bad_lines)):.1f}% "
-            f"(rejected {len(bad_fail)}/{len(bad_lines)})"
-        )
+        if not has_proof:
+            summarize(f"{variant}:bad", bad_ok, bad_fail)
+            print(
+                f"[{variant} stats] good success={rate(len(good_ok), len(good_lines)):.1f}% "
+                f"(accepted {len(good_ok)}/{len(good_lines)})"
+            )
+            print(
+                f"[{variant} stats] bad success={rate(len(bad_fail), len(bad_lines)):.1f}% "
+                f"(rejected {len(bad_fail)}/{len(bad_lines)})"
+            )
+        else:
+            print(f"[{variant}] Reference corpora stats suppressed (proof-path mode).")
 
         good_cap = args.max_good_fail
         if good_cap is None:
@@ -251,7 +259,7 @@ def main() -> None:
                 f"[{variant}] Too many bad lines accepted: {len(bad_ok)} > {bad_cap} ({bad_label})"
             )
 
-        if proof_lines:
+        if has_proof:
             proof_ok, proof_fail = evaluate(constraint, proof_lines)
             summarize(
                 f"{variant}:proof",
