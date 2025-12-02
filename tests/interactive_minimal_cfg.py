@@ -11,10 +11,11 @@ exactly one GPT-2 token. The session keeps track of the accumulated text and can
 be reset at any point.
 
 Commands:
-  :help   Show instructions
-  :list   Re-print the currently accepted tokens
-  :reset  Reset the parsing state to the beginning of the line
-  :quit   Exit the session (`:q` works too)
+  :help        Show instructions
+  :list        Re-print the currently accepted tokens
+  :reset       Reset the parsing state to the beginning of the line
+  :batch TEXT  Feed arbitrary text (tokenized via the current tokenizer)
+  :quit        Exit the session (`:q` works too)
 """
 
 from __future__ import annotations
@@ -24,7 +25,7 @@ import importlib.util
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Sequence, Tuple
+from typing import Any, Iterable, List, Sequence, Tuple
 
 import torch
 from transformers import AutoTokenizer  # type: ignore[import]
@@ -118,6 +119,36 @@ def format_history(tokenizer: AutoTokenizer, accepted_ids: Sequence[int]) -> str
     return tokenizer.decode(accepted_ids)
 
 
+def try_feed_token(
+    token_id: int,
+    constraint: IncrementalGrammarConstraint,
+    tokenizer: AutoTokenizer,
+    state: Any,
+    accepted_ids: List[int],
+    allowed: List[TokenChoice],
+    limit: int,
+    show_allowed: bool = True,
+) -> Tuple[Any, List[TokenChoice], bool]:
+    allowed_ids = {choice.token_id for choice in allowed}
+    if token_id not in allowed_ids:
+        token_repr = tokenizer.convert_ids_to_tokens(token_id)
+        print(f"Token id={token_id} ({token_repr!r}) is not currently accepted.")
+        return state, allowed, False
+    try:
+        state = constraint._update_state_with_token_id(token_id, state)  # type: ignore[attr-defined]
+    except ValueError as exc:
+        print(f"Grammar rejected the token: {exc}")
+        return state, allowed, False
+    accepted_ids.append(token_id)
+    history = format_history(tokenizer, accepted_ids)
+    vocab_tok = tokenizer.convert_ids_to_tokens(token_id)
+    print(f"Accepted id={token_id} ({vocab_tok!r}). Current text: {history!r}")
+    allowed = collect_allowed_tokens(constraint, tokenizer, state)
+    if show_allowed:
+        print_allowed(allowed, limit)
+    return state, allowed, True
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Interactively explore the minimalist EasyCrypt grammar using transformers-cfg."
@@ -154,7 +185,7 @@ def main() -> None:
     accepted_ids: List[int] = []
 
     print("Interactive minimal CFG explorer.")
-    print("Commands: :help, :list, :reset, :quit")
+    print("Commands: :help, :list, :reset, :batch, :quit")
     print("Token input formats:")
     print("  * Exact vocab token (e.g., Ġproof)")
     print("  * Raw text that encodes to a single token (e.g., proof)")
@@ -184,6 +215,30 @@ def main() -> None:
             allowed = collect_allowed_tokens(constraint, tokenizer, state)
             print_allowed(allowed, args.limit)
             continue
+        if lowered.startswith(":batch"):
+            payload = user_input[len(":batch") :].strip()
+            if not payload:
+                print("Usage: :batch <arbitrary text>")
+                continue
+            token_ids = tokenizer.encode(payload, add_special_tokens=False)
+            if not token_ids:
+                print("Batch payload produced no tokens.")
+                continue
+            print(f"Batch feeding {len(token_ids)} token(s) derived from {payload!r}")
+            for idx, token_id in enumerate(token_ids):
+                state, allowed, ok = try_feed_token(
+                    token_id,
+                    constraint,
+                    tokenizer,
+                    state,
+                    accepted_ids,
+                    allowed,
+                    args.limit,
+                    show_allowed=idx == len(token_ids) - 1,
+                )
+                if not ok:
+                    break
+            continue
         if lowered in {":reset", ":r"}:
             state = constraint.string_recognizer.get_initial_parsing_state()
             accepted_ids.clear()
@@ -198,25 +253,16 @@ def main() -> None:
             print(f"Could not interpret input as a token: {exc}")
             continue
 
-        allowed_ids = {choice.token_id for choice in allowed}
-        if token_id not in allowed_ids:
-            token_repr = tokenizer.convert_ids_to_tokens(token_id)
-            print(f"Token id={token_id} ({token_repr!r}) is not currently accepted.")
-            continue
-
-        try:
-            state = constraint._update_state_with_token_id(token_id, state)  # type: ignore[attr-defined]
-        except ValueError as exc:
-            print(f"Grammar rejected the token: {exc}")
-            continue
-
-        accepted_ids.append(token_id)
-        history = format_history(tokenizer, accepted_ids)
-        vocab_tok = tokenizer.convert_ids_to_tokens(token_id)
-        print(f"Accepted id={token_id} ({vocab_tok!r}). Current text: {history!r}")
-
-        allowed = collect_allowed_tokens(constraint, tokenizer, state)
-        print_allowed(allowed, args.limit)
+        state, allowed, _ = try_feed_token(
+            token_id,
+            constraint,
+            tokenizer,
+            state,
+            accepted_ids,
+            allowed,
+            args.limit,
+            show_allowed=True,
+        )
 
 
 if __name__ == "__main__":
