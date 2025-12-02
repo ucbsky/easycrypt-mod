@@ -1,0 +1,17 @@
+Line ::= WS_OPT ClauseChain WS_OPT "." | WS_OPT Prefix WS_OPT ClauseChain WS_OPT "."
+ClauseChain ::= Clause | Clause ";" WS_OPT ClauseChain
+Prefix ::= BULLET WS_OPT
+BULLET ::= "+" | "-" | "*"
+Clause ::= Keyword | Keyword Tail
+Tail ::= Separator WS_OPT TailStart | Separator WS_OPT TailStart TailRest
+Separator ::= WS_PLUS | SYMBOL_SEP
+SYMBOL_SEP ::= "(" | "=>"
+TailStart ::= TAIL_START_SAFE
+TailRest ::= TailChar TailRest | TailChar
+TailChar ::= TAIL_SAFE
+TAIL_START_SAFE ::= [^:.;\r\n]
+TAIL_SAFE ::= [^.;\r\n]
+WS_PLUS ::= WS_CHAR WS_OPT
+WS_OPT ::= (WS_CHAR)*
+WS_CHAR ::= " " | "\t"
+Keyword ::= "proof" | "qed" | "have" | "proc" | "call" | "rnd" | "skip" | "rewrite" | "trivial" | "field" | "smt" | "move" | "inline" | "sim" | "auto" | "apply" | "while" | "swap" | "wp" | "byphoare" | "byequiv" | "do" | "progress"
