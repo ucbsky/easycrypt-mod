@@ -21,6 +21,7 @@
     move=> //.
     proc.
     inline *.
+    inline*.
     sim.
     auto.
     move=> //.
@@ -58,6 +59,7 @@
   proof.
 byphoare => //.
 proc.
+proc*.
 swap 3 3.
 swap 2 3.
 rnd (pred1 b').
@@ -85,3 +87,24 @@ qed.
 proof.
 rewrite -(G2_G3 &m) (GOr_G2 &m).
 qed.
+case (exists (x : real), brr x).
+case.
+auto.
+apply (id2 J).
+apply ju.
+by smt().
+by smt(@List).
+by smt (pmc1 pmc2).
+by reflexivity.
+rewrite - (H7 M).
+  rewrite (H2 a aa).
+  rewrite p12.
+elim reflection.
+split.
+done.
+simplify pos pickme.
+rewrite qzx.
+simplify.
+smt().
+have : forall a (x : rt * glob A), Pr[A.main(a) @ &m: res=x.`1 /\ (glob A) = x.`2] = PR (glob A){m} a x.
+have ll3 : forall &m, ((glob A){m} = x)  => Pr[A.getState() @ &m : (glob A) = x /\ res = fA x] = 1%r.

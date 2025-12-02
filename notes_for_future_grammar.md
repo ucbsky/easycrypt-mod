@@ -80,3 +80,41 @@
 
 Keep these touchpoints handy so future debugging sessions can resume quickly without re-deriving the entire state.
 
+## 6. Minimal Line Grammar Playbook
+
+Use this when iterating on the deliberately tiny line-by-line CFG emitted by `out/emit_minimal_grammar.py`. The goal is to keep the number of productions comfortably below 100 while filtering out obviously invalid snippets such as SSReflect comment shorthands (`apply(*`, `have=>(/((*`, etc.).
+
+### High-level goals
+- Match each input line independently; no state should leak across newlines.
+- Accept as many curated lines from `grammar_examples/good_simple.ec` as possible.
+- Reject noisy constructs in `grammar_examples/bad.ec`, prioritizing SSReflect comment shorthands, unterminated parenthesis blobs, and `/=` sugar.
+- Maintain readability inside `emit_minimal_grammar.py`; prefer tiny helpers or character-class tweaks over broad rewrites.
+
+### Workflow for each tweak
+1. **Edit the emitter** (`out/emit_minimal_grammar.py`) instead of touching the generated `.ebnf` file directly.
+2. **Regenerate the artifact** with `python3 out/emit_minimal_grammar.py` so `out/minimal_easycrypt.ebnf` stays in sync.
+3. **Run the smoke test**: `python3 tests/test_minimal_cfg.py`.
+   - Default tolerances: at most 6 rejected good lines (`--max-good-fail`), at most 3 accepted bad lines (`--max-bad-pass`).
+   - Current baseline (before expanding coverage) is `accepted=89 / rejected=21` for `good_simple.ec`; aim to reduce the rejection list when possible.
+4. **Interactively probe edge cases** with `python3 tests/interactive_minimal_cfg.py`. Use `:batch` to feed text, `:reset` to start a new line, and `:reset hard` (or the new `--reset hard` CLI flag) to reload the emitter after editing it.
+5. **Document tricky cases** by appending notes to this file so future iterations know why certain exclusions exist.
+
+### When a new syntax fragment appears
+1. Drop the exact line into `grammar_examples/good_simple.ec` (if it should pass) or `grammar_examples/bad.ec` (if it should fail).
+2. Re-run `tests/test_minimal_cfg.py` to see whether the grammar already handles it.
+3. If a valid line fails, expand the minimal grammar just enough to cover that structural pattern (e.g., allow `inline*` followed by whitespace, widen safe character classes, or add a single helper production).
+4. If an invalid line passes, tighten the relevant tail production or separator so the specific nuisance stops matching (never rely on lookahead; everything is plain EBNF).
+5. Keep an eye on production count—favor reusing existing nonterminals and character classes over minting brand new ones.
+
+### Testing checklist before handing off
+- `python3 out/emit_minimal_grammar.py`
+- `python3 tests/test_minimal_cfg.py`
+- Optional: `python3 tests/interactive_minimal_cfg.py --reset hard` to confirm the constraint rebuilds cleanly after your edits.
+
+This section is the snapshot of “what we care about” for the minimalist CFG; update it anytime the goals, tolerances, or workflows change so future iterations have the right context without digging through chat logs.
+
+#### IMPORTANT
+You should only update the grammar (EBNF file and its emitter python), not the test files when trying to make more statements to pass or fail. The goal is to improve the standalong grammar.
+
+You can always refer to grammar_raw.json to understand the precise syntax for a tactic.
+

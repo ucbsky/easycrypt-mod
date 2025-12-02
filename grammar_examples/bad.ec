@@ -25,4 +25,6 @@ apply/(@bigID['a])=> //.
 by rewrite.
 by.
 rewrite /.
-
+apply(*
+have=>(/((*
+by*)

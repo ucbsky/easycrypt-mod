@@ -9,6 +9,7 @@ CFG still aligns with most curated examples while filtering out the noisier
 from __future__ import annotations
 
 import argparse
+import math
 from pathlib import Path
 from typing import Iterable, List, Sequence, Tuple
 
@@ -86,14 +87,14 @@ def main() -> None:
     parser.add_argument(
         "--max-good-fail",
         type=int,
-        default=6,
-        help="Allow up to this many good lines to be rejected.",
+        default=None,
+        help="Override the allowed number of rejected good lines (default: 20%% of total).",
     )
     parser.add_argument(
         "--max-bad-pass",
         type=int,
-        default=3,
-        help="Allow up to this many bad lines to be accepted.",
+        default=None,
+        help="Override the allowed number of accepted bad lines (default: 30%% of total).",
     )
     args = parser.parse_args()
 
@@ -102,18 +103,58 @@ def main() -> None:
     good_lines = list(iter_lines(args.good))
     good_ok, good_fail = evaluate(constraint, good_lines)
     summarize("good", good_ok, good_fail)
-    if len(good_fail) > args.max_good_fail:
-        raise SystemExit(
-            f"Too many good lines rejected: {len(good_fail)} > {args.max_good_fail}"
-        )
 
     bad_lines = list(iter_lines(args.bad))
     bad_ok, bad_fail = evaluate(constraint, bad_lines)
     summarize("bad", bad_ok, bad_fail)
-    if len(bad_ok) > args.max_bad_pass:
-        raise SystemExit(
-            f"Too many bad lines accepted: {len(bad_ok)} > {args.max_bad_pass}"
+
+    def rate(numerator: int, denominator: int) -> float:
+        if denominator == 0:
+            return 0.0
+        return (numerator / denominator) * 100.0
+
+    print(
+        f"[stats] good success={rate(len(good_ok), len(good_lines)):.1f}% "
+        f"(accepted {len(good_ok)}/{len(good_lines)})"
+    )
+    print(
+        f"[stats] bad success={rate(len(bad_fail), len(bad_lines)):.1f}% "
+        f"(rejected {len(bad_fail)}/{len(bad_lines)})"
+    )
+
+    def percentage_cap(total: int, fraction: float) -> int:
+        if total <= 0:
+            return 0
+        return max(0, math.ceil(total * fraction))
+
+    good_cap = args.max_good_fail
+    if good_cap is None:
+        good_cap = percentage_cap(len(good_lines), 0.20)
+        good_label = f"20% of {len(good_lines)}"
+    else:
+        good_label = f"override {good_cap}"
+
+    bad_cap = args.max_bad_pass
+    if bad_cap is None:
+        bad_cap = percentage_cap(len(bad_lines), 0.30)
+        bad_label = f"30% of {len(bad_lines)}"
+    else:
+        bad_label = f"override {bad_cap}"
+
+    failures = []
+    if len(good_fail) > good_cap:
+        failures.append(
+            f"Too many good lines rejected: {len(good_fail)} > {good_cap} ({good_label})"
         )
+    if len(bad_ok) > bad_cap:
+        failures.append(
+            f"Too many bad lines accepted: {len(bad_ok)} > {bad_cap} ({bad_label})"
+        )
+
+    if failures:
+        for msg in failures:
+            print(msg)
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

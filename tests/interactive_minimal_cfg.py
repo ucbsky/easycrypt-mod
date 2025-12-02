@@ -11,11 +11,14 @@ exactly one GPT-2 token. The session keeps track of the accumulated text and can
 be reset at any point.
 
 Commands:
-  :help        Show instructions
-  :list        Re-print the currently accepted tokens
-  :reset       Reset the parsing state to the beginning of the line
-  :batch TEXT  Feed arbitrary text (tokenized via the current tokenizer)
-  :quit        Exit the session (`:q` works too)
+  :help         Show instructions
+  :list         Re-print the currently accepted tokens
+  :reset [hard] Reset the parsing state (hard also reloads the grammar module)
+  :batch TEXT   Feed arbitrary text (tokenized via the current tokenizer)
+  :quit         Exit the session (`:q` works too)
+
+CLI helpers:
+  --reset {soft,hard}  Perform a reset (hard reloads the grammar) and exit without entering the REPL.
 """
 
 from __future__ import annotations
@@ -25,7 +28,7 @@ import importlib.util
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, List, Sequence, Tuple
+from typing import Any, Iterable, List, Optional, Sequence, Tuple
 
 import torch
 from transformers import AutoTokenizer  # type: ignore[import]
@@ -55,14 +58,19 @@ def load_minimal_grammar(module_path: Path) -> str:
     return builder()
 
 
-def build_constraint(grammar: str, tokenizer_name: str, start_rule: str) -> Tuple[IncrementalGrammarConstraint, AutoTokenizer]:
-    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+def build_constraint(
+    grammar: str,
+    tokenizer_name: str,
+    start_rule: str,
+    tokenizer: Optional[AutoTokenizer] = None,
+) -> Tuple[IncrementalGrammarConstraint, AutoTokenizer]:
+    tokenizer_obj = tokenizer or AutoTokenizer.from_pretrained(tokenizer_name)
     constraint = IncrementalGrammarConstraint(
         grammar_str=grammar,
         start_rule_name=start_rule,
-        tokenizer=tokenizer,
+        tokenizer=tokenizer_obj,
     )
-    return constraint, tokenizer
+    return constraint, tokenizer_obj
 
 
 def collect_allowed_tokens(
@@ -177,6 +185,11 @@ def main() -> None:
         default=40,
         help="Maximum number of allowed tokens to display per step.",
     )
+    parser.add_argument(
+        "--reset",
+        choices=("soft", "hard"),
+        help="Reset the parser state (hard also reloads the grammar) and exit immediately.",
+    )
     args = parser.parse_args()
 
     grammar = load_minimal_grammar(args.emitter)
@@ -184,8 +197,33 @@ def main() -> None:
     state = constraint.string_recognizer.get_initial_parsing_state()
     accepted_ids: List[int] = []
 
+    def perform_reset(reload: bool = False, announce: bool = True) -> List[TokenChoice]:
+        nonlocal constraint, tokenizer, state
+        if reload:
+            fresh_grammar = load_minimal_grammar(args.emitter)
+            constraint, tokenizer = build_constraint(
+                fresh_grammar,
+                args.tokenizer,
+                args.start_rule,
+                tokenizer=tokenizer,
+            )
+        state = constraint.string_recognizer.get_initial_parsing_state()
+        accepted_ids.clear()
+        new_allowed = collect_allowed_tokens(constraint, tokenizer, state)
+        if announce:
+            msg = "State reset."
+            if reload:
+                msg += " Grammar reloaded."
+            print(msg)
+            print_allowed(new_allowed, args.limit)
+        return new_allowed
+
+    if args.reset:
+        perform_reset(reload=args.reset == "hard", announce=True)
+        return
+
     print("Interactive minimal CFG explorer.")
-    print("Commands: :help, :list, :reset, :batch, :quit")
+    print("Commands: :help, :list, :reset [hard], :batch, :quit")
     print("Token input formats:")
     print("  * Exact vocab token (e.g., Ġproof)")
     print("  * Raw text that encodes to a single token (e.g., proof)")
@@ -239,12 +277,13 @@ def main() -> None:
                 if not ok:
                     break
             continue
-        if lowered in {":reset", ":r"}:
-            state = constraint.string_recognizer.get_initial_parsing_state()
-            accepted_ids.clear()
-            print("State reset.")
-            allowed = collect_allowed_tokens(constraint, tokenizer, state)
-            print_allowed(allowed, args.limit)
+        if lowered == ":r":
+            allowed = perform_reset()
+            continue
+        if lowered.startswith(":reset"):
+            raw_tail = user_input[6:].strip()
+            reload_flag = raw_tail.lower() in {"hard", "hard!", "reload", "reload!", "!"}
+            allowed = perform_reset(reload=reload_flag)
             continue
 
         try:
