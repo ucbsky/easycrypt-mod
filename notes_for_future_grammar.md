@@ -107,8 +107,8 @@ Use this when iterating on the deliberately tiny line-by-line CFG emitted by `ou
 5. Keep an eye on production count—favor reusing existing nonterminals and character classes over minting brand new ones.
 
 ### Testing checklist before handing off
-- `python3 out/emit_minimal_grammar.py`
-- `python3 tests/test_minimal_cfg.py`
+- `python3 out/emit_minimal_grammar.py` (writes both strict and lenient EBNFs)
+- `python3 tests/test_minimal_cfg.py` (reports stats for both strict + lenient grammars, and optionally proof-line corpora)
 - Optional: `python3 tests/interactive_minimal_cfg.py --reset hard` to confirm the constraint rebuilds cleanly after your edits.
 
 This section is the snapshot of “what we care about” for the minimalist CFG; update it anytime the goals, tolerances, or workflows change so future iterations have the right context without digging through chat logs.
@@ -117,4 +117,9 @@ This section is the snapshot of “what we care about” for the minimalist CFG;
 You should only update the grammar (EBNF file and its emitter python), not the test files when trying to make more statements to pass or fail. The goal is to improve the standalong grammar.
 
 You can always refer to grammar_raw.json to understand the precise syntax for a tactic.
+
+#### Strict vs lenient artifacts
+- `out/minimal_easycrypt.ebnf` = strict grammar (target: ≤20% good failures, ≤30% bad passes).
+- `out/minimal_easycrypt_lenient.ebnf` = lenient grammar (target: 0% good failures, ≤50% bad passes). Use this when experimenting with richer syntax while keeping a baseline of filtering power.
+- `tests/test_minimal_cfg.py` prints stats for both variants every run and can optionally scan lemma proof blocks via `--proof-path`.
 
