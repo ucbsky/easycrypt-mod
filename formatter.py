@@ -105,6 +105,8 @@ def render_intro_token(token: dict) -> str:
         name = token.get("name")
         if isinstance(name, str) and name.strip():
             return name.strip()
+    if kind == "revert":
+        return "+"
     if kind == "clear":
         return "_"
     if kind == "anonymous":
