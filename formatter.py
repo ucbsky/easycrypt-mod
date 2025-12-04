@@ -113,6 +113,72 @@ def _apply_target_suffix(text: str, target: object) -> str:
     return f"{text} in {suffix}"
 
 
+def _occurs_prefix(occurs: object) -> str:
+    if not isinstance(occurs, dict):
+        return ""
+    kind = occurs.get("kind")
+    indexes = occurs.get("indexes") or []
+    if not isinstance(indexes, list):
+        indexes = []
+    idx_text = " ".join(str(idx) for idx in indexes if idx is not None)
+    if kind == "inclusive":
+        return f"{{{idx_text}}}" if idx_text else "{}"
+    if kind == "exclusive":
+        return f"{{-{idx_text}}}" if idx_text else "{-}"
+    if kind == "all":
+        return "{all}"
+    return ""
+
+
+def _term_to_string(term: object) -> str:
+    if not isinstance(term, dict):
+        return ""
+    head = term.get("head") or {}
+    name = head.get("name")
+    if not isinstance(name, str):
+        return ""
+    args = term.get("args") or []
+    arg_texts: List[str] = []
+    for arg in args:
+        text = ""
+        if isinstance(arg, dict):
+            text = arg.get("source") or ""
+            if not text:
+                formula = arg.get("formula") or {}
+                text = formula.get("source") or ""
+        text = str(text).strip()
+        if text:
+            arg_texts.append(text)
+    if arg_texts:
+        return f"{name} {' '.join(arg_texts)}"
+    return name
+
+
+def _token_from_entry(src: str, global_is_rtl: bool, entry: dict, occurs: object) -> str:
+    token = (src or "").strip()
+    entry_side = entry.get("side") if isinstance(entry, dict) else None
+    entry_is_rtl = entry_side == "r-to-l"
+    final_is_rtl = global_is_rtl ^ bool(entry_is_rtl)
+    if token:
+        prefix = _occurs_prefix(occurs)
+        if prefix and not token.startswith(prefix):
+            token = f"{prefix}{token}"
+        if final_is_rtl and not token.startswith("-"):
+            token = f"-{token}"
+        return token
+
+    term = entry.get("term") if isinstance(entry, dict) else None
+    lemma = _term_to_string(term)
+    if not lemma:
+        _prewrite_error("unable to reconstruct rewrite token", entry)
+    prefix = _occurs_prefix(occurs)
+    if prefix:
+        lemma = f"{prefix}({lemma})"
+    if final_is_rtl and not lemma.startswith("-"):
+        lemma = f"-{lemma}"
+    return lemma
+
+
 def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
     args = core.get("args")
     if not isinstance(args, dict):
@@ -217,8 +283,6 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         occurs = options.get("occurs")
         guard = options.get("guard")
 
-        if occurs not in (None, {}):
-            _prewrite_error("rw-argument with occurrence filter", argument)
         if guard not in (None, {}):
             _prewrite_error("rw-argument with guard formula", argument)
 
@@ -261,12 +325,8 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
             if len(entries) != 1:
                 _prewrite_error("non-repeated rw-argument with multiple entries", argument)
 
-            token = src
-            # For right-to-left rewrites (e.g. `-ZPF.addrA`) the JSON
-            # encodes the direction in `options.side`, not in `source`.
-            if global_is_rtl and not token.startswith("-"):
-                token = f"-{token}"
-
+            entry = entries[0]
+            token = _token_from_entry(src, global_is_rtl, entry, occurs)
             lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
             continue
 
@@ -275,8 +335,17 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         # with mode `All` (JSON `mode: "all"`) and no explicit count.
         mode = repeat.get("mode") if isinstance(repeat, dict) else None
         count = repeat.get("count") if isinstance(repeat, dict) else None
-        if mode != "all" or count is not None:
-            _prewrite_error("only 'all' repetitions without count are handled", argument)
+        if mode != "all":
+            _prewrite_error("only 'all' repetitions are handled", argument)
+
+        if count is not None:
+            if len(entries) != 1:
+                _prewrite_error("counted repeated rewrites must have a single entry", argument)
+            entry = entries[0]
+            token = _token_from_entry(src, global_is_rtl, entry, occurs)
+            for _ in range(int(count)):
+                lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
+            continue
 
         # Each entry corresponds to one lemma inside the `!(...)`
         # group. We synthesize the per-lemma direction from the global
