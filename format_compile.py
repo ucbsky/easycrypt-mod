@@ -70,7 +70,7 @@ def main(argv: List[str]) -> int:
         print(f"error: {err}", file=sys.stderr)
         return 1
 
-    formatter = Path(__file__).resolve().parent / "formatter"
+    formatter = Path(__file__).resolve().parent / "formatter.py"
     if not formatter.exists():
         print(f"error: formatter script not found at '{formatter}'", file=sys.stderr)
         return 1

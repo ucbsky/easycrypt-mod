@@ -90,8 +90,183 @@ def assign_outputs(inputs: Sequence[int], outputs: Sequence[int]) -> List[Tuple[
     return distributed
 
 
+def _render_prewrite_tactic(core: dict) -> str:
+    """
+    Render a `Prewrite` tactic as one or more `rewrite` lines.
+
+    This uses the structured `args` payload instead of the raw `source`
+    string so we can split
+
+        rewrite a b c
+
+    into
+
+        rewrite a.
+        rewrite b.
+        rewrite c.
+
+    and similarly handle the `!(...)` bundle used in Pedersen.
+
+    If we encounter a `Prewrite` shape we do not understand, we raise
+    `SystemExit` instead of guessing, so that the caller aborts rather
+    than emitting a potentially misleading script.
+    """
+
+    args = core.get("args")
+    if not isinstance(args, dict):
+        raise SystemExit("[formatter] Unsupported Prewrite: missing or invalid 'args' payload")
+
+    tactic_info = args.get("tactic")
+    if not isinstance(tactic_info, dict) or tactic_info.get("kind") != "Prewrite":
+        raise SystemExit("[formatter] Internal error: _render_prewrite_tactic called on non-Prewrite node")
+
+    raw_args = tactic_info.get("args") or []
+    if not isinstance(raw_args, list) or not raw_args:
+        raise SystemExit("[formatter] Unsupported Prewrite: empty or malformed 'args'")
+
+    lines: List[str] = []
+
+    for raw in raw_args:
+        if not isinstance(raw, dict):
+            raise SystemExit("[formatter] Unsupported Prewrite: argument entry is not an object")
+        argument = raw.get("argument") or {}
+        if argument.get("kind") != "rw":
+            raise SystemExit("[formatter] Unsupported Prewrite: non-'rw' argument encountered")
+
+        # RWSimpl case: `/=` or `/~=`. In `ecParser.mly` this comes from
+        # the `RWSimpl` constructor of `rwarg1`, and in `ecProofAst.ml`
+        # it is serialized by `json_of_rwarg1` as:
+        #
+        #   { "kind": "rw", "variant": "default"|"variant", ... }
+        #
+        # with no `options` / `entries`. We render these as `rewrite /=`
+        # or `rewrite /~=` respectively.
+        if "variant" in argument:
+            if "options" in argument and argument.get("options"):
+                raise SystemExit("[formatter] Unsupported Prewrite: RWSimpl with non-empty options")
+            if "entries" in argument and argument.get("entries"):
+                raise SystemExit("[formatter] Unsupported Prewrite: RWSimpl with unexpected entries")
+
+            variant = argument.get("variant")
+            if variant == "default":
+                token = "/="
+            elif variant == "variant":
+                token = "/~="
+            else:
+                raise SystemExit(f"[formatter] Unsupported Prewrite: unknown simplification variant '{variant}'")
+
+            lines.append(f"rewrite {token}.")
+            continue
+
+        # RWRw case coming from `rwarg1` in `ecParser.mly`, serialized as
+        # `kind: "rw"` with `options` (side, repeat, occurs, guard) and
+        # an `entries` list of per-lemma terms.
+        if "options" not in argument or "entries" not in argument:
+            raise SystemExit(
+                "[formatter] Unsupported Prewrite: rw-argument without both 'options' and 'entries'"
+            )
+
+        options = argument.get("options") or {}
+        repeat = options.get("repeat")
+        occurs = options.get("occurs")
+        guard = options.get("guard")
+
+        if occurs not in (None, {}):
+            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument with occurrence filter")
+        if guard not in (None, {}):
+            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument with guard formula")
+
+        src = (argument.get("source") or "").strip()
+        if not src:
+            raise SystemExit("[formatter] Unsupported Prewrite: missing 'source' text for rw-argument")
+
+        # Helper to normalize the global side encoded in `rwside` (see
+        # `rwside` and `rwrepeat` in `ecParser.mly`, and `json_of_rwoptions`
+        # in `ecProofAst.ml`).
+        side_str = options.get("side") or "l-to-r"
+        if side_str not in ("l-to-r", "r-to-l"):
+            raise SystemExit(f"[formatter] Unsupported Prewrite: unexpected side '{side_str}'")
+        global_is_rtl = side_str == "r-to-l"
+
+        entries = argument.get("entries") or []
+        if not isinstance(entries, list) or not entries:
+            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument has no 'entries'")
+
+        # Simple lemma rewrites: no global repeat. We require a single
+        # entry and no per-lemma side overrides, and we reuse the
+        # original `source` text, only adjusting the leading '-'
+        # according to `side`.
+        if repeat is None:
+            if len(entries) != 1:
+                raise SystemExit(
+                    "[formatter] Unsupported Prewrite: non-repeated rw-argument with multiple entries"
+                )
+
+            token = src
+            # For right-to-left rewrites (e.g. `-ZPF.addrA`) the JSON
+            # encodes the direction in `options.side`, not in `source`.
+            if global_is_rtl and not token.startswith("-"):
+                token = f"-{token}"
+
+            lines.append(f"rewrite {token}.")
+            continue
+
+        # Repeated rewrites: we currently support only the `!(...)`
+        # bundle used in Pedersen, encoded in the parser as `rwrepeat`
+        # with mode `All` (JSON `mode: "all"`) and no explicit count.
+        mode = repeat.get("mode") if isinstance(repeat, dict) else None
+        count = repeat.get("count") if isinstance(repeat, dict) else None
+        if mode != "all" or count is not None:
+            raise SystemExit("[formatter] Unsupported Prewrite: only 'all' repetitions without count are handled")
+
+        # Each entry corresponds to one lemma inside the `!(...)`
+        # group. We synthesize the per-lemma direction from the global
+        # side (rwside) and the entry side (rwpterm), as defined in
+        # `rwside` / `rwpterm` in `ecParser.mly` and serialized by
+        # `json_of_rwarg1` in `ecProofAst.ml`.
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise SystemExit("[formatter] Unsupported Prewrite: malformed entry in repeated rw-argument")
+
+            entry_side = entry.get("side") or "l-to-r"
+            if entry_side not in ("l-to-r", "r-to-l"):
+                raise SystemExit(f"[formatter] Unsupported Prewrite: unexpected entry side '{entry_side}'")
+
+            # Composition of global and per-entry side:
+            entry_is_rtl = entry_side == "r-to-l"
+            final_is_rtl = global_is_rtl ^ entry_is_rtl
+
+            term = entry.get("term") or {}
+            if term.get("mode") != "implicit":
+                raise SystemExit("[formatter] Unsupported Prewrite: non-implicit term in repeated rw-argument")
+            head = term.get("head") or {}
+            if head.get("kind") != "named":
+                raise SystemExit("[formatter] Unsupported Prewrite: non-named head in repeated rw-argument")
+            name = head.get("name")
+            args_list = head.get("args") or []
+            if not isinstance(name, str) or not name:
+                raise SystemExit("[formatter] Unsupported Prewrite: missing lemma name in repeated rw-argument")
+            if args_list:
+                raise SystemExit("[formatter] Unsupported Prewrite: lemma applications in repeated rw-argument")
+
+            prefix = "-!" if final_is_rtl else "!"
+            lines.append(f"rewrite {prefix}{name}.")
+
+    return "\n".join(lines) if lines else ""
+
+
 def extract_tactic_text(tactic: dict) -> str | None:
-    text = tactic.get("core", {}).get("source")
+    core = tactic.get("core", {}) or {}
+
+    # Prefer the structured representation for `Prewrite` so we can
+    # split bundled rewrites into separate lines. If we encounter a
+    # shape we do not understand while doing so, `_render_prewrite_tactic`
+    # will raise `SystemExit` to abort instead of guessing.
+    tactic_info = (core.get("args") or {}).get("tactic") or {}
+    if tactic_info.get("kind") == "Prewrite":
+        return _render_prewrite_tactic(core)
+
+    text = core.get("source")
     if isinstance(text, str):
         text = text.strip()
     return text or None
