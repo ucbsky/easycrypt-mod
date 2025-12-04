@@ -90,27 +90,51 @@ def assign_outputs(inputs: Sequence[int], outputs: Sequence[int]) -> List[Tuple[
     return distributed
 
 
+def _format_payload(payload: object) -> str:
+    try:
+        return json.dumps(payload, indent=2, sort_keys=True)
+    except TypeError:
+        return repr(payload)
+
+
+def _prewrite_error(reason: str, payload: object) -> None:
+    formatted = _format_payload(payload)
+    raise SystemExit(f"[formatter] Unsupported Prewrite: {reason}\nPayload: {formatted}")
+
+
+def _apply_target_suffix(text: str, target: object) -> str:
+    if not isinstance(target, str):
+        return text
+    suffix = target.strip()
+    if not suffix:
+        return text
+    if text.endswith("."):
+        return f"{text[:-1]} in {suffix}."
+    return f"{text} in {suffix}"
+
+
 def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
     args = core.get("args")
     if not isinstance(args, dict):
-        raise SystemExit("[formatter] Unsupported Prewrite: missing or invalid 'args' payload")
+        _prewrite_error("missing or invalid 'args' payload", args)
 
     tactic_info = args.get("tactic")
     if not isinstance(tactic_info, dict) or tactic_info.get("kind") != "Prewrite":
-        raise SystemExit("[formatter] Internal error: _render_prewrite_tactic called on non-Prewrite node")
+        _prewrite_error("internal error: _render_prewrite_tactic on non-Prewrite node", tactic_info)
 
     raw_args = tactic_info.get("args") or []
     if not isinstance(raw_args, list) or not raw_args:
-        raise SystemExit("[formatter] Unsupported Prewrite: empty or malformed 'args'")
+        _prewrite_error("empty or malformed 'args'", raw_args)
+    target_symbol = tactic_info.get("symbol")
 
     lines: List[Tuple[str, dict]] = []
 
     for raw in raw_args:
         if not isinstance(raw, dict):
-            raise SystemExit("[formatter] Unsupported Prewrite: argument entry is not an object")
+            _prewrite_error("argument entry is not an object", raw)
         argument = raw.get("argument") or {}
         if argument.get("kind") != "rw":
-            raise SystemExit("[formatter] Unsupported Prewrite: non-'rw' argument encountered")
+            _prewrite_error("non-'rw' argument encountered", argument)
 
         # RWSimpl case: `/=` or `/~=`. In `ecParser.mly` this comes from
         # the `RWSimpl` constructor of `rwarg1`, and in `ecProofAst.ml`
@@ -122,9 +146,9 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         # or `rewrite /~=` respectively.
         if "variant" in argument:
             if "options" in argument and argument.get("options"):
-                raise SystemExit("[formatter] Unsupported Prewrite: RWSimpl with non-empty options")
+                _prewrite_error("RWSimpl with non-empty options", argument)
             if "entries" in argument and argument.get("entries"):
-                raise SystemExit("[formatter] Unsupported Prewrite: RWSimpl with unexpected entries")
+                _prewrite_error("RWSimpl with unexpected entries", argument)
 
             variant = argument.get("variant")
             if variant == "default":
@@ -132,9 +156,9 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
             elif variant == "variant":
                 token = "/~="
             else:
-                raise SystemExit(f"[formatter] Unsupported Prewrite: unknown simplification variant '{variant}'")
+                _prewrite_error(f"unknown simplification variant '{variant}'", argument)
 
-            lines.append((f"rewrite {token}.", raw))
+            lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
             continue
 
         # RWSmt case: `/#` or `//#` inside a rewrite. In `ecParser.mly`
@@ -149,7 +173,19 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         if "interactive" in argument and "info" in argument and "entries" not in argument:
             interactive = bool(argument.get("interactive"))
             token = "//#" if interactive else "/#"
-            lines.append((f"rewrite {token}.", raw))
+            lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
+            continue
+
+        # RWDone case: `rewrite //` / `//~=` etc. Serialized with `mode`.
+        done_mode = argument.get("mode")
+        if done_mode is not None and "options" not in argument and "entries" not in argument and "formula" not in argument:
+            if done_mode == "default":
+                token = "//"
+            elif done_mode == "variant":
+                token = "//~="
+            else:
+                _prewrite_error(f"unknown rewrite done mode '{done_mode}'", argument)
+            lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
             continue
 
         # RWDelta case: `rewrite /foo` or `rewrite -/foo`. In the parser,
@@ -168,33 +204,34 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         is_rwrw = "entries" in argument
 
         if not (is_delta or is_rwrw):
-            raise SystemExit(
-                "[formatter] Unsupported Prewrite: rw-argument is neither RWSimpl, RWDelta, RWSmt, nor RWRw"
+            _prewrite_error(
+                "rw-argument is neither RWSimpl, RWDelta, RWSmt, nor RWRw",
+                argument,
             )
 
         options = argument.get("options")
         if not isinstance(options, dict):
-            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument without 'options'")
+            _prewrite_error("rw-argument without 'options'", argument)
 
         repeat = options.get("repeat")
         occurs = options.get("occurs")
         guard = options.get("guard")
 
         if occurs not in (None, {}):
-            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument with occurrence filter")
+            _prewrite_error("rw-argument with occurrence filter", argument)
         if guard not in (None, {}):
-            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument with guard formula")
+            _prewrite_error("rw-argument with guard formula", argument)
 
         src = (argument.get("source") or "").strip()
         if not src:
-            raise SystemExit("[formatter] Unsupported Prewrite: missing 'source' text for rw-argument")
+            _prewrite_error("missing 'source' text for rw-argument", argument)
 
         # Helper to normalize the global side encoded in `rwside` (see
         # `rwside` and `rwrepeat` in `ecParser.mly`, and `json_of_rwoptions`
         # in `ecProofAst.ml`).
         side_str = options.get("side") or "l-to-r"
         if side_str not in ("l-to-r", "r-to-l"):
-            raise SystemExit(f"[formatter] Unsupported Prewrite: unexpected side '{side_str}'")
+            _prewrite_error(f"unexpected side '{side_str}'", argument)
         global_is_rtl = side_str == "r-to-l"
 
         # Simple delta rewrite: no repetition, no entries; just translate
@@ -202,19 +239,19 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         # `side`.
         if is_delta:
             if repeat is not None:
-                raise SystemExit("[formatter] Unsupported Prewrite: RWDelta with repetition")
+                _prewrite_error("RWDelta with repetition", argument)
 
             token = src
             if global_is_rtl and not token.startswith("-"):
                 token = f"-{token}"
 
-            lines.append((f"rewrite {token}.", raw))
+            lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
             continue
 
         # At this point we know we are in the RWRw case with an entries list.
         entries = argument.get("entries") or []
         if not isinstance(entries, list) or not entries:
-            raise SystemExit("[formatter] Unsupported Prewrite: RWRw argument has no 'entries'")
+            _prewrite_error("RWRw argument has no 'entries'", argument)
 
         # Simple lemma rewrites: no global repeat. We require a single
         # entry and no per-lemma side overrides, and we reuse the
@@ -222,9 +259,7 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         # according to `side`.
         if repeat is None:
             if len(entries) != 1:
-                raise SystemExit(
-                    "[formatter] Unsupported Prewrite: non-repeated rw-argument with multiple entries"
-                )
+                _prewrite_error("non-repeated rw-argument with multiple entries", argument)
 
             token = src
             # For right-to-left rewrites (e.g. `-ZPF.addrA`) the JSON
@@ -232,7 +267,7 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
             if global_is_rtl and not token.startswith("-"):
                 token = f"-{token}"
 
-            lines.append((f"rewrite {token}.", raw))
+            lines.append((_apply_target_suffix(f"rewrite {token}.", target_symbol), raw))
             continue
 
         # Repeated rewrites: we currently support only the `!(...)`
@@ -241,7 +276,7 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         mode = repeat.get("mode") if isinstance(repeat, dict) else None
         count = repeat.get("count") if isinstance(repeat, dict) else None
         if mode != "all" or count is not None:
-            raise SystemExit("[formatter] Unsupported Prewrite: only 'all' repetitions without count are handled")
+            _prewrite_error("only 'all' repetitions without count are handled", argument)
 
         # Each entry corresponds to one lemma inside the `!(...)`
         # group. We synthesize the per-lemma direction from the global
@@ -250,11 +285,11 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
         # `json_of_rwarg1` in `ecProofAst.ml`.
         for entry in entries:
             if not isinstance(entry, dict):
-                raise SystemExit("[formatter] Unsupported Prewrite: malformed entry in repeated rw-argument")
+                _prewrite_error("malformed entry in repeated rw-argument", entry)
 
             entry_side = entry.get("side") or "l-to-r"
             if entry_side not in ("l-to-r", "r-to-l"):
-                raise SystemExit(f"[formatter] Unsupported Prewrite: unexpected entry side '{entry_side}'")
+                _prewrite_error(f"unexpected entry side '{entry_side}'", entry)
 
             # Composition of global and per-entry side:
             entry_is_rtl = entry_side == "r-to-l"
@@ -262,19 +297,19 @@ def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
 
             term = entry.get("term") or {}
             if term.get("mode") != "implicit":
-                raise SystemExit("[formatter] Unsupported Prewrite: non-implicit term in repeated rw-argument")
+                _prewrite_error("non-implicit term in repeated rw-argument", entry)
             head = term.get("head") or {}
             if head.get("kind") != "named":
-                raise SystemExit("[formatter] Unsupported Prewrite: non-named head in repeated rw-argument")
+                _prewrite_error("non-named head in repeated rw-argument", entry)
             name = head.get("name")
             args_list = head.get("args") or []
             if not isinstance(name, str) or not name:
-                raise SystemExit("[formatter] Unsupported Prewrite: missing lemma name in repeated rw-argument")
+                _prewrite_error("missing lemma name in repeated rw-argument", entry)
             if args_list:
-                raise SystemExit("[formatter] Unsupported Prewrite: lemma applications in repeated rw-argument")
+                _prewrite_error("lemma applications in repeated rw-argument", entry)
 
             prefix = "-!" if final_is_rtl else "!"
-            lines.append((f"rewrite {prefix}{name}.", raw))
+            lines.append((_apply_target_suffix(f"rewrite {prefix}{name}.", target_symbol), raw))
 
     return lines
 
