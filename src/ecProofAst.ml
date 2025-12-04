@@ -72,6 +72,12 @@ module IntroElemTbl = Hashtbl.Make(struct
   let hash = Hashtbl.hash
 end)
 
+module RewriteTbl = Hashtbl.Make(struct
+  type t = ptactic * int
+  let equal (t1, i1) (t2, i2) = t1 == t2 && i1 = i2
+  let hash = Hashtbl.hash
+end)
+
 type tactic_application = {
   ta_local_in   : int list;
   ta_local_out  : int list;
@@ -92,10 +98,12 @@ let next_global_index = ref 0
 let tactic_events : tactic_application list PtacticTbl.t = PtacticTbl.create 97
 let intro_events : tactic_application list IntroTbl.t = IntroTbl.create 97
 let intro_elem_events : intro_element_event list IntroElemTbl.t = IntroElemTbl.create 97
+let rewrite_events : tactic_application list RewriteTbl.t = RewriteTbl.create 97
 let trace_active = ref false
 let trace_buffer : ptactic list ref = ref []
 let intro_trace_buffer : (ptactic * int) list ref = ref []
 let intro_elem_trace_buffer : (ptactic * int) list ref = ref []
+let rewrite_trace_buffer : (ptactic * int) list ref = ref []
 
 let active_goals : handle list ref = ref []
 let current_lemma : EcDecl.axiom option ref = ref None
@@ -118,6 +126,7 @@ let clear_goal_traces () =
   PtacticTbl.clear tactic_events;
   IntroTbl.clear intro_events;
   IntroElemTbl.clear intro_elem_events;
+  RewriteTbl.clear rewrite_events;
   goal_index_freelist := [];
   next_goal_index := 0;
   next_global_index := 0;
@@ -125,6 +134,7 @@ let clear_goal_traces () =
   trace_buffer := [];
   intro_trace_buffer := [];
   intro_elem_trace_buffer := [];
+  rewrite_trace_buffer := [];
   active_goals := [];
   current_lemma := None
 
@@ -201,7 +211,8 @@ let begin_tactic_trace () =
     trace_active := true;
     trace_buffer := [];
     intro_trace_buffer := [];
-    intro_elem_trace_buffer := []
+    intro_elem_trace_buffer := [];
+    rewrite_trace_buffer := []
   end
 
 let rollback_trace () =
@@ -237,7 +248,18 @@ let rollback_trace () =
        | Some [] ->
            IntroElemTbl.remove intro_elem_events key)
     !intro_elem_trace_buffer;
-  intro_elem_trace_buffer := []
+  intro_elem_trace_buffer := [];
+  List.iter
+    (fun key ->
+       match RewriteTbl.find_opt rewrite_events key with
+       | None -> ()
+       | Some (_ :: rest) ->
+           if rest = [] then RewriteTbl.remove rewrite_events key
+           else RewriteTbl.replace rewrite_events key rest
+       | Some [] ->
+           RewriteTbl.remove rewrite_events key)
+    !rewrite_trace_buffer;
+  rewrite_trace_buffer := []
 
 let end_tactic_trace ~success =
   if !enabled then begin
@@ -256,6 +278,69 @@ let mk_tactic_application goals goals_out =
     ta_global_in  = global_in;
     ta_global_out = global_out;
   }
+
+let index_counts indices =
+  let tbl = Hashtbl.create 13 in
+  List.iter
+    (fun idx ->
+       let count = match Hashtbl.find_opt tbl idx with Some v -> v | None -> 0 in
+       Hashtbl.replace tbl idx (count + 1))
+    indices;
+  tbl
+
+let shared_index_counts indices_in indices_out =
+  let ins = index_counts indices_in in
+  let outs = index_counts indices_out in
+  let shared = Hashtbl.create (Hashtbl.length ins) in
+  Hashtbl.iter
+    (fun idx count_in ->
+       match Hashtbl.find_opt outs idx with
+       | Some count_out ->
+           Hashtbl.replace shared idx (min count_in count_out)
+       | None -> ())
+    ins;
+  shared
+
+let consume_shared_idx tbl idx =
+  match Hashtbl.find_opt tbl idx with
+  | Some 1 -> Hashtbl.remove tbl idx; true
+  | Some n when n > 1 ->
+      Hashtbl.replace tbl idx (n - 1); true
+  | _ -> false
+
+let filter_pairs shared pairs =
+  let tbl = Hashtbl.copy shared in
+  let rec aux acc = function
+    | [] -> List.rev acc
+    | (local, global) :: rest ->
+        if consume_shared_idx tbl global then aux acc rest
+        else aux ((local, global) :: acc) rest
+  in
+  aux [] pairs
+
+let unzip_pairs pairs =
+  List.fold_right (fun (l, g) (ls, gs) -> (l :: ls, g :: gs)) pairs ([], [])
+
+let zip_pairs left right =
+  let rec aux acc l r =
+    match l, r with
+    | x :: xs, y :: ys -> aux ((x, y) :: acc) xs ys
+    | _ -> List.rev acc
+  in
+  aux [] left right
+
+let trim_application app =
+  let shared = shared_index_counts app.ta_global_in app.ta_global_out in
+  if Hashtbl.length shared = 0 then app
+  else
+    let in_pairs  = filter_pairs shared (zip_pairs app.ta_local_in  app.ta_global_in) in
+    let out_pairs = filter_pairs shared (zip_pairs app.ta_local_out app.ta_global_out) in
+    let local_in,  global_in  = unzip_pairs in_pairs in
+    let local_out, global_out = unzip_pairs out_pairs in
+    { ta_local_in  = local_in;
+      ta_local_out = local_out;
+      ta_global_in = global_in;
+      ta_global_out = global_out; }
 
 let log_tactic_application tac goals goals_out =
   if !enabled && !trace_active then
@@ -288,6 +373,20 @@ let log_intro_element tac index element goals goals_out =
     intro_elem_trace_buffer := key :: !intro_elem_trace_buffer
   end
 
+
+let log_rewrite_application tac index goals goals_out =
+  if !enabled && !trace_active then begin
+    let entry = mk_tactic_application goals goals_out |> trim_application in
+    let key = (tac, index) in
+    let current =
+      match RewriteTbl.find_opt rewrite_events key with
+      | None -> []
+      | Some events -> events
+    in
+    RewriteTbl.replace rewrite_events key (entry :: current);
+    rewrite_trace_buffer := key :: !rewrite_trace_buffer
+  end
+
 let consume_tactic_applications tac =
   match PtacticTbl.find_opt tactic_events tac with
   | None -> []
@@ -308,6 +407,13 @@ let consume_intro_elements tac index =
   | Some events ->
       IntroElemTbl.remove intro_elem_events (tac, index);
       List.rev events
+
+let consume_rewrite_applications tac index =
+  match RewriteTbl.find_opt rewrite_events (tac, index) with
+  | None -> []
+  | Some apps ->
+      RewriteTbl.remove rewrite_events (tac, index);
+      List.rev apps
 
 let proofast_filename source =
   Filename.remove_extension source ^ ".proofast.json"
@@ -2360,12 +2466,95 @@ let json_of_phltactic = function
 
 
 (* -------------------------------------------------------------------- *)
+let goal_trace_fields apps =
+  match apps with
+  | [] -> []
+  | _ ->
+      let maybe field enabled =
+        if not enabled then None else json_of_goal_trace field apps
+      in
+      let acc = [] in
+      let acc =
+        match maybe `Emacs !include_emacs_goals with
+        | Some v -> v :: acc
+        | None -> acc
+      in
+      let acc =
+        match maybe `Serialized !include_serialized_goals with
+        | Some v -> v :: acc
+        | None -> acc
+      in
+      List.rev acc
+
+let enrich_prewrite_core tac core_json =
+  match unloc tac.pt_core with
+  | Plogic (Prewrite _) ->
+      begin match core_json with
+      | `Assoc fields ->
+          let update_args_field value =
+            match value with
+            | `Assoc args_fields ->
+                let args_fields =
+                  List.map
+                    (fun (k, v) ->
+                       if k <> "tactic" then (k, v) else
+                         let v =
+                           match v with
+                           | `Assoc tactic_fields ->
+                               let tactic_fields =
+                                 List.map
+                                   (fun (tk, tv) ->
+                                      if tk <> "args" then (tk, tv) else
+                                        let tv =
+                                          match tv with
+                                          | `List arg_list ->
+                                              let enriched =
+                                                List.mapi
+                                                  (fun idx arg_json ->
+                                                     let apps = consume_rewrite_applications tac idx in
+                                                     match goal_trace_fields apps with
+                                                     | [] -> arg_json
+                                                     | extras ->
+                                                         begin match arg_json with
+                                                         | `Assoc fields -> `Assoc (fields @ extras)
+                                                         | json -> `Assoc (("value", json) :: extras)
+                                                         end)
+                                                  arg_list
+                                              in
+                                              `List enriched
+                                          | _ -> tv
+                                        in
+                                        (tk, tv))
+                                   tactic_fields
+                               in
+                               `Assoc tactic_fields
+                           | _ -> v
+                         in
+                         (k, v))
+                    args_fields
+                in
+                `Assoc args_fields
+            | _ -> value
+          in
+          let fields =
+            List.map
+              (fun (k, v) ->
+                 if k = "args" then (k, update_args_field v) else (k, v))
+              fields
+          in
+          `Assoc fields
+      | _ -> core_json
+      end
+  | _ -> core_json
+
 let rec json_of_ptactics ts =
   json_of_list json_of_ptactic ts
 
 and json_of_ptactic t =
+  let core_json = json_of_ptactic_core t.pt_core in
+  let core_json = enrich_prewrite_core t core_json in
   let base = [
-    ("core"  , json_of_ptactic_core t.pt_core);
+    ("core"  , core_json);
   ] in
   let base =
     if !include_intros && not (List.is_empty t.pt_intros) then
@@ -2377,23 +2566,7 @@ and json_of_ptactic t =
     match apps with
     | [] -> base
     | _  ->
-        let extras =
-          let maybe field enabled =
-            if not enabled then None else json_of_goal_trace field apps
-          in
-          let acc = [] in
-          let acc =
-            match maybe `Emacs !include_emacs_goals with
-            | Some v -> v :: acc
-            | None -> acc
-          in
-          let acc =
-            match maybe `Serialized !include_serialized_goals with
-            | Some v -> v :: acc
-            | None -> acc
-          in
-          List.rev acc
-        in
+        let extras = goal_trace_fields apps in
         base @ extras
   in
   `Assoc base

@@ -90,28 +90,7 @@ def assign_outputs(inputs: Sequence[int], outputs: Sequence[int]) -> List[Tuple[
     return distributed
 
 
-def _render_prewrite_tactic(core: dict) -> str:
-    """
-    Render a `Prewrite` tactic as one or more `rewrite` lines.
-
-    This uses the structured `args` payload instead of the raw `source`
-    string so we can split
-
-        rewrite a b c
-
-    into
-
-        rewrite a.
-        rewrite b.
-        rewrite c.
-
-    and similarly handle the `!(...)` bundle used in Pedersen.
-
-    If we encounter a `Prewrite` shape we do not understand, we raise
-    `SystemExit` instead of guessing, so that the caller aborts rather
-    than emitting a potentially misleading script.
-    """
-
+def _collect_prewrite_lines(core: dict) -> List[Tuple[str, dict]]:
     args = core.get("args")
     if not isinstance(args, dict):
         raise SystemExit("[formatter] Unsupported Prewrite: missing or invalid 'args' payload")
@@ -124,7 +103,7 @@ def _render_prewrite_tactic(core: dict) -> str:
     if not isinstance(raw_args, list) or not raw_args:
         raise SystemExit("[formatter] Unsupported Prewrite: empty or malformed 'args'")
 
-    lines: List[str] = []
+    lines: List[Tuple[str, dict]] = []
 
     for raw in raw_args:
         if not isinstance(raw, dict):
@@ -155,18 +134,48 @@ def _render_prewrite_tactic(core: dict) -> str:
             else:
                 raise SystemExit(f"[formatter] Unsupported Prewrite: unknown simplification variant '{variant}'")
 
-            lines.append(f"rewrite {token}.")
+            lines.append((f"rewrite {token}.", raw))
             continue
+
+        # RWSmt case: `/#` or `//#` inside a rewrite. In `ecParser.mly`
+        # this is `RWSmt (flag, info)`, and in `ecProofAst.ml` it is
+        # serialized by `json_of_rwarg1` as:
+        #
+        #   { "kind": "rw", "interactive": Bool, "info": pprover_infos }
+        #
+        # We render it as its own rewrite line, ignoring prover options:
+        #   - interactive = false → `rewrite /#.`
+        #   - interactive = true  → `rewrite //#.`
+        if "interactive" in argument and "info" in argument and "entries" not in argument:
+            interactive = bool(argument.get("interactive"))
+            token = "//#" if interactive else "/#"
+            lines.append((f"rewrite {token}.", raw))
+            continue
+
+        # RWDelta case: `rewrite /foo` or `rewrite -/foo`. In the parser,
+        # this is `RWDelta ((s, r, o, None), x)`, and in `ecProofAst.ml`
+        # it is serialized as:
+        #
+        #   { "kind": "rw", "options": {...}, "formula": {...} }
+        #
+        # with no `entries`. We use the `source` text and global side,
+        # ignoring the bound formula and any focus.
+        is_delta = "formula" in argument and "entries" not in argument
 
         # RWRw case coming from `rwarg1` in `ecParser.mly`, serialized as
         # `kind: "rw"` with `options` (side, repeat, occurs, guard) and
         # an `entries` list of per-lemma terms.
-        if "options" not in argument or "entries" not in argument:
+        is_rwrw = "entries" in argument
+
+        if not (is_delta or is_rwrw):
             raise SystemExit(
-                "[formatter] Unsupported Prewrite: rw-argument without both 'options' and 'entries'"
+                "[formatter] Unsupported Prewrite: rw-argument is neither RWSimpl, RWDelta, RWSmt, nor RWRw"
             )
 
-        options = argument.get("options") or {}
+        options = argument.get("options")
+        if not isinstance(options, dict):
+            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument without 'options'")
+
         repeat = options.get("repeat")
         occurs = options.get("occurs")
         guard = options.get("guard")
@@ -188,9 +197,24 @@ def _render_prewrite_tactic(core: dict) -> str:
             raise SystemExit(f"[formatter] Unsupported Prewrite: unexpected side '{side_str}'")
         global_is_rtl = side_str == "r-to-l"
 
+        # Simple delta rewrite: no repetition, no entries; just translate
+        # the `/foo` or `-/foo` token, adjusting the leading '-' via
+        # `side`.
+        if is_delta:
+            if repeat is not None:
+                raise SystemExit("[formatter] Unsupported Prewrite: RWDelta with repetition")
+
+            token = src
+            if global_is_rtl and not token.startswith("-"):
+                token = f"-{token}"
+
+            lines.append((f"rewrite {token}.", raw))
+            continue
+
+        # At this point we know we are in the RWRw case with an entries list.
         entries = argument.get("entries") or []
         if not isinstance(entries, list) or not entries:
-            raise SystemExit("[formatter] Unsupported Prewrite: rw-argument has no 'entries'")
+            raise SystemExit("[formatter] Unsupported Prewrite: RWRw argument has no 'entries'")
 
         # Simple lemma rewrites: no global repeat. We require a single
         # entry and no per-lemma side overrides, and we reuse the
@@ -208,7 +232,7 @@ def _render_prewrite_tactic(core: dict) -> str:
             if global_is_rtl and not token.startswith("-"):
                 token = f"-{token}"
 
-            lines.append(f"rewrite {token}.")
+            lines.append((f"rewrite {token}.", raw))
             continue
 
         # Repeated rewrites: we currently support only the `!(...)`
@@ -250,9 +274,14 @@ def _render_prewrite_tactic(core: dict) -> str:
                 raise SystemExit("[formatter] Unsupported Prewrite: lemma applications in repeated rw-argument")
 
             prefix = "-!" if final_is_rtl else "!"
-            lines.append(f"rewrite {prefix}{name}.")
+            lines.append((f"rewrite {prefix}{name}.", raw))
 
-    return "\n".join(lines) if lines else ""
+    return lines
+
+
+def _render_prewrite_tactic(core: dict) -> str:
+    lines = _collect_prewrite_lines(core)
+    return "\n".join(text for text, _ in lines) if lines else ""
 
 
 def extract_tactic_text(tactic: dict) -> str | None:
@@ -603,6 +632,7 @@ def iter_tactic_entries(
     entry: dict,
     inherited: Sequence[dict] | None = None,
 ) -> Iterable[Tuple[str | None, Sequence[dict]]]:
+    core = entry.get("core", {}) or {}
     raw_serialized = entry.get("serialized_goals")
     serialized = raw_serialized or inherited or []
 
@@ -613,6 +643,15 @@ def iter_tactic_entries(
             yielded_child = True
             yield nested
     if yielded_child:
+        return
+
+    tactic_info = (core.get("args") or {}).get("tactic") or {}
+    if tactic_info.get("kind") == "Prewrite":
+        fallback_serialized = raw_serialized or inherited or []
+        for text, raw_arg in _collect_prewrite_lines(core):
+            serialized_arg = raw_arg.get("serialized_goals") or fallback_serialized
+            if text and not is_trivial_serialized(serialized_arg):
+                yield text, serialized_arg
         return
 
     text = extract_tactic_text(entry)

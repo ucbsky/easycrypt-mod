@@ -34,6 +34,8 @@ type ttenv = {
   tt_oldip     : bool;
   tt_redlogic  : bool;
   tt_und_delta : bool;
+  tt_logrewrite :
+    (int -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine = ptactic_core -> FApi.backward
@@ -907,13 +909,28 @@ let process_rewrite1 ttenv ?target ri tc =
   EcCoreGoal.reloc (loc ri) (process_rewrite1_r ttenv ?target ri) tc
 
 (* -------------------------------------------------------------------- *)
-let process_rewrite ttenv ?target ri tc =
+let process_rewrite ttenv ?target ?log_rewrite ri tc =
   let do1 tc gi (fc, ri) =
     let ngoals = FApi.tc_count tc in
     let dorw   = fun i tc ->
+      let before_goal = [FApi.tc1_handle tc] in
       if   gi = 0 || (i+1) = ngoals
-      then process_rewrite1 ttenv ?target ri tc
-      else process_rewrite1 ttenv ri tc
+      then
+        let tc' = process_rewrite1 ttenv ?target ri tc in
+        (match log_rewrite with
+         | Some f ->
+             let after_goal = FApi.tc_opened tc' in
+             f gi before_goal after_goal
+         | None -> ());
+        tc'
+      else
+        let tc' = process_rewrite1 ttenv ri tc in
+        (match log_rewrite with
+         | Some f ->
+             let after_goal = FApi.tc_opened tc' in
+             f gi before_goal after_goal
+         | None -> ());
+        tc'
     in
 
     match fc |> omap ((process_tfocus tc) |- unloc) with

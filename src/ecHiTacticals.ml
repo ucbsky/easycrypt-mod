@@ -145,7 +145,7 @@ and process1_logic (ttenv : ttenv) (t : logtactic located) (tc : tcenv1) =
     | Pcutdef (ip, f)     -> process_cutdef ttenv (ip, f)
     | Pmove pr            -> process_move pr.pr_view pr.pr_rev
     | Pclear l            -> process_clear l
-    | Prewrite (ri, x)    -> process_rewrite ttenv ?target:x ri
+    | Prewrite (ri, x)    -> process_rewrite ttenv ?target:x ?log_rewrite:ttenv.tt_logrewrite ri
     | Psubst   ri         -> process_subst ri
     | Psimplify ri        -> process_simplify ri
     | Pcbv ri             -> process_cbv ri
@@ -335,7 +335,21 @@ and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
     | Pidtac _ -> true
     | _ -> false
   in
-  let tc = process_core ttenv t.pt_core tc in
+  let log_rewrite =
+    if EcProofAst.is_enabled () then
+      match unloc t.pt_core with
+      | Plogic (Prewrite _) ->
+          Some (fun idx rewrite_before rewrite_after ->
+              EcProofAst.log_rewrite_application t idx rewrite_before rewrite_after)
+      | _ -> None
+    else None
+  in
+  let ttenv_for_core =
+    match log_rewrite with
+    | None -> ttenv
+    | Some _ -> { ttenv with tt_logrewrite = log_rewrite }
+  in
+  let tc = process_core ttenv_for_core t.pt_core tc in
   let after_core = FApi.tc_opened tc in
   EcProofAst.update_active_goals after_core;
   EcProofAst.log_tactic_application t before after_core;

@@ -743,7 +743,9 @@ module Tactics = struct
           EcHiGoal.tt_implicits  = Options.get_implicits scope;
           EcHiGoal.tt_oldip      = Options.get_oldip scope;
           EcHiGoal.tt_redlogic   = Options.get_redlogic scope;
-          EcHiGoal.tt_und_delta  = Options.get_und_delta scope; } in
+          EcHiGoal.tt_und_delta  = Options.get_und_delta scope;
+          EcHiGoal.tt_logrewrite = None;
+        } in
 
         EcProofAst.begin_tactic_trace ();
         let (hds, juc) =

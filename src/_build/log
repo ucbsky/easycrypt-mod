@@ -1,0 +1,15 @@
+# dune exec --root /Users/deevashwer/easycrypt-workbook/easycrypt/src easycrypt -- compile -dump-proof-ast -R /Users/deevashwer/easycrypt-workbook/repos/PCR -R /Users/deevashwer/easycrypt-workbook/repos/PCR /Users/deevashwer/easycrypt-workbook/repos/PCR/.ecw_lemmas/Client__budget_ge0.ec
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /Users/deevashwer/.cache/dune/db
+# Workspace root: /Users/deevashwer/easycrypt-workbook/easycrypt/src
+# Auto-detected concurrency: 11
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
