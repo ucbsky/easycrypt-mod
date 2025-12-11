@@ -16,7 +16,7 @@ type ttenv = {
   tt_redlogic  : bool;
   tt_und_delta : bool;
   tt_logrewrite :
-    (int -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
+    (int -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine  = ptactic_core -> backward
@@ -89,7 +89,7 @@ val process_delta       : und_delta:bool -> ?target:psymbol -> (rwside * rwocc *
 val process_rewrite     :
   ttenv ->
   ?target:psymbol ->
-  ?log_rewrite:(int -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  ?log_rewrite:(int -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
   rwarg list -> backward
 val process_subst       : pformula list -> backward
 val process_cut         : ?mode:cutmode -> engine -> ttenv -> cut_t -> backward

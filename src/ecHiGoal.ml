@@ -4,6 +4,7 @@ open EcLocation
 open EcSymbols
 open EcParsetree
 open EcAst
+open EcDecl
 open EcTypes
 open EcFol
 open EcEnv
@@ -35,7 +36,7 @@ type ttenv = {
   tt_redlogic  : bool;
   tt_und_delta : bool;
   tt_logrewrite :
-    (int -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
+    (int -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine = ptactic_core -> FApi.backward
@@ -430,6 +431,160 @@ let t_rewrite_prept info pt tc =
   LowRewrite.t_rewrite_r info (pt_of_prept tc pt) tc
 
 (* -------------------------------------------------------------------- *)
+(* Logging of the fully-qualified rewrite rule used during execution.  *)
+let rewrite_paths : string list ref = ref []
+let rewrite_logging_active = ref false
+
+let clear_rewrite_paths () =
+  if !rewrite_logging_active then rewrite_paths := []
+
+let path_of_segments = function
+  | [] -> invalid_arg "empty path"
+  | hd :: tl ->
+      List.fold_left (fun acc x -> EcPath.pqname acc x) (EcPath.psymbol hd) tl
+
+(* Replace an alias prefix using the alias map env_albase. *)
+let dealias_path env p =
+  let aliases = EcEnv.Theory.aliases env in
+  let target = EcPath.tolist p in
+  let rec prefix a b =
+    match a, b with
+    | [], _ -> true
+    | x :: xs, y :: ys when String.equal x y -> prefix xs ys
+    | _ -> false
+  in
+  let module MP = EcPath.Mp in
+  MP.fold
+    (fun real alias acc ->
+       match acc with
+       | Some _ -> acc
+       | None ->
+           let alias_l = EcPath.tolist alias in
+           if prefix alias_l target then
+             let real_l = EcPath.tolist real in
+             let rest = List.drop (List.length alias_l) target in
+             Some (path_of_segments (real_l @ rest))
+           else None)
+    aliases None
+  |> odfl p
+
+let path_of_mpath mp =
+  match mp.EcPath.m_top with
+  | `Concrete (p, None) -> p
+  | `Concrete (p, Some sub) -> EcPath.pappend p sub
+  | `Local id -> EcPath.psymbol (EcIdent.tostring id)
+
+let strip_alias env p =
+  let module MP = EcPath.Mp in
+  let aliases = EcEnv.Theory.aliases env in
+  let target = EcPath.tolist p in
+  let rec prefix a b =
+    match a, b with
+    | [], _ -> true
+    | x :: xs, y :: ys when String.equal x y -> prefix xs ys
+    | _ -> false
+  in
+  MP.fold
+    (fun real alias acc ->
+       match acc with
+       | Some _ -> acc
+       | None ->
+           let alias_l = EcPath.tolist alias in
+           if prefix alias_l target then
+             let real_l = EcPath.tolist real in
+             let rest = List.drop (List.length alias_l) target in
+             Some (path_of_segments (real_l @ rest))
+           else None)
+    aliases None
+
+let find_original_axiom_paths env p =
+  match Ax.by_path_opt p env with
+  | None -> [p]
+  | Some ref_ax ->
+      let params_match params =
+        List.length params = List.length ref_ax.ax_tparams
+        && List.for_all2
+             (fun (_, tc1) (_, tc2) -> Sp.equal tc1 tc2)
+             ref_ax.ax_tparams params in
+
+      let specs_match cand_ax =
+        try
+          let tv =
+            List.fold_left2
+              (fun tv (ref_id, _) (cand_id, _) ->
+                 Mid.add cand_id (tvar ref_id) tv)
+              Mid.empty ref_ax.ax_tparams cand_ax.ax_tparams in
+          let subst = EcCoreSubst.Fsubst.f_subst_init ~tv () in
+          let cand_spec = EcCoreSubst.Fsubst.f_subst subst cand_ax.ax_spec in
+          let hyps = EcEnv.LDecl.init env ref_ax.ax_tparams in
+          ER.is_alpha_eq hyps ref_ax.ax_spec cand_spec
+        with _ -> false in
+
+      let paths =
+        Ax.all env
+        |> List.filter (fun (_, cand_ax) ->
+               cand_ax.ax_kind = ref_ax.ax_kind
+            && params_match cand_ax.ax_tparams
+            && specs_match cand_ax)
+        |> List.map fst
+        |> List.sort_uniq EcPath.p_compare
+      in
+      if paths = [] then [p] else paths
+
+let normalize_paths env p =
+  find_original_axiom_paths env p
+  |> List.map (fun p ->
+         let base = EcPath.basename p in
+         let module_path =
+           match EcPath.prefix p with
+           | None -> None
+           | Some prefix ->
+               let mp = EcPath.mpath_crt prefix [] None in
+               let mp = EcEnv.NormMp.norm_mpath env mp in
+               Some (path_of_mpath mp)
+         in
+         let p_norm =
+           match module_path with
+           | None -> p
+           | Some mp -> EcPath.pqname mp base
+         in
+         let p_norm = dealias_path env p_norm in
+         EcPath.tostring p_norm)
+  |> List.sort_uniq String.compare
+
+let record_rewrite_path env path =
+  if !rewrite_logging_active then
+    let ps = normalize_paths env path in
+    ps
+    |> List.filter (fun p -> p <> "")
+    |> List.iter (fun p -> rewrite_paths := p :: !rewrite_paths)
+
+let take_rewrite_paths () =
+  if not !rewrite_logging_active then []
+  else begin
+    let paths =
+      !rewrite_paths
+      |> List.rev
+      |> List.sort_uniq String.compare
+    in
+    rewrite_paths := [];
+    paths
+  end
+
+let record_rewrite_proofterm env (pt : PT.pt_ev) =
+  let rec from_head = function
+    | PTGlobal (p, _) -> Some p
+    | PTTerm pt       -> from_term pt
+    | _               -> None
+  and from_term = function
+    | PTApply { pt_head; _ } -> from_head pt_head
+    | PTQuant (_, pt)        -> from_term pt
+  in
+  match from_term pt.ptev_pt with
+  | Some p -> record_rewrite_path env p
+  | None   -> ()
+
+(* -------------------------------------------------------------------- *)
 let process_solve ?bases ?depth (tc : tcenv1) =
   match FApi.t_try_base (EcLowGoal.t_solve ~canfail:false ?bases ?depth) tc with
   | `Failure _ ->
@@ -816,7 +971,10 @@ let process_rewrite1_r ttenv ?target ri tc =
 
           let do1 lemma tc =
             let pt = PT.pt_of_uglobal_r (PT.copy ptenv) lemma in
-               process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
+            let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
+            let env = FApi.tc_env tc in
+            record_rewrite_path env lemma;
+            tc
           in t_ors (List.map do1 ls) tc
 
         | { fp_head = FPNamed (p, None); fp_args = []; }
@@ -834,11 +992,20 @@ let process_rewrite1_r ttenv ?target ri tc =
 
               let do1 (lemma, _) tc =
                 let pt = PT.pt_of_uglobal_r (PT.copy ptenv0) lemma in
-                process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
+                let tc =
+                  process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
+                in
+                let env = FApi.tc_env tc in
+                record_rewrite_path env lemma;
+                tc in
               t_ors (List.map do1 ls) tc
 
             | _ ->
-              process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
+              let tc =
+                process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
+              let env = FApi.tc_env tc in
+              record_rewrite_proofterm env pt;
+              tc
           end
 
         | { fp_head = FPCut (Some f); fp_args = []; }
@@ -858,11 +1025,17 @@ let process_rewrite1_r ttenv ?target ri tc =
           let pt = PTApply { pt_head = PTCut (f, None); pt_args = []; } in
           let pt = { ptev_env = ptenv; ptev_pt = pt; ptev_ax = f; } in
 
-          process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
+          let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
+          let env = FApi.tc_env tc in
+          record_rewrite_proofterm env pt;
+          tc
 
         | _ ->
           let pt = PT.process_full_pterm ~implicits ptenv pt in
-          process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
+          let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
+          let env = FApi.tc_env tc in
+          record_rewrite_proofterm env pt;
+          tc
         in
 
       let doall mode tc = t_ors (List.map (do1 mode) pts) tc in
@@ -912,25 +1085,30 @@ let process_rewrite1 ttenv ?target ri tc =
 let process_rewrite ttenv ?target ?log_rewrite ri tc =
   let do1 tc gi (fc, ri) =
     let ngoals = FApi.tc_count tc in
+    let with_logging before process =
+      let logging = Option.is_some log_rewrite in
+      let old_flag = !rewrite_logging_active in
+      rewrite_logging_active := logging;
+      EcUtils.try_finally
+        (fun () ->
+           if logging then clear_rewrite_paths ();
+           let tc' = process () in
+           let paths = if logging then take_rewrite_paths () else [] in
+           (match log_rewrite with
+            | Some f ->
+                let after_goal = FApi.tc_opened tc' in
+                f gi paths before after_goal
+            | None -> ());
+           tc')
+        (fun () -> rewrite_logging_active := old_flag)
+    in
     let dorw   = fun i tc ->
       let before_goal = [FApi.tc1_handle tc] in
       if   gi = 0 || (i+1) = ngoals
       then
-        let tc' = process_rewrite1 ttenv ?target ri tc in
-        (match log_rewrite with
-         | Some f ->
-             let after_goal = FApi.tc_opened tc' in
-             f gi before_goal after_goal
-         | None -> ());
-        tc'
+        with_logging before_goal (fun () -> process_rewrite1 ttenv ?target ri tc)
       else
-        let tc' = process_rewrite1 ttenv ri tc in
-        (match log_rewrite with
-         | Some f ->
-             let after_goal = FApi.tc_opened tc' in
-             f gi before_goal after_goal
-         | None -> ());
-        tc'
+        with_logging before_goal (fun () -> process_rewrite1 ttenv ri tc)
     in
 
     match fc |> omap ((process_tfocus tc) |- unloc) with

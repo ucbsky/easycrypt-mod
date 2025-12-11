@@ -90,6 +90,11 @@ type intro_element_event = {
   ie_app     : tactic_application;
 }
 
+type rewrite_event = {
+  re_app   : tactic_application;
+  re_paths : string list;
+}
+
 let goal_indices : (handle, int) Hashtbl.t = Hashtbl.create 97
 let global_indices : (handle, int) Hashtbl.t = Hashtbl.create 97
 let goal_index_freelist : int list ref = ref []
@@ -98,7 +103,7 @@ let next_global_index = ref 0
 let tactic_events : tactic_application list PtacticTbl.t = PtacticTbl.create 97
 let intro_events : tactic_application list IntroTbl.t = IntroTbl.create 97
 let intro_elem_events : intro_element_event list IntroElemTbl.t = IntroElemTbl.create 97
-let rewrite_events : tactic_application list RewriteTbl.t = RewriteTbl.create 97
+let rewrite_events : rewrite_event list RewriteTbl.t = RewriteTbl.create 97
 let trace_active = ref false
 let trace_buffer : ptactic list ref = ref []
 let intro_trace_buffer : (ptactic * int) list ref = ref []
@@ -374,7 +379,7 @@ let log_intro_element tac index element goals goals_out =
   end
 
 
-let log_rewrite_application tac index goals goals_out =
+let log_rewrite_application tac index paths goals goals_out =
   if !enabled && !trace_active then begin
     let entry = mk_tactic_application goals goals_out |> trim_application in
     let key = (tac, index) in
@@ -383,7 +388,8 @@ let log_rewrite_application tac index goals goals_out =
       | None -> []
       | Some events -> events
     in
-    RewriteTbl.replace rewrite_events key (entry :: current);
+    let event = { re_app = entry; re_paths = paths } in
+    RewriteTbl.replace rewrite_events key (event :: current);
     rewrite_trace_buffer := key :: !rewrite_trace_buffer
   end
 
@@ -2511,8 +2517,28 @@ let enrich_prewrite_core tac core_json =
                                               let enriched =
                                                 List.mapi
                                                   (fun idx arg_json ->
-                                                     let apps = consume_rewrite_applications tac idx in
-                                                     match goal_trace_fields apps with
+                                                     let events = consume_rewrite_applications tac idx in
+                                                     let apps =
+                                                       List.map (fun ev -> ev.re_app) events in
+                                                     let paths =
+                                                       events
+                                                       |> List.map (fun ev -> ev.re_paths)
+                                                       |> List.concat
+                                                       |> List.filter (fun p -> p <> "")
+                                                       |> List.sort_uniq String.compare
+                                                     in
+                                                     let extras =
+                                                       let goals = goal_trace_fields apps in
+                                                       let resolved =
+                                                         match paths with
+                                                         | [] -> []
+                                                         | _ ->
+                                                             [("resolved_paths",
+                                                               `List (List.map (fun p -> `String p) paths))]
+                                                       in
+                                                       goals @ resolved
+                                                     in
+                                                     match extras with
                                                      | [] -> arg_json
                                                      | extras ->
                                                          begin match arg_json with
@@ -2805,10 +2831,14 @@ let record_block ~lemma ~lemma_name ~lemma_path ~tactics =
         let block = { index; loc = Some loc; tactics } in
         entry.blocks <- entry.blocks @ [block]
 
-let mark_status ~lemma ~lemma_name:_ ~lemma_path:_ ~status =
+let mark_status ~lemma ~lemma_name ~lemma_path ~status =
   match Hashtbl.find_opt lemmas lemma with
   | None -> ()
   | Some entry ->
+      (match lemma_name, entry.name with
+       | Some name, None -> entry.name <- Some name
+       | _ -> ());
+      if lemma_path <> "" then entry.path <- lemma_path;
       entry.status <- (status :> lemma_status);
       (match !current_lemma with
        | Some cur when cur == lemma -> current_lemma := None

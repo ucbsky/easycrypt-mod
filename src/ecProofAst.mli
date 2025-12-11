@@ -58,6 +58,7 @@ val log_intro_element :
 val log_rewrite_application :
   EcParsetree.ptactic ->
   int ->
+  string list ->
   EcCoreGoal.handle list ->
   EcCoreGoal.handle list ->
   unit

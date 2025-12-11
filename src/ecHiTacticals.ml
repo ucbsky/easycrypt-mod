@@ -339,8 +339,8 @@ and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
     if EcProofAst.is_enabled () then
       match unloc t.pt_core with
       | Plogic (Prewrite _) ->
-          Some (fun idx rewrite_before rewrite_after ->
-              EcProofAst.log_rewrite_application t idx rewrite_before rewrite_after)
+          Some (fun idx paths rewrite_before rewrite_after ->
+              EcProofAst.log_rewrite_application t idx paths rewrite_before rewrite_after)
       | _ -> None
     else None
   in
