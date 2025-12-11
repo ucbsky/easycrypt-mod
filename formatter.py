@@ -44,6 +44,11 @@ def parse_args() -> argparse.Namespace:
         metavar="LEMMA",
         help="Optional subset of lemma names to format (defaults to all from AST)",
     )
+    parser.add_argument(
+        "--dump-graph",
+        default="goal-graph.json",
+        help="If set, write the DFS goal graph per lemma as JSON to PATH",
+    )
     return parser.parse_args()
 
 
@@ -747,15 +752,28 @@ def iter_tactic_entries(
             yielded_child = True
             yield nested
     if yielded_child:
+        # Children already emitted, but intros attached to this node may still
+        # carry serialized goal mappings (e.g., bridges). Surface them so goal
+        # production/consumption stays accurate.
+        for intro in entry.get("intros") or []:
+            for text, serialized_intro in iter_intro_elements(intro):
+                yield text, serialized_intro
         return
 
     tactic_info = (core.get("args") or {}).get("tactic") or {}
     if tactic_info.get("kind") == "Prewrite":
         fallback_serialized = raw_serialized or inherited or []
+        yielded_pw = False
         for text, raw_arg in _collect_prewrite_lines(core):
             serialized_arg = raw_arg.get("serialized_goals") or fallback_serialized
             if text and not is_trivial_serialized(serialized_arg):
                 yield text, serialized_arg
+                yielded_pw = True
+        # Even if no rewrite lines were yielded, we may still have intros
+        # attached to this Prewrite node that carry serialized goal mappings.
+        for intro in entry.get("intros") or []:
+            for text, serialized_intro in iter_intro_elements(intro):
+                yield text, serialized_intro
         return
 
     text = extract_tactic_text(entry)
@@ -888,6 +906,29 @@ def build_tactic_sequence(lemma: dict) -> List[str]:
     consumers = collect_goal_occurrences(lemma, lemma.get("name"))
     ordered = traverse_goal_graph(consumers)
     return [occ.text for occ in ordered if occ.text]
+
+
+def lemma_goal_graph(lemma: dict) -> List[dict]:
+    """
+    Return the DFS goal graph (in traversal order) for a lemma.
+
+    Each entry contains:
+      - idx: occurrence index in the serialized trace
+      - goal: input goal id
+      - outputs: produced goal ids
+      - text: tactic text (may be None)
+    """
+    consumers = collect_goal_occurrences(lemma, lemma.get("name"))
+    ordered = traverse_goal_graph(consumers)
+    return [
+        {
+            "idx": occ.idx,
+            "goal": occ.goal,
+            "outputs": list(occ.outputs),
+            "text": occ.text,
+        }
+        for occ in ordered
+    ]
 
 
 def format_tactic_lines(tactics: Sequence[str], body_indent: str) -> List[str]:
@@ -1035,6 +1076,7 @@ def format_lemmas(
     ast_file: str | Path,
     lemma_names: Sequence[str] | None = None,
     suppress_mismatch_warnings: bool = False,
+    dump_graph_path: Path | None = None,
 ) -> Tuple[Path, Dict[str, int]]:
     """
     Format one or more lemmas in `easycrypt_file` using the proof AST in
@@ -1058,9 +1100,12 @@ def format_lemmas(
     ordered_targets = [name for name in lemma_order if name in targets]
 
     updates: List[Tuple[str, List[str]]] = []
+    graphs: Dict[str, List[dict]] = {}
     tactic_counts: Dict[str, int] = {}
     for name in ordered_targets:
         seq = build_tactic_sequence(lemmas[name])
+        if dump_graph_path is not None:
+            graphs[name] = lemma_goal_graph(lemmas[name])
         tactic_counts[name] = len(seq)
         if seq:
             updates.append((name, seq))
@@ -1080,6 +1125,14 @@ def format_lemmas(
     except OSError as err:
         raise SystemExit(f"Failed to write formatted file {output_path}: {err}") from err
 
+    if dump_graph_path is not None:
+        graph_payload = {name: graphs.get(name, []) for name in ordered_targets}
+        try:
+            dump_graph_path = Path(dump_graph_path)
+            dump_graph_path.write_text(json.dumps(graph_payload, indent=2, sort_keys=True))
+        except OSError as err:
+            raise SystemExit(f"Failed to write graph file {dump_graph_path}: {err}") from err
+
     return output_path, {name: tactic_counts.get(name) for name in applied}
 
 
@@ -1088,7 +1141,10 @@ def main() -> None:
     args = parse_args()
     try:
         output_path, tactic_counts = format_lemmas(
-            args.easycrypt_file, args.ast_file, args.lemmas
+            args.easycrypt_file,
+            args.ast_file,
+            args.lemmas,
+            dump_graph_path=Path(args.dump_graph) if args.dump_graph else None,
         )
     except SystemExit as err:
         # Re-raise SystemExit so CLI exit codes remain meaningful.
