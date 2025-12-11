@@ -36,7 +36,7 @@ type ttenv = {
   tt_redlogic  : bool;
   tt_und_delta : bool;
   tt_logrewrite :
-    (int -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
+    (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine = ptactic_core -> FApi.backward
@@ -433,10 +433,14 @@ let t_rewrite_prept info pt tc =
 (* -------------------------------------------------------------------- *)
 (* Logging of the fully-qualified rewrite rule used during execution.  *)
 let rewrite_paths : string list ref = ref []
+let rewrite_last_path : string option ref = ref None
 let rewrite_logging_active = ref false
 
 let clear_rewrite_paths () =
-  if !rewrite_logging_active then rewrite_paths := []
+  if !rewrite_logging_active then begin
+    rewrite_paths := [];
+    rewrite_last_path := None
+  end
 
 let path_of_segments = function
   | [] -> invalid_arg "empty path"
@@ -557,18 +561,22 @@ let record_rewrite_path env path =
     let ps = normalize_paths env path in
     ps
     |> List.filter (fun p -> p <> "")
-    |> List.iter (fun p -> rewrite_paths := p :: !rewrite_paths)
+    |> List.iter (fun p ->
+         rewrite_paths := p :: !rewrite_paths;
+         rewrite_last_path := Some p)
 
-let take_rewrite_paths () =
-  if not !rewrite_logging_active then []
+let take_rewrite_paths_and_chosen () =
+  if not !rewrite_logging_active then ([], None)
   else begin
     let paths =
       !rewrite_paths
       |> List.rev
       |> List.sort_uniq String.compare
     in
+    let chosen = !rewrite_last_path in
     rewrite_paths := [];
-    paths
+    rewrite_last_path := None;
+    (paths, chosen)
   end
 
 let record_rewrite_proofterm env (pt : PT.pt_ev) =
@@ -1093,11 +1101,13 @@ let process_rewrite ttenv ?target ?log_rewrite ri tc =
         (fun () ->
            if logging then clear_rewrite_paths ();
            let tc' = process () in
-           let paths = if logging then take_rewrite_paths () else [] in
+           let paths, chosen =
+             if logging then take_rewrite_paths_and_chosen () else ([], None)
+           in
            (match log_rewrite with
             | Some f ->
                 let after_goal = FApi.tc_opened tc' in
-                f gi paths before after_goal
+                f gi chosen paths before after_goal
             | None -> ());
            tc')
         (fun () -> rewrite_logging_active := old_flag)

@@ -58,6 +58,7 @@ val log_intro_element :
 val log_rewrite_application :
   EcParsetree.ptactic ->
   int ->
+  string option ->
   string list ->
   EcCoreGoal.handle list ->
   EcCoreGoal.handle list ->
@@ -65,6 +66,12 @@ val log_rewrite_application :
 val update_active_goals : EcCoreGoal.handle list -> unit
 
 (* -------------------------------------------------------------------- *)
+val record_clone :
+  theory:EcParsetree.theory_cloning ->
+  base:string ->
+  target:string ->
+  unit
+
 val record_block :
   lemma:EcDecl.axiom ->
   lemma_name:EcSymbols.symbol option ->

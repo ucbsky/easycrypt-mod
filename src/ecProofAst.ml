@@ -25,12 +25,19 @@ type lemma_entry = {
   mutable status : lemma_status;
 }
 
+type clone_entry = {
+  clone_data        : theory_cloning;
+  clone_base_path   : string;
+  clone_target_path : string;
+}
+
 let enabled        = ref false
 let current_source = ref None
 let working_dir    = ref None
 let source_path    = ref None
 let lemmas : (EcDecl.axiom, lemma_entry) Hashtbl.t = Hashtbl.create 17
 let lemma_order : EcDecl.axiom list ref = ref []
+let clones : clone_entry list ref = ref []
 let file_cache : (string, string) Hashtbl.t = Hashtbl.create 3
 
 module PtacticTbl = Hashtbl.Make(struct
@@ -92,6 +99,7 @@ type intro_element_event = {
 
 type rewrite_event = {
   re_app   : tactic_application;
+  re_chosen: string option;
   re_paths : string list;
 }
 
@@ -124,6 +132,9 @@ let rec insert_free_index idx = function
   | [] -> [idx]
   | hd :: tl as lst ->
       if idx <= hd then idx :: lst else hd :: insert_free_index idx tl
+
+let clear_clones () =
+  clones := []
 
 let clear_goal_traces () =
   Hashtbl.clear goal_indices;
@@ -379,7 +390,7 @@ let log_intro_element tac index element goals goals_out =
   end
 
 
-let log_rewrite_application tac index paths goals goals_out =
+let log_rewrite_application tac index chosen paths goals goals_out =
   if !enabled && !trace_active then begin
     let entry = mk_tactic_application goals goals_out |> trim_application in
     let key = (tac, index) in
@@ -388,7 +399,7 @@ let log_rewrite_application tac index paths goals goals_out =
       | None -> []
       | Some events -> events
     in
-    let event = { re_app = entry; re_paths = paths } in
+    let event = { re_app = entry; re_chosen = chosen; re_paths = paths } in
     RewriteTbl.replace rewrite_events key (event :: current);
     rewrite_trace_buffer := key :: !rewrite_trace_buffer
   end
@@ -441,6 +452,7 @@ let enable ~source =
   current_source := Some source;
   Hashtbl.clear lemmas;
   lemma_order := [];
+  clear_clones ();
   Hashtbl.clear file_cache;
   include_intros := true;
   include_emacs_goals := true;
@@ -451,6 +463,7 @@ let reset_run () =
   if !enabled then begin
     Hashtbl.clear lemmas;
     lemma_order := [];
+    clear_clones ();
     Hashtbl.clear file_cache;
     clear_goal_traces ()
   end
@@ -2527,6 +2540,14 @@ let enrich_prewrite_core tac core_json =
                                                        |> List.filter (fun p -> p <> "")
                                                        |> List.sort_uniq String.compare
                                                      in
+                                                    let chosen_path =
+                                                      events
+                                                      |> List.filter_map (fun ev -> ev.re_chosen)
+                                                      |> List.rev
+                                                      |> (function
+                                                          | hd :: _ -> Some hd
+                                                          | [] -> None)
+                                                    in
                                                      let extras =
                                                        let goals = goal_trace_fields apps in
                                                        let resolved =
@@ -2536,7 +2557,12 @@ let enrich_prewrite_core tac core_json =
                                                              [("resolved_paths",
                                                                `List (List.map (fun p -> `String p) paths))]
                                                        in
-                                                       goals @ resolved
+                                                      let chosen =
+                                                        match chosen_path with
+                                                        | None -> []
+                                                        | Some p -> [("chosen_path", `String p)]
+                                                      in
+                                                      goals @ resolved @ chosen
                                                      in
                                                      match extras with
                                                      | [] -> arg_json
@@ -2781,6 +2807,24 @@ and json_of_pexpect = function
 let () = json_of_ptactics_ref := json_of_ptactics
 
 (* -------------------------------------------------------------------- *)
+let record_clone ~theory ~base ~target =
+  if not !enabled then
+    ()
+  else
+    let loc = theory.pthc_base.pl_loc in
+    if EcLocation.isdummy loc then
+      ()
+    else if not (matches_target_file loc.loc_fname) then
+      ()
+    else
+      let entry = {
+        clone_data        = theory;
+        clone_base_path   = base;
+        clone_target_path = target;
+      } in
+      clones := entry :: !clones
+
+(* -------------------------------------------------------------------- *)
 let block_loc tactics =
   let merge acc t =
     let loc = t.pt_core.pl_loc in
@@ -2857,6 +2901,204 @@ let json_of_block block =
     ("tactics", json_of_ptactics block.tactics);
   ]
 
+(* -------------------------------------------------------------------- *)
+let json_of_pqsymbol_located qs =
+  json_of_located
+    ~extra:[("value", `String (EcSymbols.string_of_qsymbol (unloc qs)))]
+    qs
+
+let json_of_clone_locality = function
+  | None -> `Null
+  | Some `Local -> `String "local"
+  | Some `Global -> `String "global"
+
+let json_of_clone_import = function
+  | None -> `Null
+  | Some `Import -> `String "import"
+  | Some `Export -> `String "export"
+  | Some `Include -> `String "include"
+
+let json_of_clone_option (enabled, opt) =
+  let name =
+    match opt with
+    | `Abstract -> "abstract"
+  in
+  `Assoc [
+    ("enabled", `Bool enabled);
+    ("option" , `String name);
+  ]
+
+let json_of_clone_options opts =
+  `List (List.map json_of_clone_option opts)
+
+let json_of_clmode = function
+  | `Alias -> `String "alias"
+  | `Inline `Keep -> `String "inline-keep"
+  | `Inline `Clear -> `String "inline-clear"
+
+let json_of_genoverride json_of_syntax = function
+  | `ByPath path ->
+      `Assoc [
+        ("kind", `String "by-path");
+        ("path", `String (EcPath.tostring path));
+      ]
+  | `BySyntax v ->
+      `Assoc [
+        ("kind" , `String "by-syntax");
+        ("value", json_of_syntax v);
+      ]
+
+let json_of_ty_override_def (params, body) =
+  `Assoc [
+    ("params", json_of_psymbol_list params);
+    ("body"  , json_of_located body);
+  ]
+
+let json_of_ty_override (override, mode) =
+  `Assoc [
+    ("mode" , json_of_clmode mode);
+    ("value", json_of_genoverride json_of_ty_override_def override);
+  ]
+
+let json_of_op_override_def ov =
+  `Assoc [
+    ("tyvars", json_of_option json_of_psymbol_list ov.opov_tyvars);
+    ("args"  , json_of_ptybindings ov.opov_args);
+    ("return", json_of_located ov.opov_retty);
+    ("body"  , json_of_pformula ov.opov_body);
+  ]
+
+let json_of_pr_override_def ov =
+  `Assoc [
+    ("tyvars", json_of_option json_of_psymbol_list ov.prov_tyvars);
+    ("args"  , json_of_ptybindings ov.prov_args);
+    ("body"  , json_of_pformula ov.prov_body);
+  ]
+
+let json_of_simple_override (qs, mode) =
+  `Assoc [
+    ("symbol", json_of_pqsymbol_located qs);
+    ("mode"  , json_of_clmode mode);
+  ]
+
+let json_of_theory_override = function
+  | PTHO_Type ov ->
+      `Assoc [
+        ("kind" , `String "type");
+        ("value", json_of_ty_override ov);
+      ]
+  | PTHO_Op (override, mode) ->
+      `Assoc [
+        ("kind" , `String "op");
+        ("mode" , json_of_clmode mode);
+        ("value", json_of_genoverride json_of_op_override_def override);
+      ]
+  | PTHO_Pred (override, mode) ->
+      `Assoc [
+        ("kind" , `String "pred");
+        ("mode" , json_of_clmode mode);
+        ("value", json_of_genoverride json_of_pr_override_def override);
+      ]
+  | PTHO_Axiom ov ->
+      `Assoc [
+        ("kind" , `String "axiom");
+        ("value", json_of_simple_override ov);
+      ]
+  | PTHO_ModTyp ov ->
+      `Assoc [
+        ("kind" , `String "module-type");
+        ("value", json_of_simple_override ov);
+      ]
+  | PTHO_Theory ov ->
+      `Assoc [
+        ("kind" , `String "theory");
+        ("value", json_of_simple_override ov);
+      ]
+
+let json_of_clone_proof_tag (action, sym) =
+  let action =
+    match action with
+    | `Include -> "include"
+    | `Exclude -> "exclude"
+  in
+  `Assoc [
+    ("action", `String action);
+    ("name"  , json_of_psymbol sym);
+  ]
+
+let json_of_clone_proof proof =
+  let base_fields =
+    match proof.pthp_mode with
+    | `All (name, tags) ->
+        let fields = [
+          ("kind" , `String "all");
+          ("tags" , json_of_list json_of_clone_proof_tag tags);
+        ] in
+        begin
+          match name with
+          | None -> fields
+          | Some qs -> ("name", json_of_pqsymbol_located qs) :: fields
+        end
+    | `Named (name, mode) ->
+        [
+          ("kind" , `String "named");
+          ("name" , json_of_pqsymbol_located name);
+          ("mode" , json_of_clmode mode);
+        ]
+  in
+  let tactic_field =
+    match proof.pthp_tactic with
+    | None -> []
+    | Some core -> [("tactic", json_of_ptactic_core core)]
+  in
+  `Assoc (base_fields @ tactic_field)
+
+let json_of_clone_renaming_kind = function
+  | `Lemma   -> "lemma"
+  | `Op      -> "op"
+  | `Pred    -> "pred"
+  | `Type    -> "type"
+  | `Module  -> "module"
+  | `ModType -> "module-type"
+  | `Theory  -> "theory"
+
+let json_of_clone_renaming (kinds, (src, dst)) =
+  `Assoc [
+    ("kinds", `List (List.map (fun k -> `String (json_of_clone_renaming_kind k)) kinds));
+    ("from" , json_of_located_string src);
+    ("to"   , json_of_located_string dst);
+  ]
+
+let json_of_clone_clear (`Abbrev, qs) =
+  `Assoc [
+    ("kind", `String "abbrev");
+    ("name", json_of_pqsymbol_located qs);
+  ]
+
+let json_of_clone_override (qs, ov) =
+  `Assoc [
+    ("symbol"  , json_of_pqsymbol_located qs);
+    ("override", json_of_theory_override ov);
+  ]
+
+let json_of_clone_entry entry =
+  let data = entry.clone_data in
+  `Assoc [
+    ("base"       , json_of_pqsymbol_located data.pthc_base);
+    ("alias"      , json_of_osymbol_r data.pthc_name);
+    ("base_path"  , `String entry.clone_base_path);
+    ("target_path", `String entry.clone_target_path);
+    ("import"     , json_of_clone_import data.pthc_import);
+    ("locality"   , json_of_clone_locality data.pthc_local);
+    ("options"    , json_of_clone_options data.pthc_opts);
+    ("overrides"  , json_of_list json_of_clone_override data.pthc_ext);
+    ("proofs"     , json_of_list json_of_clone_proof data.pthc_prf);
+    ("renames"    , json_of_list json_of_clone_renaming data.pthc_rnm);
+    ("clears"     , json_of_list json_of_clone_clear data.pthc_clears);
+    ("source"     , json_of_source data.pthc_base.pl_loc);
+  ]
+
+(* -------------------------------------------------------------------- *)
 let starts_with prefix s =
   let lp = String.length prefix in
   String.length s >= lp && String.sub s 0 lp = prefix
@@ -2968,6 +3210,11 @@ let finalize () =
     match !current_source with
     | None -> ()
     | Some source ->
+        let clones_json =
+          !clones
+          |> List.rev
+          |> List.map json_of_clone_entry
+        in
         let lemmas_json =
           !lemma_order
           |> List.rev
@@ -2978,6 +3225,7 @@ let finalize () =
         let payload =
           `Assoc [
             ("file"  , `String source);
+            ("clones", `List clones_json);
             ("lemmas", `List lemmas_json);
           ]
         in

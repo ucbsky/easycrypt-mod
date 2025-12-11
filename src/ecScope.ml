@@ -1922,6 +1922,12 @@ module Cloning = struct
     let cpath = EcEnv.root (env scope) in
     let npath = if incl then cpath else EcPath.pqname cpath name in
 
+    if EcProofAst.is_enabled () then
+      EcProofAst.record_clone
+        ~theory:thcl
+        ~base:(EcPath.tostring opath)
+        ~target:(EcPath.tostring npath);
+
     let (proofs, scope) =
       EcTheoryReplay.replay (hooks ~override_locality:thcl.pthc_local)
         ~abstract:opts.R.clo_abstract ~override_locality:thcl.pthc_local ~incl
