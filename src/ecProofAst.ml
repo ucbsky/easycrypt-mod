@@ -2679,12 +2679,111 @@ let enrich_prewrite_core tac core_json =
       end
   | _ -> core_json
 
+let enrich_apply_core tac core_json =
+  match unloc tac.pt_core with
+  | Plogic (Papply _) ->
+      begin match core_json with
+      | `Assoc fields ->
+          let update_args_field value =
+            match value with
+            | `Assoc args_fields ->
+                let args_fields =
+                  List.map
+                    (fun (k, v) ->
+                       if k <> "tactic" then (k, v) else
+                         let v =
+                           match v with
+                           | `Assoc tactic_fields ->
+                               let tactic_fields =
+                                 List.map
+                                   (fun (tk, tv) ->
+                                      if tk <> "info" then (tk, tv) else
+                                        let tv =
+                                          match tv with
+                                          | `Assoc info_fields ->
+                                              let info_fields =
+                                                List.map
+                                                  (fun (ik, iv) ->
+                                                     if ik <> "terms" then (ik, iv)
+                                                     else begin
+                                                       match iv with
+                                                       | `List terms ->
+                                                           let enriched =
+                                                             List.mapi
+                                                               (fun idx term_json ->
+                                                                  let events = consume_apply_applications tac idx in
+                                                                  let apps = List.map (fun ev -> ev.ae_app) events in
+                                                                  let paths =
+                                                                    events
+                                                                    |> List.concat_map (fun ev -> ev.ae_paths)
+                                                                    |> List.filter (fun p -> p <> "")
+                                                                    |> List.sort_uniq String.compare
+                                                                  in
+                                                                  let chosen_path =
+                                                                    events
+                                                                    |> List.filter_map (fun ev -> ev.ae_chosen)
+                                                                    |> List.rev
+                                                                    |> (function hd :: _ -> Some hd | [] -> None)
+                                                                  in
+                                                                  let extras =
+                                                                    let goals = goal_trace_fields apps in
+                                                                    let resolved =
+                                                                      match paths with
+                                                                      | [] -> []
+                                                                      | _ ->
+                                                                          [("resolved_paths",
+                                                                            `List (List.map (fun p -> `String p) paths))]
+                                                                    in
+                                                                    let chosen =
+                                                                      match chosen_path with
+                                                                      | None -> []
+                                                                      | Some p -> [("chosen_path", `String p)]
+                                                                    in
+                                                                    goals @ resolved @ chosen
+                                                                  in
+                                                                  match extras, term_json with
+                                                                  | [], _ -> term_json
+                                                                  | _, `Assoc tf -> `Assoc (tf @ extras)
+                                                                  | _, json -> `Assoc (("value", json) :: extras))
+                                                               terms
+                                                           in
+                                                           (ik, `List enriched)
+                                                       | _ -> (ik, iv)
+                                                     end)
+                                                  info_fields
+                                              in
+                                              `Assoc info_fields
+                                          | _ -> tv
+                                        in
+                                        (tk, tv))
+                                   tactic_fields
+                               in
+                               `Assoc tactic_fields
+                           | _ -> v
+                         in
+                         (k, v))
+                    args_fields
+                in
+                `Assoc args_fields
+            | _ -> value
+          in
+          let fields =
+            List.map
+              (fun (k, v) ->
+                 if k = "args" then (k, update_args_field v) else (k, v))
+              fields
+          in
+          `Assoc fields
+      | _ -> core_json
+      end
+  | _ -> core_json
+
 let rec json_of_ptactics ts =
   json_of_list json_of_ptactic ts
 
 and json_of_ptactic t =
   let core_json = json_of_ptactic_core t.pt_core in
-  let core_json = enrich_prewrite_core t core_json in
+  let core_json = core_json |> enrich_prewrite_core t |> enrich_apply_core t in
   let base = [
     ("core"  , core_json);
   ] in
