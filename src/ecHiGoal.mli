@@ -17,6 +17,8 @@ type ttenv = {
   tt_und_delta : bool;
   tt_logrewrite :
     (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
+  tt_logapply :
+    (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine  = ptactic_core -> backward
@@ -84,7 +86,10 @@ val process_move        : ?doeq:bool -> ppterm list -> prevert -> backward
 val process_clear       : clear_info -> backward
 val process_smt         : ?loc:EcLocation.t -> ttenv -> pprover_infos option -> backward
 val process_coq         : loc:EcLocation.t -> name:string -> ttenv -> EcProvers.coq_mode option -> pprover_infos -> backward
-val process_apply       : implicits:bool -> apply_t * prevert option -> backward
+val process_apply       :
+  implicits:bool ->
+  ?log_apply:(int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) ->
+  apply_t * prevert option -> backward
 val process_delta       : und_delta:bool -> ?target:psymbol -> (rwside * rwocc * pformula) -> backward
 val process_rewrite     :
   ttenv ->

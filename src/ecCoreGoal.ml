@@ -382,6 +382,13 @@ module FApi = struct
   let tc1_check_opened (tc : tcenv1) =
     if tc.tce_goal = None then
       raise (InvalidStateException "all-goals-closed")
+    (* to print debug information
+      (Printexc.record_backtrace true;
+       let bt = Printexc.get_callstack 100 in
+       Format.eprintf "[FApi-debug] callstack:@.";
+       Printexc.print_raw_backtrace stderr bt;
+       raise (InvalidStateException "all-goals-closed"))
+      *)
 
   (* ------------------------------------------------------------------ *)
   let tc1_current (tc : tcenv1) =

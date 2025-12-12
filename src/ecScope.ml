@@ -751,6 +751,7 @@ module Tactics = struct
           EcHiGoal.tt_redlogic   = Options.get_redlogic scope;
           EcHiGoal.tt_und_delta  = Options.get_und_delta scope;
           EcHiGoal.tt_logrewrite = None;
+          EcHiGoal.tt_logapply   = None;
         } in
 
         (* Start recording per-tactic trace data for this proof block so that

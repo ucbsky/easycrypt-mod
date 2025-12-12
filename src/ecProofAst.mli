@@ -63,6 +63,14 @@ val log_rewrite_application :
   EcCoreGoal.handle list ->
   EcCoreGoal.handle list ->
   unit
+val log_apply_application :
+  EcParsetree.ptactic ->
+  int ->
+  string option ->
+  string list ->
+  EcCoreGoal.handle list ->
+  EcCoreGoal.handle list ->
+  unit
 val update_active_goals : EcCoreGoal.handle list -> unit
 
 (* -------------------------------------------------------------------- *)

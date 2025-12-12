@@ -38,6 +38,9 @@ type ttenv = {
   (* Optional ProofAst hook: per-rewrite logging callback installed by ecHiTacticals. *)
   tt_logrewrite :
     (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
+  (* Optional ProofAst hook: per-apply logging callback installed by ecHiTacticals. *)
+  tt_logapply :
+    (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
 
 type engine = ptactic_core -> FApi.backward
@@ -612,6 +615,52 @@ let record_rewrite_proofterm env (pt : PT.pt_ev) =
   | Some p -> record_rewrite_path env p
   | None   -> ()
 
+let apply_paths : string list ref = ref []
+let apply_last_path : string option ref = ref None
+let apply_logging_active = ref false
+
+let clear_apply_paths () =
+  if !apply_logging_active then begin
+    apply_paths := [];
+    apply_last_path := None
+  end
+
+let record_apply_path env path =
+  if !apply_logging_active then
+    let ps = normalize_paths env path in
+    ps
+    |> List.filter (fun p -> p <> "")
+    |> List.iter (fun p ->
+           apply_paths := p :: !apply_paths;
+           apply_last_path := Some p)
+
+let take_apply_paths_and_chosen () =
+  if not !apply_logging_active then ([], None)
+  else begin
+    let paths =
+      !apply_paths
+      |> List.rev
+      |> List.sort_uniq String.compare
+    in
+    let chosen = !apply_last_path in
+    apply_paths := [];
+    apply_last_path := None;
+    (paths, chosen)
+  end
+
+let record_apply_proofterm env (pt : PT.pt_ev) =
+  let rec from_head = function
+    | PTGlobal (p, _) -> Some p
+    | PTTerm pt       -> from_term pt
+    | _               -> None
+  and from_term = function
+    | PTApply { pt_head; _ } -> from_head pt_head
+    | PTQuant (_, pt)        -> from_term pt
+  in
+  match from_term pt.ptev_pt with
+  | Some p -> record_apply_path env p
+  | None   -> ()
+
 (* -------------------------------------------------------------------- *)
 let process_solve ?bases ?depth (tc : tcenv1) =
   match FApi.t_try_base (EcLowGoal.t_solve ~canfail:false ?bases ?depth) tc with
@@ -653,11 +702,16 @@ let process_apply_bwd ~implicits mode (ff : ppterm) (tc : tcenv1) =
           tc_error !!tc "@[<v>proof-term is not alpha-convertible to conclusion@ @[%a@]@]"
               (EcPrinting.pp_form (EcPrinting.PPEnv.ofenv (EcEnv.LDecl.toenv pt.ptev_env.pte_hy))) pt.ptev_ax
         end;
-        EcLowGoal.t_apply (fst (PT.concretize pt)) tc
+        let aout = EcLowGoal.t_apply (fst (PT.concretize pt)) tc in
+        record_apply_proofterm (FApi.tc1_env tc) pt;
+        aout
     | `Apply ->
-        EcLowGoal.Apply.t_apply_bwd_r pt tc
+        let aout = EcLowGoal.Apply.t_apply_bwd_r pt tc in
+        record_apply_proofterm (FApi.tc1_env tc) pt;
+        aout
     | `Exact ->
         let aout = EcLowGoal.Apply.t_apply_bwd_r pt tc in
+        record_apply_proofterm (FApi.tc1_env tc) pt;
         let aout = FApi.t_onall process_trivial aout in
         if not (FApi.tc_done aout) then
           tc_error !!tc "cannot close goal";
@@ -680,7 +734,9 @@ let process_exacttype qs (tc : tcenv1) =
   let pt = ptglobal ~tys p in
 
   try
-    EcLowGoal.t_apply pt tc
+    let tc' = EcLowGoal.t_apply pt tc in
+    record_apply_path (FApi.tc_env tc') p;
+    tc'
   with InvalidGoalShape ->
     let ppe = EcPrinting.PPEnv.ofenv env in
     tc_error !!tc "cannot apply %a@." (EcPrinting.pp_axname ppe) p
@@ -721,9 +777,13 @@ let process_apply_fwd ~implicits (pe, hyp) tc =
     let pt = EcCoreGoal.ptapply pt [palocal hyp] in
     let cutf = PT.concretize_form pte.PT.ptev_env cutf in
 
-    FApi.t_last
-      (FApi.t_seq (t_clear hyp) (t_intros_i [hyp]))
-      (t_cutdef pt cutf tc)
+    let tc' =
+      FApi.t_last
+        (FApi.t_seq (t_clear hyp) (t_intros_i [hyp]))
+        (t_cutdef pt cutf tc)
+    in
+    record_apply_proofterm (FApi.tc_env tc') pte;
+    tc'
 
   with E.NoInstance ->
     tc_error_lazy !!tc
@@ -1043,7 +1103,6 @@ let process_rewrite1_r ttenv ?target ri tc =
               (* Generic proof term rewrite (not a bare global). *)
               let tc =
                 process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
-              let env = FApi.tc_env tc in
               (* Rewrite driven by a proof term: log its head for ProofAst.
                  record_rewrite_proofterm is used when we only have a proof term
                  and need to extract a global head, not a named lemma path. *)
@@ -1176,16 +1235,53 @@ let process_rewrite ttenv ?target ?log_rewrite ri tc =
       (* Snapshot the single goal handle we’re about to rewrite.
          tc1_handle : tcenv1 -> handle (wraps the current main goal). *)
       let before_goal = [FApi.tc1_handle tc] in
-      if   gi = 0 || (i+1) = ngoals
-      then
-        (* If this rewrite item is the first, or we’re on the last remaining
-           goal, honor the optional [target] (rewrite a specific hypothesis
-           instead of the goal) and log around that call. *)
-        with_logging before_goal (fun () -> process_rewrite1 ttenv ?target ri tc)
-      else
-        (* For intermediate goals we ignore [target] to avoid reapplying a
-           hypothesis-targeted rewrite across all goals; still log the rewrite. *)
-        with_logging before_goal (fun () -> process_rewrite1 ttenv ri tc)
+      (* If logging and this is an RWRw with multiple entries, log per entry. *)
+      match log_rewrite, unloc ri with
+      | Some f, RWRw ((s, r, o, p), entries) ->
+          let logging = true in
+          let old_flag = !rewrite_logging_active in
+          rewrite_logging_active := logging;
+          EcUtils.try_finally
+            (fun () ->
+               let rec apply idx tc entries =
+                 match entries with
+                 | [] -> FApi.tcenv_of_tcenv1 tc
+                 | (subs, pt) :: rest ->
+                     clear_rewrite_paths ();
+                     let before_goal = [FApi.tc1_handle tc] in
+                     let ri_entry = { ri with pl_desc = RWRw ((s, r, o, p), [ (subs, pt) ]) } in
+                     let tc' =
+                       if gi = 0 || (i+1) = ngoals
+                       then process_rewrite1 ttenv ?target ri_entry tc
+                       else process_rewrite1 ttenv ri_entry tc
+                     in
+                     let paths, chosen = take_rewrite_paths_and_chosen () in
+                     let after_goal = FApi.tc_opened tc' in
+                     (* If the rewrite produced zero or multiple open goals,
+                        stop the per-entry logging recursion to avoid unsafe
+                        tcenv -> tcenv1 casts; otherwise continue. *)
+                     if FApi.tc_count tc' <> 1 then begin
+                       f gi chosen paths before_goal after_goal;
+                       tc'
+                     end else begin
+                       let tc1' = FApi.as_tcenv1 tc' in
+                       f gi chosen paths before_goal after_goal;
+                       apply (idx + 1) tc1' rest
+                     end
+               in
+               apply 0 tc entries)
+            (fun () -> rewrite_logging_active := old_flag)
+      | _ ->
+          if   gi = 0 || (i+1) = ngoals
+          then
+            (* If this rewrite item is the first, or we’re on the last remaining
+               goal, honor the optional [target] (rewrite a specific hypothesis
+               instead of the goal) and log around that call. *)
+            with_logging before_goal (fun () -> process_rewrite1 ttenv ?target ri tc)
+          else
+            (* For intermediate goals we ignore [target] to avoid reapplying a
+               hypothesis-targeted rewrite across all goals; still log the rewrite. *)
+            with_logging before_goal (fun () -> process_rewrite1 ttenv ri tc)
     in
 
     (* Apply this rewrite item to goals, honoring optional focus [fc]:
@@ -2207,7 +2303,7 @@ let process_generalize ?(doeq = false) patterns (tc : tcenv1) =
     tc_error_exn !!tc err
 
 (* -------------------------------------------------------------------- *)
-let rec process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
+let process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
   (* Walk the list of intro directives [pis], optionally logging:
      - log_intro: per-intro before/after goal trace
      - log_intro_elem: per-element before/after goal trace, keyed by intro idx
@@ -2342,26 +2438,56 @@ let process_memory (xsym : psymbol) tc =
 (* -------------------------------------------------------------------- *)
 type apply_t = EcParsetree.apply_info
 
-let process_apply ~implicits ((infos, orv) : apply_t * prevert option) tc =
+let process_apply ~implicits ?log_apply ((infos, orv) : apply_t * prevert option) tc =
+  let with_logging idx before process =
+    let logging = Option.is_some log_apply in
+    let old_flag = !apply_logging_active in
+    apply_logging_active := logging;
+    EcUtils.try_finally
+      (fun () ->
+         if logging then clear_apply_paths ();
+         let tc' = process () in
+         let paths, chosen =
+           if logging then take_apply_paths_and_chosen () else ([], None)
+         in
+         (match log_apply with
+          | Some f ->
+              let after_goal = FApi.tc_opened tc' in
+              f idx chosen paths before after_goal
+          | None -> ());
+         tc')
+      (fun () -> apply_logging_active := old_flag)
+  in
   let do_apply tc =
     match infos with
     | `ApplyIn (pe, tg) ->
-        process_apply_fwd ~implicits (pe, tg) tc
+        let before = FApi.tc_opened (tcenv_of_tcenv1 tc) in
+        with_logging 0 before (fun () ->
+            process_apply_fwd ~implicits (pe, tg) tc)
 
     | `Apply (pe, mode) ->
-        let for1 tc pe =
-          t_last (process_apply_bwd ~implicits `Apply pe) tc in
-        let tc = List.fold_left for1 (tcenv_of_tcenv1 tc) pe in
+        let step (idx, tc_acc) pe =
+          let before = FApi.tc_opened tc_acc in
+          let tc_acc =
+            with_logging idx before (fun () ->
+                t_last (process_apply_bwd ~implicits `Apply pe) tc_acc)
+          in
+          (idx + 1, tc_acc)
+        in
+        let _, tc = List.fold_left step (0, tcenv_of_tcenv1 tc) pe in
         if mode = `Exact then t_onall process_done tc else tc
 
     | `Alpha pe ->
-        process_apply_bwd ~implicits `Alpha pe tc
+        let before = FApi.tc_opened (tcenv_of_tcenv1 tc) in
+        with_logging 0 before (fun () -> process_apply_bwd ~implicits `Alpha pe tc)
 
     | `ExactType qs ->
-        process_exacttype qs tc
+        let before = FApi.tc_opened (tcenv_of_tcenv1 tc) in
+        with_logging 0 before (fun () -> process_exacttype qs tc)
 
     | `Top mode ->
-        let tc = process_apply_top tc in
+        let before = FApi.tc_opened (tcenv_of_tcenv1 tc) in
+        let tc = with_logging 0 before (fun () -> process_apply_top tc) in
         if mode = `Exact then t_onall process_done tc else tc
 
   in

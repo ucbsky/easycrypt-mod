@@ -85,6 +85,12 @@ module RewriteTbl = Hashtbl.Make(struct
   let hash = Hashtbl.hash
 end)
 
+module ApplyTbl = Hashtbl.Make(struct
+  type t = ptactic * int
+  let equal (t1, i1) (t2, i2) = t1 == t2 && i1 = i2
+  let hash = Hashtbl.hash
+end)
+
 type tactic_application = {
   ta_local_in   : int list;
   ta_local_out  : int list;
@@ -103,6 +109,12 @@ type rewrite_event = {
   re_paths : string list;
 }
 
+type apply_event = {
+  ae_app   : tactic_application;
+  ae_chosen: string option;
+  ae_paths : string list;
+}
+
 let goal_indices : (handle, int) Hashtbl.t = Hashtbl.create 97
 let global_indices : (handle, int) Hashtbl.t = Hashtbl.create 97
 let goal_index_freelist : int list ref = ref []
@@ -112,11 +124,13 @@ let tactic_events : tactic_application list PtacticTbl.t = PtacticTbl.create 97
 let intro_events : tactic_application list IntroTbl.t = IntroTbl.create 97
 let intro_elem_events : intro_element_event list IntroElemTbl.t = IntroElemTbl.create 97
 let rewrite_events : rewrite_event list RewriteTbl.t = RewriteTbl.create 97
+let apply_events : apply_event list ApplyTbl.t = ApplyTbl.create 97
 let trace_active = ref false
 let trace_buffer : ptactic list ref = ref []
 let intro_trace_buffer : (ptactic * int) list ref = ref []
 let intro_elem_trace_buffer : (ptactic * int) list ref = ref []
 let rewrite_trace_buffer : (ptactic * int) list ref = ref []
+let apply_trace_buffer : (ptactic * int) list ref = ref []
 
 let active_goals : handle list ref = ref []
 let current_lemma : EcDecl.axiom option ref = ref None
@@ -143,6 +157,7 @@ let clear_goal_traces () =
   IntroTbl.clear intro_events;
   IntroElemTbl.clear intro_elem_events;
   RewriteTbl.clear rewrite_events;
+  ApplyTbl.clear apply_events;
   goal_index_freelist := [];
   next_goal_index := 0;
   next_global_index := 0;
@@ -151,6 +166,7 @@ let clear_goal_traces () =
   intro_trace_buffer := [];
   intro_elem_trace_buffer := [];
   rewrite_trace_buffer := [];
+  apply_trace_buffer := [];
   active_goals := [];
   current_lemma := None
 
@@ -228,7 +244,8 @@ let begin_tactic_trace () =
     trace_buffer := [];
     intro_trace_buffer := [];
     intro_elem_trace_buffer := [];
-    rewrite_trace_buffer := []
+    rewrite_trace_buffer := [];
+    apply_trace_buffer := []
   end
 
 let rollback_trace () =
@@ -275,7 +292,18 @@ let rollback_trace () =
        | Some [] ->
            RewriteTbl.remove rewrite_events key)
     !rewrite_trace_buffer;
-  rewrite_trace_buffer := []
+  rewrite_trace_buffer := [];
+  List.iter
+    (fun key ->
+       match ApplyTbl.find_opt apply_events key with
+       | None -> ()
+       | Some (_ :: rest) ->
+           if rest = [] then ApplyTbl.remove apply_events key
+           else ApplyTbl.replace apply_events key rest
+       | Some [] ->
+           ApplyTbl.remove apply_events key)
+    !apply_trace_buffer;
+  apply_trace_buffer := []
 
 let end_tactic_trace ~success =
   if !enabled then begin
@@ -404,6 +432,20 @@ let log_rewrite_application tac index chosen paths goals goals_out =
     rewrite_trace_buffer := key :: !rewrite_trace_buffer
   end
 
+let log_apply_application tac index chosen paths goals goals_out =
+  if !enabled && !trace_active then begin
+    let entry = mk_tactic_application goals goals_out |> trim_application in
+    let key = (tac, index) in
+    let current =
+      match ApplyTbl.find_opt apply_events key with
+      | None -> []
+      | Some events -> events
+    in
+    let event = { ae_app = entry; ae_chosen = chosen; ae_paths = paths } in
+    ApplyTbl.replace apply_events key (event :: current);
+    apply_trace_buffer := key :: !apply_trace_buffer
+  end
+
 let consume_tactic_applications tac =
   match PtacticTbl.find_opt tactic_events tac with
   | None -> []
@@ -430,6 +472,13 @@ let consume_rewrite_applications tac index =
   | None -> []
   | Some apps ->
       RewriteTbl.remove rewrite_events (tac, index);
+      List.rev apps
+
+let consume_apply_applications tac index =
+  match ApplyTbl.find_opt apply_events (tac, index) with
+  | None -> []
+  | Some apps ->
+      ApplyTbl.remove apply_events (tac, index);
       List.rev apps
 
 let proofast_filename source =
@@ -2563,6 +2612,69 @@ let enrich_prewrite_core tac core_json =
                                                         | Some p -> [("chosen_path", `String p)]
                                                       in
                                                       goals @ resolved @ chosen
+                                                     in
+                                                     let arg_json =
+                                                       (* Also attach per-entry traces/paths/chosen inside
+                                                          the entries list (one event per rewrite entry). *)
+                                                       match arg_json with
+                                                       | `Assoc fields ->
+                                                           let fields =
+                                                             List.map
+                                                               (fun (k, v) ->
+                                                                  if k <> "argument" then (k, v) else
+                                                                    let v =
+                                                                      match v with
+                                                                      | `Assoc arg_fields ->
+                                                                          let arg_fields =
+                                                                            List.map
+                                                                              (fun (ak, av) ->
+                                                                                 if ak <> "entries" then (ak, av) else
+                                                                                   let av =
+                                                                                     match av with
+                                                                                     | `List entries ->
+                                                                                         let entries =
+                                                                                           List.mapi
+                                                                                             (fun eidx entry_json ->
+                                                                                                match List.nth_opt events eidx with
+                                                                                                | None -> entry_json
+                                                                                                | Some ev ->
+                                                                                                    let entry_extras =
+                                                                                                      let goals = goal_trace_fields [ev.re_app] in
+                                                                                                      let resolved =
+                                                                                                        match ev.re_paths with
+                                                                                                        | [] -> []
+                                                                                                        | _ ->
+                                                                                                            [("resolved_paths",
+                                                                                                              `List (List.map (fun p -> `String p) ev.re_paths))]
+                                                                                                      in
+                                                                                                      let chosen =
+                                                                                                        match ev.re_chosen with
+                                                                                                        | None -> []
+                                                                                                        | Some p -> [("chosen_path", `String p)]
+                                                                                                      in
+                                                                                                      goals @ resolved @ chosen
+                                                                                                    in
+                                                                                                    begin match entry_extras, entry_json with
+                                                                                                    | [], _ -> entry_json
+                                                                                                    | extras, `Assoc efields -> `Assoc (efields @ extras)
+                                                                                                    | extras, json -> `Assoc (("value", json) :: extras)
+                                                                                                    end)
+                                                                                             entries
+                                                                                         in
+                                                                                         `List entries
+                                                                                     | _ -> av
+                                                                                   in
+                                                                                   (ak, av))
+                                                                              arg_fields
+                                                                          in
+                                                                          `Assoc arg_fields
+                                                                      | _ -> v
+                                                                    in
+                                                                    (k, v))
+                                                               fields
+                                                           in
+                                                           `Assoc fields
+                                                       | json -> json
                                                      in
                                                      match extras with
                                                      | [] -> arg_json

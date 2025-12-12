@@ -140,7 +140,7 @@ and process1_logic (ttenv : ttenv) (t : logtactic located) (tc : tcenv1) =
     | Pcongr              -> process_congr
     | Ptrivial            -> process_trivial
     | Pelim pe            -> process_elim pe
-    | Papply pe           -> process_apply ~implicits:ttenv.tt_implicits pe
+    | Papply pe           -> process_apply ~implicits:ttenv.tt_implicits ?log_apply:ttenv.tt_logapply pe
     | Pcut (m, ip, f, t)  -> process_cut ~mode:m engine ttenv (ip, f, t)
     | Pcutdef (ip, f)     -> process_cutdef ttenv (ip, f)
     | Pmove pr            -> process_move pr.pr_view pr.pr_rev
@@ -355,11 +355,25 @@ and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
       | _ -> None
     else None
   in
+  let log_apply =
+    if EcProofAst.is_enabled () then
+      match unloc t.pt_core with
+      | Plogic (Papply _) ->
+          Some (fun idx chosen paths apply_before apply_after ->
+              EcProofAst.log_apply_application t idx chosen paths apply_before apply_after)
+      | _ -> None
+    else None
+  in
   (* Propagate the rewrite logger into the tactic env so process_rewrite can use it. *)
   let ttenv_for_core =
-    match log_rewrite with
-    | None -> ttenv
-    | Some _ -> { ttenv with tt_logrewrite = log_rewrite }
+    let base =
+      match log_rewrite with
+      | None -> ttenv
+      | Some _ -> { ttenv with tt_logrewrite = log_rewrite }
+    in
+    match log_apply with
+    | None -> base
+    | Some _ -> { base with tt_logapply = log_apply }
   in
   let tc = process_core ttenv_for_core t.pt_core tc in
   (* Snapshot goals after core tactic, before intros. *)
