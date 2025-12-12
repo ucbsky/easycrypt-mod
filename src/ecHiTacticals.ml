@@ -145,7 +145,10 @@ and process1_logic (ttenv : ttenv) (t : logtactic located) (tc : tcenv1) =
     | Pcutdef (ip, f)     -> process_cutdef ttenv (ip, f)
     | Pmove pr            -> process_move pr.pr_view pr.pr_rev
     | Pclear l            -> process_clear l
-    | Prewrite (ri, x)    -> process_rewrite ttenv ?target:x ?log_rewrite:ttenv.tt_logrewrite ri
+    | Prewrite (ri, x)    ->
+        (* Pass the rewrite-logging hook (if any) so ProofAst can record per-arg
+           rule choices/goal traces. *)
+        process_rewrite ttenv ?target:x ?log_rewrite:ttenv.tt_logrewrite ri
     | Psubst   ri         -> process_subst ri
     | Psimplify ri        -> process_simplify ri
     | Pcbv ri             -> process_cbv ri
@@ -328,13 +331,21 @@ and process_core (ttenv : ttenv) ({ pl_loc = loc } as t : ptactic_core) (tc : tc
 
 (* -------------------------------------------------------------------- *)
 and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
+  (* Snapshot goals before this tactic, for goal-trace logging. *)
   let before = FApi.tc_opened tc in
+  (* cf: allow progress-free intro processing for move/idtac. *)
   let cf =
     match unloc t.pt_core with
     | Plogic (Pmove _)
     | Pidtac _ -> true
     | _ -> false
   in
+  (* If ProofAst logging is enabled and this is a rewrite, install a callback
+     that EcHiGoal.process_rewrite will invoke per rewrite argument with:
+       idx           : argument index
+       chosen        : fully-qualified rule actually used (if any)
+       paths         : all candidate rules seen
+       rewrite_before/after : goal handles before/after this argument *)
   let log_rewrite =
     if EcProofAst.is_enabled () then
       match unloc t.pt_core with
@@ -344,31 +355,44 @@ and process (ttenv : ttenv) (t : ptactic) (tc : tcenv) =
       | _ -> None
     else None
   in
+  (* Propagate the rewrite logger into the tactic env so process_rewrite can use it. *)
   let ttenv_for_core =
     match log_rewrite with
     | None -> ttenv
     | Some _ -> { ttenv with tt_logrewrite = log_rewrite }
   in
   let tc = process_core ttenv_for_core t.pt_core tc in
+  (* Snapshot goals after core tactic, before intros. *)
   let after_core = FApi.tc_opened tc in
+  (* Record overall tactic application (goal trace) for ProofAst so it can emit
+     serialized_goals at JSON generation. *)
   EcProofAst.update_active_goals after_core;
   EcProofAst.log_tactic_application t before after_core;
+  (* If this tactic has intros, attach intro-level logging:
+     - log_intro_application: per intro block goal trace
+     - log_intro_element: per intro element (pattern/bridge/etc.) goal trace
+     These are later injected by json_of_ptactic into the .proofast.json. *)
   let logging_intros = EcProofAst.is_enabled () && not (List.is_empty t.pt_intros) in
   let log_intro, log_intro_elem =
     if logging_intros then
+      (* Assign incremental indexes to each intro block for logging. *)
       let counter = ref 0 in
+      (* Per-intro logger: captures before/after goals for intro block [index]. *)
       let log_intro _intro intro_before intro_after =
         let index = !counter in
         incr counter;
         EcProofAst.log_intro_application t index intro_before intro_after
       in
+      (* Per-intro-element logger: captures before/after goals for each element. *)
       let log_elem idx element elem_before elem_after =
         EcProofAst.log_intro_element t idx element elem_before elem_after
       in
       (Some log_intro, Some log_elem)
     else (None, None)
   in
+  (* Run intros with optional logging of intro blocks/elements for ProofAst. *)
   let tc = EcHiGoal.process_mgenintros ~cf ?log_intro ?log_intro_elem ttenv t.pt_intros tc in
+  (* Final goal snapshot and index update after intros. *)
   let after = FApi.tc_opened tc in
   EcProofAst.update_active_goals after;
   tc

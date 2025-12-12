@@ -708,6 +708,12 @@ module Tactics = struct
         { scope with sc_pr_uc =
             Some { (oget scope.sc_pr_uc) with puc_active = Some (pac, pct); } }
 
+  (* process_r ?reloc mark mode scope tac
+     - reloc : optional relocation info for error reporting (source span)
+     - mark  : whether to auto-mark the proof as started if not already
+     - mode  : proof checking mode (`WeakCheck/`Check/`Report -> Admit/Strict/Report)
+     - scope : current interactive scope (environment + current proof state)
+     - tac   : list of parsed tactics to execute *)
   let process_r ?reloc mark (mode : proofmode) (scope : scope) (tac : ptactic list) =
     check_state `InProof "proof script" scope;
 
@@ -747,14 +753,19 @@ module Tactics = struct
           EcHiGoal.tt_logrewrite = None;
         } in
 
+        (* Start recording per-tactic trace data for this proof block so that
+           ProofAst can enrich the emitted .proofast.json (goal flows, rewrites). *)
         EcProofAst.begin_tactic_trace ();
         let (hds, juc) =
           try
+            (* Run the parsed tactics on the current proof state. *)
             let res = TTC.process ttenv tac juc in
+            (* Mark trace success so it will be kept. *)
             EcProofAst.end_tactic_trace ~success:true;
             res
           with
           | EcCoreGoal.TcError tcerror ->
+              (* On proof error: flag trace as failed and re-raise with reloc info. *)
               EcProofAst.end_tactic_trace ~success:false;
               let tcerror =
                 ofold
@@ -763,11 +774,14 @@ module Tactics = struct
                   tcerror reloc
               in raise (EcCoreGoal.TcError tcerror)
           | exn ->
+              (* On any other exception: flag trace as failed and re-raise. *)
               EcProofAst.end_tactic_trace ~success:false;
               raise exn
         in
 
         if EcProofAst.is_enabled () then begin
+          (* Persist this block (tactics + source span) into the ProofAst
+             accumulator so finalize can write it to <file>.proofast.json. *)
           let theory = EcPath.tostring (path scope) in
           let lemma_path =
             match pac.puc_name with
@@ -775,6 +789,11 @@ module Tactics = struct
             | Some name ->
                 if theory = "" then name else theory ^ "." ^ name
           in
+          (* Record this block for the lemma being proved:
+             - puc_crt : current lemma axiom handle (EcDecl.axiom)
+             - puc_name: optional short name of the lemma (symbol), if present
+             - lemma_path: fully qualified theory path used in the JSON output
+             - tactics: the parsed tactic list we just executed *)
           EcProofAst.record_block
             ~lemma:pac.puc_crt
             ~lemma_name:pac.puc_name
@@ -1002,6 +1021,7 @@ module Ax = struct
     in
 
     if EcProofAst.is_enabled () then begin
+      (* Emit final lemma status into ProofAst so it appears in .proofast.json. *)
       let theory = EcPath.tostring (path scope) in
       let lemma_path =
         match pac.puc_name with
@@ -1923,6 +1943,7 @@ module Cloning = struct
     let npath = if incl then cpath else EcPath.pqname cpath name in
 
     if EcProofAst.is_enabled () then
+      (* Record clone mapping for ProofAst so clones show up in .proofast.json. *)
       EcProofAst.record_clone
         ~theory:thcl
         ~base:(EcPath.tostring opath)

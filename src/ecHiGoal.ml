@@ -35,6 +35,7 @@ type ttenv = {
   tt_oldip     : bool;
   tt_redlogic  : bool;
   tt_und_delta : bool;
+  (* Optional ProofAst hook: per-rewrite logging callback installed by ecHiTacticals. *)
   tt_logrewrite :
     (int -> string option -> string list -> EcCoreGoal.handle list -> EcCoreGoal.handle list -> unit) option;
 }
@@ -431,23 +432,29 @@ let t_rewrite_prept info pt tc =
   LowRewrite.t_rewrite_r info (pt_of_prept tc pt) tc
 
 (* -------------------------------------------------------------------- *)
-(* Logging of the fully-qualified rewrite rule used during execution.  *)
+(* Logging of the fully-qualified rewrite rule used during execution (for ProofAst).
+   Lifecycle: enabled when ecHiTacticals installs a log_rewrite; buffers are
+   cleared per rewrite argument, populated during rule discovery/application,
+   then drained into ProofAst at the end of that argument. *)
 let rewrite_paths : string list ref = ref []
 let rewrite_last_path : string option ref = ref None
 let rewrite_logging_active = ref false
 
 let clear_rewrite_paths () =
+  (* Reset per-argument rewrite buffers. No-op when logging is disabled. *)
   if !rewrite_logging_active then begin
     rewrite_paths := [];
     rewrite_last_path := None
   end
 
+(* Build a path from string segments. Used by alias resolution helpers below. *)
 let path_of_segments = function
   | [] -> invalid_arg "empty path"
   | hd :: tl ->
       List.fold_left (fun acc x -> EcPath.pqname acc x) (EcPath.psymbol hd) tl
 
-(* Replace an alias prefix using the alias map env_albase. *)
+(* Replace an alias prefix using the theory alias map.
+   Example: if A is an alias for Top.Lib, and we see A.f, rewrite it to Top.Lib.f. *)
 let dealias_path env p =
   let aliases = EcEnv.Theory.aliases env in
   let target = EcPath.tolist p in
@@ -472,12 +479,14 @@ let dealias_path env p =
     aliases None
   |> odfl p
 
+(* Canonicalize module path representations into a uniform EcPath.path. *)
 let path_of_mpath mp =
   match mp.EcPath.m_top with
   | `Concrete (p, None) -> p
   | `Concrete (p, Some sub) -> EcPath.pappend p sub
   | `Local id -> EcPath.psymbol (EcIdent.tostring id)
 
+(* Strip known aliases from a path, yielding the real module-qualified path. *)
 let strip_alias env p =
   let module MP = EcPath.Mp in
   let aliases = EcEnv.Theory.aliases env in
@@ -501,6 +510,9 @@ let strip_alias env p =
            else None)
     aliases None
 
+(* Given a possibly-aliased/instantiated axiom path, enumerate all original
+   definitions that are alpha-eq and parameter-compatible. Used to populate
+   resolved_paths for ProofAst. *)
 let find_original_axiom_paths env p =
   match Ax.by_path_opt p env with
   | None -> [p]
@@ -536,6 +548,8 @@ let find_original_axiom_paths env p =
       if paths = [] then [p] else paths
 
 let normalize_paths env p =
+  (* Normalize a candidate rule path: expand aliases, reattach module path,
+     stringify, and deduplicate. This is what ProofAst emits as resolved_paths. *)
   find_original_axiom_paths env p
   |> List.map (fun p ->
          let base = EcPath.basename p in
@@ -557,6 +571,8 @@ let normalize_paths env p =
   |> List.sort_uniq String.compare
 
 let record_rewrite_path env path =
+  (* Record every rule path encountered while rewrite logging is active so
+     ProofAst can emit resolved_paths/chosen_path in the JSON. *)
   if !rewrite_logging_active then
     let ps = normalize_paths env path in
     ps
@@ -566,6 +582,8 @@ let record_rewrite_path env path =
          rewrite_last_path := Some p)
 
 let take_rewrite_paths_and_chosen () =
+  (* Flush buffered rewrite paths and the last chosen rule for the current
+     rewrite argument; used right after each rewrite application. *)
   if not !rewrite_logging_active then ([], None)
   else begin
     let paths =
@@ -580,6 +598,8 @@ let take_rewrite_paths_and_chosen () =
   end
 
 let record_rewrite_proofterm env (pt : PT.pt_ev) =
+  (* If the rewrite came from a proof term, extract its head/global and record
+     it as a rule used, so ProofAst can still attribute the rewrite. *)
   let rec from_head = function
     | PTGlobal (p, _) -> Some p
     | PTTerm pt       -> from_term pt
@@ -919,6 +939,7 @@ let process_rewrite1_r ttenv ?target ri tc =
 
   match unloc ri with
   | RWDone simpl ->
+      (* `/=` or `/~=` final simplification; optional logic controls reduction. *)
       let tt =
         match simpl with
         | Some logic ->
@@ -929,6 +950,7 @@ let process_rewrite1_r ttenv ?target ri tc =
       in FApi.t_seq tt process_trivial tc
 
   | RWSimpl logic ->
+      (* Plain simplify (no “done”): run logical reduction, then continue. *)
       let hyps   = FApi.tc1_hyps tc in
       let target = target |> omap (fst |- LDecl.hyp_by_name^~ hyps |- unloc) in
       t_simplify_lg ?target ~delta:`IfApplied (ttenv, logic) tc
@@ -937,6 +959,7 @@ let process_rewrite1_r ttenv ?target ri tc =
       if Option.is_some px then
         tc_error !!tc "cannot use pattern selection in delta-rewrite rules";
 
+      (* Delta-rewrite (unfold) with optional repeat spec r. *)
       let do1 tc = process_delta ~und_delta ?target (s, o, p) tc in
 
       match r with
@@ -945,6 +968,8 @@ let process_rewrite1_r ttenv ?target ri tc =
   end
 
   | RWRw (((s : rwside), r, o, p), pts) -> begin
+      (* Main rewrite: over a list of proof terms [pts], maybe with pattern p,
+         occurrence o, side s, repeat r, and sub-direction subs per proof term. *)
       let do1 (mode : [`Full | `Light]) ((subs : rwside), pt) tc =
         let hyps   = FApi.tc1_hyps tc in
         let target = target |> omap (fst |- LDecl.hyp_by_name^~ hyps |- unloc) in
@@ -973,6 +998,7 @@ let process_rewrite1_r ttenv ?target ri tc =
         | { fp_head = FPNamed (p, None); fp_args = []; }
               when pt.fp_mode = `Implicit && is_baserw p
         ->
+          (* Implicit base-rewrite: expand to all lemmas registered in base. *)
           let env = FApi.tc1_env tc in
           let ls  = snd (EcEnv.BaseRw.lookup p.pl_desc env) in
           let ls  = EcPath.Sp.elements ls in
@@ -981,6 +1007,7 @@ let process_rewrite1_r ttenv ?target ri tc =
             let pt = PT.pt_of_uglobal_r (PT.copy ptenv) lemma in
             let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
             let env = FApi.tc_env tc in
+            (* Track which base rewrite lemma was applied (for ProofAst). *)
             record_rewrite_path env lemma;
             tc
           in t_ors (List.map do1 ls) tc
@@ -988,6 +1015,8 @@ let process_rewrite1_r ttenv ?target ri tc =
         | { fp_head = FPNamed (p, None); fp_args = []; }
               when pt.fp_mode = `Implicit
         ->
+          (* Implicit named lemma: either expand all lemmas with that name or
+             use the provided proof term head if not a bare global. *)
           let env    = FApi.tc1_env tc in
           let ptenv0 = PT.copy ptenv in
           let pt     = PT.process_full_pterm ~implicits ptenv pt
@@ -996,6 +1025,7 @@ let process_rewrite1_r ttenv ?target ri tc =
           begin
             match pt.ptev_pt with
             | PTApply { pt_head = PTGlobal _; pt_args = [] } ->
+              (* Expand to all axioms matching the given name. *)
               let ls = EcEnv.Ax.all ~name:(unloc p) env in
 
               let do1 (lemma, _) tc =
@@ -1003,21 +1033,27 @@ let process_rewrite1_r ttenv ?target ri tc =
                 let tc =
                   process_rewrite1_core ~mode ?target (theside, prw, o) pt tc
                 in
-                let env = FApi.tc_env tc in
+                (* Track which candidate lemma actually rewrote the goal.
+                   record_rewrite_path is used when we know the concrete lemma path. *)
                 record_rewrite_path env lemma;
                 tc in
               t_ors (List.map do1 ls) tc
 
             | _ ->
+              (* Generic proof term rewrite (not a bare global). *)
               let tc =
                 process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
               let env = FApi.tc_env tc in
+              (* Rewrite driven by a proof term: log its head for ProofAst.
+                 record_rewrite_proofterm is used when we only have a proof term
+                 and need to extract a global head, not a named lemma path. *)
               record_rewrite_proofterm env pt;
               tc
           end
 
         | { fp_head = FPCut (Some f); fp_args = []; }
         ->
+          (* Rewrite via a cut pattern: build a PTCut proof term and apply. *)
           let ps = ref Mid.empty in
 
           let f =
@@ -1035,13 +1071,16 @@ let process_rewrite1_r ttenv ?target ri tc =
 
           let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
           let env = FApi.tc_env tc in
+          (* Cut-based rewrite proof term: record its head for ProofAst. *)
           record_rewrite_proofterm env pt;
           tc
 
         | _ ->
+          (* Fully processed proof term: just apply and log head for ProofAst. *)
           let pt = PT.process_full_pterm ~implicits ptenv pt in
           let tc = process_rewrite1_core ~mode ?target (theside, prw, o) pt tc in
           let env = FApi.tc_env tc in
+          (* Here too, we only have a proof term, so extract/log via record_rewrite_proofterm. *)
           record_rewrite_proofterm env pt;
           tc
         in
@@ -1061,18 +1100,22 @@ let process_rewrite1_r ttenv ?target ri tc =
   end
 
   | RWPr (x, f) -> begin
+      (* Probabilistic rewrite Pr[...] — only on main goal, not hypotheses. *)
       if EcUtils.is_some target then
         tc_error !!tc "cannot rewrite Pr[] in local assumptions";
       EcPhlPrRw.t_pr_rewrite (unloc x, f) tc
   end
 
   | RWSmt (false, info) ->
+     (* SMT-based rewrite; info carries solver config. *)
      process_smt ~loc:ri.pl_loc ttenv (Some info) tc
 
   | RWSmt (true, info) ->
+     (* SMT with /done variant: try done first, else SMT. *)
      t_or process_done (process_smt ~loc:ri.pl_loc ttenv (Some info)) tc
 
   | RWApp fp -> begin
+      (* Apply a proof term as a rewrite (backward/forward depending on target). *)
       let implicits = ttenv.tt_implicits in
       match target with
       | None -> process_apply_bwd ~implicits `Apply fp tc
@@ -1080,9 +1123,11 @@ let process_rewrite1_r ttenv ?target ri tc =
     end
 
   | RWTactic `Ring ->
+      (* Algebraic ring rewrite/solve. *)
       process_algebra `Solve `Ring [] tc
 
   | RWTactic `Field ->
+      (* Algebraic field rewrite/solve. *)
       process_algebra `Solve `Field [] tc
 
 (* -------------------------------------------------------------------- *)
@@ -1091,19 +1136,32 @@ let process_rewrite1 ttenv ?target ri tc =
 
 (* -------------------------------------------------------------------- *)
 let process_rewrite ttenv ?target ?log_rewrite ri tc =
+  (* ri: list of rewrite items (ri is a list; we fold over it below).
+     ttenv: tactic env carrying implicits and the rewrite logger (if any).
+     target: optional focus hypothesis to rewrite instead of the goal.
+     log_rewrite: optional ProofAst callback installed by ecHiTacticals.
+     tc: current proof state (tcenv), which holds open goals and environment. *)
   let do1 tc gi (fc, ri) =
+    (* gi: global index of the current rewrite item in the list.
+       fc: optional focus selector (where to apply this rewrite across goals).
+       ngoals: number of current open goals in this tcenv. *)
     let ngoals = FApi.tc_count tc in
     let with_logging before process =
+      (* logging: enable only if a callback was provided by ecHiTacticals. *)
       let logging = Option.is_some log_rewrite in
+      (* Preserve previous flag so nested/other rewrites restore state. *)
       let old_flag = !rewrite_logging_active in
       rewrite_logging_active := logging;
       EcUtils.try_finally
         (fun () ->
+           (* Enable per-argument buffers, run the rewrite under test. *)
            if logging then clear_rewrite_paths ();
            let tc' = process () in
+           (* Drain buffers: all rule paths seen + last chosen rule. *)
            let paths, chosen =
              if logging then take_rewrite_paths_and_chosen () else ([], None)
            in
+           (* If a callback exists, report this argument’s data + goal trace. *)
            (match log_rewrite with
             | Some f ->
                 let after_goal = FApi.tc_opened tc' in
@@ -1112,20 +1170,34 @@ let process_rewrite ttenv ?target ?log_rewrite ri tc =
            tc')
         (fun () -> rewrite_logging_active := old_flag)
     in
+    (* i: index of the selected subgoal inside this tcenv (0-based). *)
     let dorw   = fun i tc ->
+      (* i: index of this subgoal (0-based) among currently open goals. *)
+      (* Snapshot the single goal handle we’re about to rewrite.
+         tc1_handle : tcenv1 -> handle (wraps the current main goal). *)
       let before_goal = [FApi.tc1_handle tc] in
       if   gi = 0 || (i+1) = ngoals
       then
+        (* If this rewrite item is the first, or we’re on the last remaining
+           goal, honor the optional [target] (rewrite a specific hypothesis
+           instead of the goal) and log around that call. *)
         with_logging before_goal (fun () -> process_rewrite1 ttenv ?target ri tc)
       else
+        (* For intermediate goals we ignore [target] to avoid reapplying a
+           hypothesis-targeted rewrite across all goals; still log the rewrite. *)
         with_logging before_goal (fun () -> process_rewrite1 ttenv ri tc)
     in
 
+    (* Apply this rewrite item to goals, honoring optional focus [fc]:
+       - If no focus, apply to all goals (t_onalli).
+       - If focus provided, apply only to selected goals (t_onselecti). *)
     match fc |> omap ((process_tfocus tc) |- unloc) with
     | None    -> FApi.t_onalli dorw tc
     | Some fc -> FApi.t_onselecti fc dorw tc
 
   in
+  (* fold_lefti threads tcenv across rewrite items, passing index+element to do1.
+     tcenv_of_tcenv1 lifts the single-goal tcenv1 to multi-goal tcenv. *)
   List.fold_lefti do1 (tcenv_of_tcenv1 tc) ri
 
 (* -------------------------------------------------------------------- *)
@@ -2136,6 +2208,10 @@ let process_generalize ?(doeq = false) patterns (tc : tcenv1) =
 
 (* -------------------------------------------------------------------- *)
 let rec process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
+  (* Walk the list of intro directives [pis], optionally logging:
+     - log_intro: per-intro before/after goal trace
+     - log_intro_elem: per-element before/after goal trace, keyed by intro idx
+     cf: carry/no-progress flag forwarded to intro handling. *)
   let rec aux idx cf_opt tc = function
     | [] -> tc
     | pi :: rest ->
@@ -2146,7 +2222,7 @@ let rec process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
         in
         let elem_logger =
           match log_intro_elem with
-          | Some log -> Some (log idx)
+          | Some log -> Some (log idx)  (* per-intro element logger (ProofAst) *)
           | None -> None
         in
         let tc =
@@ -2176,6 +2252,7 @@ let rec process_mgenintros ?cf ?log_intro ?log_intro_elem ttenv pis tc =
         (match log_intro, before with
          | Some log, Some b ->
              let after = FApi.tc_opened tc in
+             (* Per-intro logger (ProofAst): record before/after goal trace. *)
              log pi b after
          | _ -> ());
         aux (idx + 1) (Some false) tc rest
