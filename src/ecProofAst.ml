@@ -2580,39 +2580,7 @@ let enrich_prewrite_core tac core_json =
                                                 List.mapi
                                                   (fun idx arg_json ->
                                                      let events = consume_rewrite_applications tac idx in
-                                                     let apps =
-                                                       List.map (fun ev -> ev.re_app) events in
-                                                     let paths =
-                                                       events
-                                                       |> List.map (fun ev -> ev.re_paths)
-                                                       |> List.concat
-                                                       |> List.filter (fun p -> p <> "")
-                                                       |> List.sort_uniq String.compare
-                                                     in
-                                                    let chosen_path =
-                                                      events
-                                                      |> List.filter_map (fun ev -> ev.re_chosen)
-                                                      |> List.rev
-                                                      |> (function
-                                                          | hd :: _ -> Some hd
-                                                          | [] -> None)
-                                                    in
-                                                     let extras =
-                                                       let goals = goal_trace_fields apps in
-                                                       let resolved =
-                                                         match paths with
-                                                         | [] -> []
-                                                         | _ ->
-                                                             [("resolved_paths",
-                                                               `List (List.map (fun p -> `String p) paths))]
-                                                       in
-                                                      let chosen =
-                                                        match chosen_path with
-                                                        | None -> []
-                                                        | Some p -> [("chosen_path", `String p)]
-                                                      in
-                                                      goals @ resolved @ chosen
-                                                     in
+                                                      let extras = [] in
                                                      let arg_json =
                                                        (* Also attach per-entry traces/paths/chosen inside
                                                           the entries list (one event per rewrite entry). *)
