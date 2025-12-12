@@ -1236,41 +1236,70 @@ let process_rewrite ttenv ?target ?log_rewrite ri tc =
          tc1_handle : tcenv1 -> handle (wraps the current main goal). *)
       let before_goal = [FApi.tc1_handle tc] in
       (* If logging and this is an RWRw with multiple entries, log per entry. *)
+      (* When ProofAst logging is on, RWRw with multiple entries needs
+         per-entry paths/chosen. We cannot recurse on the real proof state
+         (it may change the goal tree or introduce mismatched handles), so:
+         1) do a side pass that *only* collects paths/chosen for each entry,
+            swallowing benign “nothing to rewrite” failures and never mutating
+            the real proof; 2) run the real rewrite once; 3) replay the collected
+            events using the real before/after goal handles so JSON goal traces
+            stay aligned with the actual rewrite result. *)
       match log_rewrite, unloc ri with
       | Some f, RWRw ((s, r, o, p), entries) ->
-          let logging = true in
           let old_flag = !rewrite_logging_active in
-          rewrite_logging_active := logging;
-          EcUtils.try_finally
-            (fun () ->
-               let rec apply idx tc entries =
-                 match entries with
-                 | [] -> FApi.tcenv_of_tcenv1 tc
-                 | (subs, pt) :: rest ->
-                     clear_rewrite_paths ();
-                     let before_goal = [FApi.tc1_handle tc] in
-                     let ri_entry = { ri with pl_desc = RWRw ((s, r, o, p), [ (subs, pt) ]) } in
-                     let tc' =
-                       if gi = 0 || (i+1) = ngoals
-                       then process_rewrite1 ttenv ?target ri_entry tc
-                       else process_rewrite1 ttenv ri_entry tc
-                     in
-                     let paths, chosen = take_rewrite_paths_and_chosen () in
-                     let after_goal = FApi.tc_opened tc' in
-                     (* If the rewrite produced zero or multiple open goals,
-                        stop the per-entry logging recursion to avoid unsafe
-                        tcenv -> tcenv1 casts; otherwise continue. *)
-                     if FApi.tc_count tc' <> 1 then begin
-                       f gi chosen paths before_goal after_goal;
-                       tc'
-                     end else begin
-                       let tc1' = FApi.as_tcenv1 tc' in
-                       f gi chosen paths before_goal after_goal;
-                       apply (idx + 1) tc1' rest
-                     end
-               in
-               apply 0 tc entries)
-            (fun () -> rewrite_logging_active := old_flag)
+          (* Side collection: gather per-entry paths/chosen without mutating the real proof. *)
+          let events = ref [] in
+          let () =
+            rewrite_logging_active := true;
+            clear_rewrite_paths ();
+            let is_skippable = function
+              | LowRewrite.RewriteError LowRewrite.LRW_NothingToRewrite
+              | LowRewrite.RewriteError LowRewrite.LRW_RPatternNoMatch
+              | LowRewrite.RewriteError LowRewrite.LRW_RPatternNoRuleMatch
+              | LowRewrite.RewriteError LowRewrite.LRW_NotAnEquation -> true
+              | EcCoreGoal.TcError tcerr -> begin
+                  match tcerr.tc_message with
+                  | EcCoreGoal.TCEUser (x, pp) -> String.equal (pp x) "nothing to rewrite"
+                  | _ -> false
+                end
+              | _ -> false
+            in
+            let rec collect tc entries =
+              match entries with
+              | [] -> ()
+              | (subs, pt) :: rest ->
+                  clear_rewrite_paths ();
+                  let ri_entry = { ri with pl_desc = RWRw ((s, r, o, p), [ (subs, pt) ]) } in
+                  let attempt =
+                    if gi = 0 || (i+1) = ngoals
+                    then process_rewrite1 ttenv ?target ri_entry
+                    else process_rewrite1 ttenv ri_entry in
+                  begin match FApi.t_try_base attempt tc with
+                  | `Failure exn when is_skippable exn ->
+                      events := ([], None) :: !events;
+                      collect tc rest
+                  | `Failure _ ->
+                      events := ([], None) :: !events;
+                      collect tc rest
+                  | `Success tc' ->
+                      let paths, chosen = take_rewrite_paths_and_chosen () in
+                      events := (paths, chosen) :: !events;
+                      (* Advance if single goal, else stop collecting. *)
+                      if FApi.tc_count tc' = 1 then
+                        collect (FApi.as_tcenv1 tc') rest
+                  end
+            in
+            collect tc entries;
+            rewrite_logging_active := old_flag
+          in
+          (* Real rewrite run once. *)
+          let res = process_rewrite1 ttenv ?target ri tc in
+          let after_goal = FApi.tc_opened res in
+          (* Replay events with real goal handles to keep numbering consistent. *)
+          List.iter
+            (fun (paths, chosen) -> f gi chosen paths before_goal after_goal)
+            (List.rev !events);
+          res
       | _ ->
           if   gi = 0 || (i+1) = ngoals
           then
