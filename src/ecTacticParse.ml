@@ -42,23 +42,22 @@ let ensure_trailing_dot (data : string) =
   if len > 0 && data.[len - 1] = '.' then data else data ^ "."
 
 let parse_tactics_from_string (data : string) : ptactics =
-  let r = reader_of_string (ensure_trailing_dot data) in
-
-  let rec parse (checkpoint : global I.checkpoint) : global =
-    match checkpoint with
-    | I.Accepted v -> v
-    | I.InputNeeded _ ->
-        parse (I.offer checkpoint (lexer ~checkpoint r))
-    | I.Shifting _ | I.AboutToReduce _ | I.HandlingError _ ->
-        parse (I.resume checkpoint)
-    | I.Rejected ->
-        raise P.Error
+  let data = ensure_trailing_dot data in
+  let reader = EcIo.from_string data in
+  let globals =
+    try EcIo.parseall reader
+    with e ->
+      EcIo.finalize reader;
+      raise e
   in
-  let g = parse (P.Incremental.global r.lexbuf.lex_curr_p) in
-  match unloc g.gl_action with
-  | Gtactics (`Actual ts) -> ts
-  | Gtactics `Proof -> []
-  | _ -> raise P.Error
+  EcIo.finalize reader;
+  List.fold_left
+    (fun acc g ->
+      match unloc g.gl_action with
+      | Gtactics (`Actual ts) -> acc @ ts
+      | Gtactics `Proof -> acc
+      | _ -> acc)
+    [] globals
 
 (* -------------------------------------------------------------------- *)
 module SSet = Ssym
@@ -97,7 +96,40 @@ let add_list f (acc : SSet.t) xs =
   List.fold_left (fun acc x -> f x acc) acc xs
 
 (* -------------------------------------------------------------------- *)
-let rec names_of_pformula (f : pformula) (acc : SSet.t) : SSet.t =
+let add_bound_psymbol (bound : SSet.t) (s : psymbol) =
+  SSet.add (unloc s) bound
+
+let add_bound_osymbol (bound : SSet.t) (s : osymbol) =
+  match unloc s with
+  | None -> bound
+  | Some s -> add_bound_psymbol bound s
+
+let add_bound_osymbols (bound : SSet.t) (xs : osymbol list) =
+  List.fold_left add_bound_osymbol bound xs
+
+let add_bound_ptybindings (bound : SSet.t) (bs : ptybindings) =
+  List.fold_left (fun b (xs, _) -> add_bound_osymbols b xs) bound bs
+
+let add_bound_pgtybindings (bound : SSet.t) (bs : pgtybindings) =
+  List.fold_left (fun b (xs, _) -> add_bound_osymbols b xs) bound bs
+
+let add_bound_plpattern (bound : SSet.t) (p : plpattern) =
+  match unloc p with
+  | LPSymbol s -> add_bound_psymbol bound s
+  | LPTuple xs -> add_bound_osymbols bound xs
+  | LPRecord xs ->
+      List.fold_left (fun b (_, s) -> add_bound_psymbol b s) bound xs
+
+let add_bound_ppattern (bound : SSet.t) (p : ppattern) =
+  match p with
+  | PPApp (_, xs) -> add_bound_osymbols bound xs
+
+let is_bound_qsymbol (bound : SSet.t) (q : pqsymbol) =
+  match unloc q with
+  | ([], x) -> SSet.mem x bound
+  | _ -> false
+
+let rec names_of_pformula_bound (bound : SSet.t) (f : pformula) (acc : SSet.t) : SSet.t =
   match unloc f with
   | PFhole
   | PFint _
@@ -105,51 +137,64 @@ let rec names_of_pformula (f : pformula) (acc : SSet.t) : SSet.t =
       acc
 
   | PFident (x, _) ->
-      add_qsymbol x acc
+      if is_bound_qsymbol bound x then acc else add_qsymbol x acc
 
   | PFref (x, _) | PFmem x ->
-      add_psymbol x acc
+      if SSet.mem (unloc x) bound then acc else add_psymbol x acc
 
   | PFglob ms ->
       add_pmsymbol ms acc
 
   | PFcast (f, _) ->
-      names_of_pformula f acc
+      names_of_pformula_bound bound f acc
 
   | PFtuple fs ->
-      add_list names_of_pformula acc fs
+      add_list (names_of_pformula_bound bound) acc fs
 
   | PFapp (f, args) ->
-      let acc = names_of_pformula f acc in
-      add_list names_of_pformula acc args
+      let acc = names_of_pformula_bound bound f acc in
+      add_list (names_of_pformula_bound bound) acc args
 
   | PFif (f1, f2, f3) ->
-      acc |> names_of_pformula f1 |> names_of_pformula f2 |> names_of_pformula f3
+      acc
+      |> names_of_pformula_bound bound f1
+      |> names_of_pformula_bound bound f2
+      |> names_of_pformula_bound bound f3
 
   | PFmatch (f, branches) ->
-      let acc = names_of_pformula f acc in
-      add_list (fun (_, f) acc -> names_of_pformula f acc) acc branches
+      let acc = names_of_pformula_bound bound f acc in
+      add_list
+        (fun (p, f) acc ->
+          let bound = add_bound_ppattern bound p in
+          names_of_pformula_bound bound f acc)
+        acc branches
 
-  | PFlet (_, (f, _), body) ->
-      acc |> names_of_pformula f |> names_of_pformula body
+  | PFlet (p, (f, _), body) ->
+      let acc = names_of_pformula_bound bound f acc in
+      let bound = add_bound_plpattern bound p in
+      names_of_pformula_bound bound body acc
 
-  | PFforall (_, f)
-  | PFexists (_, f)
-  | PFlambda (_, f) ->
-      names_of_pformula f acc
+  | PFforall (bs, f)
+  | PFexists (bs, f) ->
+      let bound = add_bound_pgtybindings bound bs in
+      names_of_pformula_bound bound f acc
+
+  | PFlambda (bs, f) ->
+      let bound = add_bound_ptybindings bound bs in
+      names_of_pformula_bound bound f acc
 
   | PFrecord (base, fields) ->
-      let acc = add_option names_of_pformula acc base in
-      add_list (fun rf acc -> names_of_pformula rf.rf_value acc) acc fields
+      let acc = add_option (names_of_pformula_bound bound) acc base in
+      add_list (fun rf acc -> names_of_pformula_bound bound rf.rf_value acc) acc fields
 
   | PFproj (f, p) ->
-      acc |> names_of_pformula f |> add_qsymbol p
+      acc |> names_of_pformula_bound bound f |> add_qsymbol p
 
   | PFproji (f, _) ->
-      names_of_pformula f acc
+      names_of_pformula_bound bound f acc
 
   | PFside (f, (_, s)) ->
-      acc |> names_of_pformula f |> add_psymbol s
+      acc |> names_of_pformula_bound bound f |> add_psymbol s
 
   | PFeqveq (gvs, mods) ->
       let acc =
@@ -159,44 +204,55 @@ let rec names_of_pformula (f : pformula) (acc : SSet.t) : SSet.t =
               let acc = add_pmsymbol m acc in
               add_list add_qsymbol acc qs
           | GVvar q ->
-              add_qsymbol q acc) acc gvs
+              if is_bound_qsymbol bound q then acc else add_qsymbol q acc) acc gvs
       in
       add_option (fun (l, r) acc -> acc |> add_pmsymbol_r l |> add_pmsymbol_r r) acc mods
 
   | PFeqf fs ->
-      add_list names_of_pformula acc fs
+      add_list (names_of_pformula_bound bound) acc fs
 
   | PFlsless gp ->
       names_of_pgamepath gp acc
 
   | PFscope (p, f) ->
-      acc |> add_qsymbol p |> names_of_pformula f
+      acc |> add_qsymbol p |> names_of_pformula_bound bound f
 
   | PFhoareF (p, gp, q) ->
-      acc |> names_of_pformula p |> names_of_pgamepath gp |> names_of_pformula q
+      acc |> names_of_pformula_bound bound p |> names_of_pgamepath gp |> names_of_pformula_bound bound q
 
   | PFehoareF (p, gp, q) ->
-      acc |> names_of_pformula p |> names_of_pgamepath gp |> names_of_pformula q
+      acc |> names_of_pformula_bound bound p |> names_of_pgamepath gp |> names_of_pformula_bound bound q
 
   | PFequivF (p, (g1, g2), q) ->
-      acc |> names_of_pformula p |> names_of_pgamepath g1 |> names_of_pgamepath g2 |> names_of_pformula q
+      acc
+      |> names_of_pformula_bound bound p
+      |> names_of_pgamepath g1
+      |> names_of_pgamepath g2
+      |> names_of_pformula_bound bound q
 
   | PFeagerF (p, (s1, g1, g2, s2), q) ->
       acc
-      |> names_of_pformula p
+      |> names_of_pformula_bound bound p
       |> names_of_pstmt s1
       |> names_of_pgamepath g1
       |> names_of_pgamepath g2
       |> names_of_pstmt s2
-      |> names_of_pformula q
+      |> names_of_pformula_bound bound q
 
   | PFprob (gp, fs, mem, f) ->
       let acc = names_of_pgamepath gp acc in
-      let acc = add_list names_of_pformula acc fs in
-      acc |> add_psymbol mem |> names_of_pformula f
+      let acc = add_list (names_of_pformula_bound bound) acc fs in
+      acc |> add_psymbol mem |> names_of_pformula_bound bound f
 
   | PFBDhoareF (p, gp, q, _, r) ->
-      acc |> names_of_pformula p |> names_of_pgamepath gp |> names_of_pformula q |> names_of_pformula r
+      acc
+      |> names_of_pformula_bound bound p
+      |> names_of_pgamepath gp
+      |> names_of_pformula_bound bound q
+      |> names_of_pformula_bound bound r
+
+and names_of_pformula (f : pformula) (acc : SSet.t) : SSet.t =
+  names_of_pformula_bound SSet.empty f acc
 
 and names_of_pexpr (e : pexpr) (acc : SSet.t) : SSet.t =
   match unloc e with
@@ -246,7 +302,6 @@ and names_of_plvalue (lv : plvalue) (acc : SSet.t) =
       let acc = add_qsymbol p acc in
       add_list names_of_pexpr acc es
 
-(* -------------------------------------------------------------------- *)
 let rec names_of_ppterm (t : ppterm) (acc : SSet.t) : SSet.t =
   let acc =
     match t.fp_head with
