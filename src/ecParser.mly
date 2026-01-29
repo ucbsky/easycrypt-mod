@@ -643,12 +643,14 @@
 
 %type <EcParsetree.global> global
 %type <EcParsetree.prog  > prog
+%type <EcParsetree.ptactics> tactics
+%type <EcParsetree.ptactics> toptactic
 
 %type <unit> is_uniop
 %type <unit> is_binop
 %type <unit> is_numop
 
-%start prog global is_uniop is_binop is_numop
+%start prog global tactics toptactic is_uniop is_binop is_numop
 %%
 
 (* -------------------------------------------------------------------- *)
