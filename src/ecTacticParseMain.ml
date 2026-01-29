@@ -29,10 +29,61 @@ let () =
     exit 2
   );
 
+  let split_sentences s =
+    let buf = Buffer.create (String.length s) in
+    let sentences = ref [] in
+    let flush () =
+      let chunk = String.trim (Buffer.contents buf) in
+      Buffer.clear buf;
+      if chunk <> "" then sentences := chunk :: !sentences
+    in
+    let len = String.length s in
+    let is_blank = function
+      | ' ' | '\t' | '\r' | '\n' -> true
+      | _ -> false
+    in
+    let rec loop i =
+      if i >= len then ()
+      else
+        let c = s.[i] in
+        if c = '.' then
+          let next_is_blank = i + 1 >= len || is_blank s.[i + 1] in
+          if next_is_blank then (
+            flush ();
+            loop (i + 1)
+          ) else (
+            Buffer.add_char buf c;
+            loop (i + 1)
+          )
+        else (
+          Buffer.add_char buf c;
+          loop (i + 1)
+        )
+    in
+    loop 0;
+    flush ();
+    List.rev !sentences
+  in
+
+  let try_parse_one s =
+    try Some (EcLib.EcTacticParse.tactic_names s) with
+    | EcLib.EcParser.Error
+    | EcLib.EcParsetree.ParseError _ -> None
+  in
+
   let names =
-    try EcLib.EcTacticParse.tactic_names input with
-    | EcLib.EcParser.Error ->
-        prerr_endline "parse error: invalid tactic";
-        exit 1
+    match try_parse_one input with
+    | Some names -> names
+    | None ->
+        let rec collect acc = function
+          | [] -> acc
+          | s :: tl ->
+              match try_parse_one s with
+              | Some names -> collect (List.rev_append names acc) tl
+              | None ->
+                  prerr_endline ("parse error: skipping sentence: " ^ s);
+                  collect acc tl
+        in
+        collect [] (split_sentences input)
   in
   List.iter print_endline names
