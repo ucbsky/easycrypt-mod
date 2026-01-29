@@ -84,16 +84,25 @@ let rec add_pmsymbol_r (s : pmsymbol) (acc : SSet.t) =
 and add_pmsymbol (s : pmsymbol located) (acc : SSet.t) =
   add_pmsymbol_r (unloc s) acc
 
-let add_pmsymbol_path (s : pmsymbol) (acc : SSet.t) =
+let rec add_pmsymbol_path (s : pmsymbol) (acc : SSet.t) =
   let rec collect acc = function
     | [] -> acc
     | (x, _) :: tl -> collect (unloc x :: acc) tl
   in
-  match collect [] s with
+  let acc =
+    match collect [] s with
   | [] -> acc
   | x :: xs ->
-      let q = (xs, x) in
-      add_sym (string_of_qsymbol q) acc
+        let q = (xs, x) in
+        add_sym (string_of_qsymbol q) acc
+  in
+  List.fold_left
+    (fun acc (_, args) ->
+      match args with
+      | None -> acc
+      | Some ms ->
+          List.fold_left (fun acc m -> add_pmsymbol_path (unloc m) acc) acc ms)
+    acc s
 
 let add_option f (acc : SSet.t) = function
   | None -> acc
