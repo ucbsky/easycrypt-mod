@@ -84,6 +84,17 @@ let rec add_pmsymbol_r (s : pmsymbol) (acc : SSet.t) =
 and add_pmsymbol (s : pmsymbol located) (acc : SSet.t) =
   add_pmsymbol_r (unloc s) acc
 
+let add_pmsymbol_path (s : pmsymbol) (acc : SSet.t) =
+  let rec collect acc = function
+    | [] -> acc
+    | (x, _) :: tl -> collect (unloc x :: acc) tl
+  in
+  match collect [] s with
+  | [] -> acc
+  | x :: xs ->
+      let q = (xs, x) in
+      add_sym (string_of_qsymbol q) acc
+
 let add_option f (acc : SSet.t) = function
   | None -> acc
   | Some v -> f v acc
@@ -259,8 +270,8 @@ and names_of_pexpr (e : pexpr) (acc : SSet.t) : SSet.t =
   | Expr f -> names_of_pformula f acc
 
 and names_of_pgamepath (p : pgamepath) (acc : SSet.t) =
-  let (mods, name) = unloc p in
-  acc |> add_pmsymbol_r mods |> add_psymbol name
+  let (mods, _) = unloc p in
+  add_pmsymbol_path mods acc
 
 and names_of_pstmt (s : pstmt) (acc : SSet.t) =
   let names_of_pinstr (i : pinstr) (acc : SSet.t) =
